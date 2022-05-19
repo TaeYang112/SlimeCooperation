@@ -14,7 +14,8 @@ namespace MultiGame
 {
     public partial class Form1 : Form
     {
-        private MyClient myClient;
+        private MyClient myClient;                                                  // 서버와 통신하는 클래스
+        private System.Windows.Forms.Timer MoveTimer;                               // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
 
         // 키가 눌려있는지 확인하는 변수
         bool bLeftDown;
@@ -32,11 +33,9 @@ namespace MultiGame
             myClient = new MyClient(this);
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
-            System.Windows.Forms.Timer MoveTimer = new System.Windows.Forms.Timer();
+            MoveTimer = new System.Windows.Forms.Timer();
             MoveTimer.Interval = 10;
             MoveTimer.Tick += new EventHandler(MoveCharacter_timer);
-            MoveTimer.Start();
-
 
         }
 
@@ -53,70 +52,56 @@ namespace MultiGame
         {
             if (bLeftDown == true)
             {
-                button1.Location = new Point(button1.Location.X - 1, button1.Location.Y);
+                button1.Location = new Point(button1.Location.X - 2, button1.Location.Y);
             }
             if (bRIghtDown == true)
             {
-                button1.Location = new Point(button1.Location.X + 1, button1.Location.Y);
+                button1.Location = new Point(button1.Location.X + 2, button1.Location.Y);
             }
         }
-
+        
         // 키가 눌렸을 때
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (keyData == Keys.Left)
+            {
+                if (bLeftDown == false)
+                {
+                    bLeftDown = true;
+                    MoveTimer.Start();
+                }
+                return true;
+            }
+            if (keyData == Keys.Right)
+            {
+                if (bRIghtDown == false)
+                {
+                    bRIghtDown = true;
+                    MoveTimer.Start();
+                }
+                    
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         // 키가 뗴어졌을 때
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-        }
-
-
-        // 방향키, 엔터, 스페이스바 등은 KeyDown으로 감지할 수 없음
-        // ProcessCmdKey를 오버라이딩해서 감지
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            const int WM_KEYDOWN = 0x100;
-            const int WM_SYSKEYDOWN = 0x104;
-            Console.WriteLine(msg.Msg);
-            if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_SYSKEYDOWN))
+            switch (e.KeyCode)
             {
-                switch (keyData)
-                {
-                    case Keys.Left:
-                        bLeftDown = true;
-                        return true;
-                    case Keys.Right:
-                        bRIghtDown = true;
-                        return true;
-                }
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-
-        }
-
-        // 방향키, 엔터, 스페이스바 등은 KeyUP 으로 감지할 수 없음
-        // ProcessKeyPreview를 오버라이딩해서 감지
-        protected override bool ProcessKeyPreview(ref Message msg)
-        {
-            const int WM_KEYUP = 0x101;
-            const int WM_SYSKEYUP = 0x105;
-            Console.WriteLine(msg.Msg);
-            if ((msg.Msg == WM_KEYUP) || (msg.Msg == WM_SYSKEYUP))
-            {
-                switch ((Keys)msg.WParam)
-                {
-                    case Keys.Left:
-                        bLeftDown = false;
-                        return true;
-                    case Keys.Right:
-                        bRIghtDown = false;
-                        return true;
-                }
+                case Keys.Left:
+                    bLeftDown = false;
+                    break;
+                case Keys.Right:
+                    bRIghtDown = false;
+                    break;
             }
 
-            return base.ProcessKeyPreview(ref msg);
+            if (!(bLeftDown || bRIghtDown)) MoveTimer.Stop();
         }
+
+
 
 
         // 폼의 포커스가 풀리면 ( 알트 탭 등 ) Key UP 이벤트가 안생기기 때문에 강제로 키 다운 변수를 false로 바꿈
