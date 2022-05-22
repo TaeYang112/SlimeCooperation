@@ -14,14 +14,17 @@ namespace MultiGameServer
     {
         private MyServer server;
         public ClientManager clientManager { get; set; }        // 클라이언트들을 관리하는 객체
-
-
+        
 
         static void Main(string[] args)
         {
             Program program = new Program();
 
             program.Start();
+
+            while(true)
+                Console.ReadLine();
+
         }
 
         public Program()
@@ -38,13 +41,41 @@ namespace MultiGameServer
             server.Start();
         }
 
+        private void ClientMove(object clientArgs)
+        {
+            Console.WriteLine("시작");
+            ClientCharacter client = clientArgs as ClientCharacter;
+            while (true)
+            {
+                if(client.IsMoving == true)
+                {
+                    Point Location = client.Location;
+                    if (client.bLeftDown == true) Location.X -= 2;
+                    if (client.bRightDown == true) Location.X += 2;
+
+                    client.Location = Location;
+                    Console.WriteLine($"X : {Location.X}    Y : {Location.Y}");
+                }
+                Thread.Sleep(10);
+            }
+        }
+
 
         // 서버에 새로운 클라이언트가 접속하면 호출됨
         private void OnClientJoin(ClientData newClientData)
         {
             ClientCharacter newClient = clientManager.AddClient(newClientData);
+            newClient.Location = new Point(364, 293);
+            newClient.characterMove_tr = new Thread(ClientMove);
+            newClient.characterMove_tr.Start(newClient);
+            
+
 
             Console.WriteLine(newClient.key + "번 클라이언트가 접속하였습니다.");
+
+
+            // 새로 접속한 클라이언트에게 있어야 할 위치를 알려줌
+            SendMessage($"LOC#-1#{newClient.Location.X}#{newClient.Location.Y}#@", newClient.key);
 
             // 새로 접속한 클라이언트에게 기존에 있던 클라이언트를 알려줌
             foreach (var item in clientManager.ClientDic)
@@ -54,8 +85,12 @@ namespace MultiGameServer
                 SendMessage($"NCL#{item.Value.key}#{item.Value.Location.X}#{item.Value.Location.Y}#@", newClient.key);
             }
 
+
             // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
             SendMessageToAll($"NCL#{newClient.key}#{newClient.Location.X}#{newClient.Location.Y}#@", newClient.key);
+
+
+
 
             // client의 메세지가 발생하면 DataRecieved 메소드가 호출되도록 예약
             newClient.clientData.client.GetStream().BeginRead(newClient.clientData.byteData, 0, newClient.clientData.byteData.Length, new AsyncCallback(DataRecieved), newClient);
@@ -71,12 +106,14 @@ namespace MultiGameServer
                 // 전달받은 byte를 string으로 바꿈
                 int bytesRead = clientData.client.GetStream().EndRead(ar);
                 string stringData = Encoding.Default.GetString(clientData.byteData, 0, bytesRead);
+                
 
                 // 메세지를 해석함
                 ParseMessage(clientChar, stringData);
 
+
                 // client의 메세지가 발생하면 DataRecieved 메소드가 호출되도록 예약
-                clientData.client.GetStream().BeginRead(clientData.byteData, 0, clientData.byteData.Length, new AsyncCallback(DataRecieved), clientData);
+                clientData.client.GetStream().BeginRead(clientData.byteData, 0, clientData.byteData.Length, new AsyncCallback(DataRecieved), clientChar);
             }
             catch
             {
@@ -90,18 +127,6 @@ namespace MultiGameServer
             string[] SplitMessage = message.Split('#');
             switch (SplitMessage[0])
             {
-                // 클라이언트의 캐릭터 위치를 갱신함
-                case "LOC":
-                    {
-                        int x = int.Parse(SplitMessage[1]);
-                        int y = int.Parse(SplitMessage[2]);
-
-                        clientChar.Location = new Point(x, y);
-
-                        // 나머지 클라이언트들에게도 전달함
-                        SendMessageToAll($"LOC#{clientChar.key}#{x}#{y}#@", clientChar.key);
-                    }
-                    break;
                 // 클라이언트의 키보드 입력 ( Input )
                 case "INP":
                     {
@@ -119,6 +144,15 @@ namespace MultiGameServer
                                 clientChar.bRightDown = bKeyDown;
                                 break;
                         }
+                        if (bKeyDown == true) clientChar.MoveStart();
+                        else if (!(clientChar.bLeftDown || clientChar.bRightDown))
+                        {
+                            clientChar.MoveStop();
+
+                            // 클라이언트에게 있어야 할 위치를 알려줌
+                            SendMessage($"LOC#-1#{clientChar.Location.X}#{clientChar.Location.Y}#@", clientChar.key);
+                        }
+
                     }
                     break;
                 default:
