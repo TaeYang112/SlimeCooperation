@@ -15,10 +15,18 @@ namespace MultiGame
 
         public Button character { get; set; }
 
+        // 키가 눌려있는지 확인하는 변수
+        public bool bLeftDown { get; set; }
+        public bool bRightDown { get; set; }
+
         public ClientCharacter(int key, Button character)
         {
+            // 멤버변수 초기화
             this.key = key;
             this.character = character;
+            bLeftDown = false;
+            bRightDown = false;
+
         }
     }
 }

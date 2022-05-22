@@ -17,21 +17,16 @@ namespace MultiGame
         private MyClient myClient;                                                 // 서버와 TCP통신을 담당하는 객체
         private System.Windows.Forms.Timer MoveTimer;                              // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
         private ClientManager clientManager;                                       // 다른 클라이언트들을 관리하는 객체
-
-        // 키가 눌려있는지 확인하는 변수
-        bool bLeftDown;
-        bool bRIghtDown;
-
+        private ClientCharacter userCharacter;
         public Form1()
         {
             InitializeComponent();
 
-            // 멤버변수 초기화
-            bLeftDown = false;
-            bRIghtDown = false;
-
             // 다른 클라이언트들을 관리할 객체
             clientManager = new ClientManager();
+
+            // 사용자 캐릭터
+            userCharacter = new ClientCharacter(-1, button1);
 
             // 클라이언트 객체 생성
             myClient = new MyClient();
@@ -57,15 +52,12 @@ namespace MultiGame
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
         private void MoveCharacter_timer(object sender, EventArgs e)
         {
-            if (bLeftDown == true)                                                      // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
-            {
-                button1.Location = new Point(button1.Location.X - 2, button1.Location.Y);
-            }
-            if (bRIghtDown == true)                                                     // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
-            {
-                button1.Location = new Point(button1.Location.X + 2, button1.Location.Y);
-            }
+            Point Location = button1.Location;
+            if (userCharacter.bLeftDown == true) Location.X -= 2;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
+            if (userCharacter.bRightDown == true) Location.X += 2;                                               // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
 
+            button1.Location = Location;
+            Console.WriteLine($"X : {Location.X}    Y : {Location.Y}");
         }
 
         // 서버로부터 받은 메세지를 해석함
@@ -84,7 +76,6 @@ namespace MultiGame
                     // 다른 클라이언트의 캐릭터 위치를 갱신함 ( Location )
                     case "LOC":
                         {
-                        /*
                             // 플레이어 번호
                             int key = int.Parse(SplitMessage[1]);
 
@@ -92,11 +83,21 @@ namespace MultiGame
                             int x = int.Parse(SplitMessage[2]);
                             int y = int.Parse(SplitMessage[3]);
 
-                            ClientData client;
-                            bool result = clientManager.ClientDic.TryGetValue(key, out client);
+                            ClientCharacter client;
 
-                            // 해당 클라이언트가 존재하지 않을경우 continue
-                            if (result == false) continue;
+                            // key == -1 ( 유저 캐릭터 )
+                            if (key == -1)
+                                client = userCharacter;
+                            else
+                            {
+                                // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
+                                bool result = clientManager.ClientDic.TryGetValue(key, out client);
+
+                                // 해당 클라이언트가 존재하지 않을경우 continue
+                                if (result == false) continue;
+                            }
+                            if (key == -1)
+                                Console.WriteLine($"X : {client.character.Location.X}  Y : {client.character.Location.Y}  ->  X : {x}  Y : {y}");
 
 
                             // 메인 스레드에 있는 폼에 접근하기 위해서는 Invoke 사용해야됨
@@ -111,7 +112,6 @@ namespace MultiGame
                             {
                                 client.character.Location = new Point(x, y);
                             }
-                        */
                         }
                     break;
 
@@ -162,9 +162,9 @@ namespace MultiGame
         {
             if (keyData == Keys.Left)
             {
-                if (bLeftDown == false)
+                if (userCharacter.bLeftDown == false)
                 {
-                    bLeftDown = true;                                                   // bLeftDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
+                    userCharacter.bLeftDown = true;                                     // bLeftDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
                     myClient.SendInputedKey('L', true);                                 // 서버한테 이동을 시작했다고 알림
                     MoveTimer.Start();                                                  // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
                 }
@@ -172,9 +172,9 @@ namespace MultiGame
             }
             if (keyData == Keys.Right)
             {
-                if (bRIghtDown == false)
+                if (userCharacter.bRightDown == false)
                 {
-                    bRIghtDown = true;                                                  // bRightDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
+                    userCharacter.bRightDown = true;                                    // bRightDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
                     myClient.SendInputedKey('R', true);                                 // 서버한테 이동을 시작했다고 알림
                     MoveTimer.Start();                                                  // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
                 }
@@ -190,16 +190,16 @@ namespace MultiGame
             switch (e.KeyCode)
             {
                 case Keys.Left:
-                    bLeftDown = false;                                                  // 왼쪽 방향키가 떼어졌다는걸 알림
+                    userCharacter.bLeftDown = false;                                                    // 왼쪽 방향키가 떼어졌다는걸 알림
                     myClient.SendInputedKey('L', false);
                     break;
                 case Keys.Right:
-                    bRIghtDown = false;                                                 // 오른쪽 방향키가 떼어졌다는걸 알림
+                    userCharacter.bRightDown = false;                                                   // 왼쪽 방향키가 떼어졌다는걸 알림
                     myClient.SendInputedKey('R', false);
                     break;
             }
 
-            if (!(bLeftDown || bRIghtDown)) MoveTimer.Stop();                           // 왼쪽과 오른쪽 모두 떼어져 있다면 캐릭터 이동 타이머를 멈춤
+            if (!(userCharacter.bLeftDown || userCharacter.bRightDown)) MoveTimer.Stop();               // 왼쪽과 오른쪽 모두 떼어져 있다면 캐릭터 이동 타이머를 멈춤
         }
 
 
@@ -208,8 +208,14 @@ namespace MultiGame
         // 폼의 포커스가 풀리면 ( 알트 탭 등 ) Key UP 이벤트가 안생기기 때문에 강제로 키 다운 변수를 false로 바꿈
         private void Form1_Deactivate(object sender, EventArgs e)
         {
-            bLeftDown = false;
-            bRIghtDown = false;
+            userCharacter.bLeftDown = false;                                                            // 왼쪽 방향키가 떼어졌다는걸 알림
+            myClient.SendInputedKey('L', false);
+
+            userCharacter.bRightDown = false;                                                           // 왼쪽 방향키가 떼어졌다는걸 알림
+            myClient.SendInputedKey('R', false);
+
+            MoveTimer.Stop();                                                                           // 캐릭터 이동 타이머를 멈춤
+
         }
     }
 }
