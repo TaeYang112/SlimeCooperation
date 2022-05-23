@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
+using System.Drawing;
 
 namespace MultiGame
 {
@@ -14,6 +16,8 @@ namespace MultiGame
         public int key { get; set; }
 
         public Button character { get; set; }
+
+        private System.Threading.Timer MoveTimer;                                           // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
 
         // 키가 눌려있는지 확인하는 변수
         public bool bLeftDown { get; set; }
@@ -27,6 +31,31 @@ namespace MultiGame
             bLeftDown = false;
             bRightDown = false;
 
+            // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
+            TimerCallback tc = new TimerCallback(MoveCharacter);                              // 이벤트 발생 처리 루틴
+            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
+        }
+
+
+        // 현재 KeyDown 되어있는 키를 확인하여 움직임
+        private void MoveCharacter(object stateInfo)
+        {
+            Point Location = character.Location;
+            if (bLeftDown == true) Location.X -= 2;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
+            if (bRightDown == true) Location.X += 2;                                               // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
+
+            character.Location = Location;
+            // Console.WriteLine($"X : {Location.X}    Y : {Location.Y}");
+        }
+
+        public void MoveStart()
+        {
+            MoveTimer.Change(0, 10);
+        }
+
+        public void MoveStop()
+        {
+            MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
     }
 }
