@@ -19,7 +19,6 @@ namespace MultiGameServer
         static void Main(string[] args)
         {
             Program program = new Program();
-
             program.Start();
 
             while(true)
@@ -41,35 +40,13 @@ namespace MultiGameServer
             server.Start();
         }
 
-        private void ClientMove(object clientArgs)
-        {
-            Console.WriteLine("시작");
-            ClientCharacter client = clientArgs as ClientCharacter;
-            while (true)
-            {
-                if(client.IsMoving == true)
-                {
-                    Point Location = client.Location;
-                    if (client.bLeftDown == true) Location.X -= 2;
-                    if (client.bRightDown == true) Location.X += 2;
-
-                    client.Location = Location;
-                    Console.WriteLine($"X : {Location.X}    Y : {Location.Y}");
-                }
-                Thread.Sleep(10);
-            }
-        }
-
 
         // 서버에 새로운 클라이언트가 접속하면 호출됨
         private void OnClientJoin(ClientData newClientData)
         {
             ClientCharacter newClient = clientManager.AddClient(newClientData);
+            newClient.LocationSync += SyncLocation;
             newClient.Location = new Point(364, 293);
-            newClient.characterMove_tr = new Thread(ClientMove);
-            newClient.characterMove_tr.Start(newClient);
-            
-
 
             Console.WriteLine(newClient.key + "번 클라이언트가 접속하였습니다.");
 
@@ -96,7 +73,8 @@ namespace MultiGameServer
             newClient.clientData.client.GetStream().BeginRead(newClient.clientData.byteData, 0, newClient.clientData.byteData.Length, new AsyncCallback(DataRecieved), newClient);
         }
 
-        // 메세지 수신
+
+        // 클라이언트로부터 메세지 수신
         private void DataRecieved(IAsyncResult ar)
         {
             ClientCharacter clientChar = ar.AsyncState as ClientCharacter; ;
@@ -183,6 +161,11 @@ namespace MultiGameServer
                 SendMessage(message, item.Value.key);
             }
 
+        }
+
+        public void SyncLocation(ClientCharacter clientChar)
+        {
+            SendMessage($"LOC#-1#{clientChar.Location.X}#{clientChar.Location.Y}#@", clientChar.key);
         }
     }
 
