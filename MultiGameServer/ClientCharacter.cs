@@ -60,7 +60,7 @@ namespace MultiGameServer
             if (bRightDown == true) Loc.X += 2;
 
             Location = Loc;
-            Console.WriteLine($"X : {Loc.X}    Y : {Loc.Y}");
+            // Console.WriteLine($"X : {Loc.X}    Y : {Loc.Y}");
         }
 
         private void LocationSyncFunc(object clientArgs)

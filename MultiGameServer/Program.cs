@@ -108,12 +108,12 @@ namespace MultiGameServer
                 // 클라이언트의 키보드 입력 ( Input )
                 case "INP":
                     {
-                        char key = char.Parse(SplitMessage[1]);                 // 입력된 키
+                        char InpKey = char.Parse(SplitMessage[1]);                 // 입력된 키
                         char cKeyDown = char.Parse(SplitMessage[2]);            // 눌려있으면 T / F
 
                         bool bKeyDown = cKeyDown == 'T' ? true : false;         // T 이면 true / false
 
-                        switch (key)
+                        switch (InpKey)
                         {
                             case 'L':
                                 clientChar.bLeftDown = bKeyDown;
@@ -127,10 +127,11 @@ namespace MultiGameServer
                         {
                             clientChar.MoveStop();
 
-                            // 클라이언트에게 있어야 할 위치를 알려줌
-                            SendMessage($"LOC#-1#{clientChar.Location.X}#{clientChar.Location.Y}#@", clientChar.key);
+                            SyncLocation(clientChar);
                         }
 
+                        // 다른 클라이언트들에게 이 클라이언트의 입력을 알림
+                        SendMessageToAll($"INP#{clientChar.key}#{InpKey}#{cKeyDown}@", clientChar.key);
                     }
                     break;
                 default:
@@ -165,7 +166,11 @@ namespace MultiGameServer
 
         public void SyncLocation(ClientCharacter clientChar)
         {
+            // 클라이언트에게 있어야 할 위치를 알려줌
             SendMessage($"LOC#-1#{clientChar.Location.X}#{clientChar.Location.Y}#@", clientChar.key);
+
+            // 다른 클라이언트에도 이 클라이언트가 있어야할 위치를 알려줌
+            SendMessageToAll($"LOC#{clientChar.key}#{clientChar.Location.X}#{clientChar.Location.Y}#@", clientChar.key);
         }
     }
 
