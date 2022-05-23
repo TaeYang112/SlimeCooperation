@@ -22,6 +22,7 @@ namespace MultiGameServer
 
         public event ClientJoinEventHandler ClientJoin;         // 클라이언트가 접속할경우 ClientJoin에 연결된 함수를 호출함
 
+
         public MyServer()
         {
             // TcpListener 클래스 생성 ( IP, 포트 )

@@ -15,13 +15,14 @@ namespace MultiGame
     public partial class Form1 : Form
     {
         private MyClient myClient;                                                 // 서버와 TCP통신을 담당하는 객체
-        private System.Windows.Forms.Timer MoveTimer;                              // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
+        private System.Threading.Timer MoveTimer;                                  // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
         private ClientManager clientManager;                                       // 다른 클라이언트들을 관리하는 객체
         private ClientCharacter userCharacter;
+       
+
         public Form1()
         {
             InitializeComponent();
-
             // 다른 클라이언트들을 관리할 객체
             clientManager = new ClientManager();
 
@@ -32,9 +33,8 @@ namespace MultiGame
             myClient = new MyClient();
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
-            MoveTimer = new System.Windows.Forms.Timer();
-            MoveTimer.Interval = 10;
-            MoveTimer.Tick += new EventHandler(MoveCharacter_timer);
+            TimerCallback tc = new TimerCallback(MoveCharacter_timer);                              // 이벤트 발생 처리 루틴
+            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
 
             // 서버로부터 메세지를 받으면 onTakeMessage함수 호출
             myClient.TakeMessage += new TakeMessageEventHandler(OnTakeMessage);
@@ -50,7 +50,7 @@ namespace MultiGame
 
 
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
-        private void MoveCharacter_timer(object sender, EventArgs e)
+        private void MoveCharacter_timer(object stateInfo)
         {
             Point Location = button1.Location;
             if (userCharacter.bLeftDown == true) Location.X -= 2;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
@@ -97,7 +97,7 @@ namespace MultiGame
                                 if (result == false) continue;
                             }
                             if (key == -1)
-                                Console.WriteLine($"X : {client.character.Location.X}  Y : {client.character.Location.Y}  ->  X : {x}  Y : {y}");
+                                Console.WriteLine($"동기화 :: X : {client.character.Location.X}  Y : {client.character.Location.Y}  ->  X : {x}  Y : {y}");
 
 
                             // 메인 스레드에 있는 폼에 접근하기 위해서는 Invoke 사용해야됨
@@ -166,7 +166,7 @@ namespace MultiGame
                 {
                     userCharacter.bLeftDown = true;                                     // bLeftDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
                     myClient.SendInputedKey('L', true);                                 // 서버한테 이동을 시작했다고 알림
-                    MoveTimer.Start();                                                  // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
+                    MoveTimer.Change(0, 10);                                            // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
                 }
                 return true;
             }
@@ -176,7 +176,7 @@ namespace MultiGame
                 {
                     userCharacter.bRightDown = true;                                    // bRightDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
                     myClient.SendInputedKey('R', true);                                 // 서버한테 이동을 시작했다고 알림
-                    MoveTimer.Start();                                                  // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
+                    MoveTimer.Change(0, 10);                                            // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
                 }
                     
                 return true;
@@ -199,7 +199,7 @@ namespace MultiGame
                     break;
             }
 
-            if (!(userCharacter.bLeftDown || userCharacter.bRightDown)) MoveTimer.Stop();               // 왼쪽과 오른쪽 모두 떼어져 있다면 캐릭터 이동 타이머를 멈춤
+            if (!(userCharacter.bLeftDown || userCharacter.bRightDown)) MoveTimer.Change(Timeout.Infinite,Timeout.Infinite);     // 왼쪽과 오른쪽 모두 떼어져 있다면 캐릭터 이동 타이머를 멈춤
         }
 
 
@@ -214,7 +214,7 @@ namespace MultiGame
             userCharacter.bRightDown = false;                                                           // 왼쪽 방향키가 떼어졌다는걸 알림
             myClient.SendInputedKey('R', false);
 
-            MoveTimer.Stop();                                                                           // 캐릭터 이동 타이머를 멈춤
+            MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);                                       // 캐릭터 이동 타이머를 멈춤
 
         }
     }
