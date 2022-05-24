@@ -102,42 +102,44 @@ namespace MultiGameServer
         // 받은 메세지를 해석함
         private void ParseMessage(ClientCharacter clientChar, string message)
         {
-            string[] SplitMessage = message.Split('#');
-            switch (SplitMessage[0])
+            string[] Messages = message.Split('@');
+            for (int i = 0; i < Messages.Length - 1; i++)
             {
-                // 클라이언트의 키보드 입력 ( Input )
-                case "INP":
-                    {
-                        char InpKey = char.Parse(SplitMessage[1]);                 // 입력된 키
-                        char cKeyDown = char.Parse(SplitMessage[2]);            // 눌려있으면 T / F
-
-                        bool bKeyDown = cKeyDown == 'T' ? true : false;         // T 이면 true / false
-
-                        switch (InpKey)
+                string[] SplitMessage = Messages[i].Split('#');
+                switch (SplitMessage[0])
+                {
+                    // 클라이언트의 키보드 입력 ( Input )
+                    case "INP":
                         {
-                            case 'L':
-                                clientChar.bLeftDown = bKeyDown;
-                                break;
-                            case 'R':
-                                clientChar.bRightDown = bKeyDown;
-                                break;
-                        }
-                        if (bKeyDown == true) clientChar.MoveStart();
-                        else if (!(clientChar.bLeftDown || clientChar.bRightDown))
-                        {
-                            clientChar.MoveStop();
+                            char InpKey = char.Parse(SplitMessage[1]);                 // 입력된 키
+                            char cKeyDown = char.Parse(SplitMessage[2]);            // 눌려있으면 T / F
 
-                            SyncLocation(clientChar);
-                        }
+                            bool bKeyDown = cKeyDown == 'T' ? true : false;         // T 이면 true / false
 
-                        // 다른 클라이언트들에게 이 클라이언트의 입력을 알림
-                        SendMessageToAll($"INP#{clientChar.key}#{InpKey}#{cKeyDown}@", clientChar.key);
-                    }
-                    break;
-                default:
-                    break;
+                            switch (InpKey)
+                            {
+                                case 'L':
+                                    clientChar.bLeftDown = bKeyDown;
+                                    break;
+                                case 'R':
+                                    clientChar.bRightDown = bKeyDown;
+                                    break;
+                            }
+                            if (bKeyDown == true) clientChar.MoveStart();
+                            else if (!(clientChar.bLeftDown || clientChar.bRightDown))
+                            {
+                                clientChar.MoveStop();
+                            }
+
+                            // 다른 클라이언트들에게 이 클라이언트의 입력을 알림
+                            SendMessageToAll($"INP#{clientChar.key}#{InpKey}#{cKeyDown}@", clientChar.key);
+                            if (bKeyDown == false) SyncLocation(clientChar);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
-
         }
 
         
@@ -145,6 +147,7 @@ namespace MultiGameServer
         // 메세지 전송
         public void SendMessage(string message, int recieverKey)
         {
+            Console.WriteLine("메세지 전송 " + recieverKey + " : " + message);
             ClientCharacter clientChar;
 
             clientManager.ClientDic.TryGetValue(recieverKey, out clientChar);

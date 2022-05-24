@@ -42,9 +42,9 @@ namespace MultiGameServer
         }
 
         public void MoveStart()
-        {
+        { 
             MoveTimer.Change(0, 10);
-            SyncTimer.Change(500, 1000);
+            SyncTimer.Change(200, 200);
         }
 
         public void MoveStop()
