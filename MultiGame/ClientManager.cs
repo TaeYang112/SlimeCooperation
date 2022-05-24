@@ -21,7 +21,7 @@ namespace MultiGame
             ClientDic = new ConcurrentDictionary<int, ClientCharacter>();
         }
 
-        public ClientCharacter AddClient(int key, Button character)
+        public ClientCharacter AddClient(int key, PictureBox character)
         {
             ClientCharacter newClientCharacter = new ClientCharacter(key, character);
             // 새로운 클라이언트를 배열에 저장
