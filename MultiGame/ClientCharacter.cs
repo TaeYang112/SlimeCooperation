@@ -15,7 +15,9 @@ namespace MultiGame
         // 각 클라이언트를 구별하기 위한 킷값
         public int key { get; set; }
 
-        public Button character { get; set; }
+        public PictureBox characterBox { get; set; }
+
+        public Point Location { get { return characterBox.Location; } set { characterBox.Location = value; } }
 
         private System.Threading.Timer MoveTimer;                                           // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
 
@@ -23,11 +25,11 @@ namespace MultiGame
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
 
-        public ClientCharacter(int key, Button character)
+        public ClientCharacter(int key, PictureBox characterBox)
         {
             // 멤버변수 초기화
             this.key = key;
-            this.character = character;
+            this.characterBox = characterBox;
             bLeftDown = false;
             bRightDown = false;
 
@@ -40,11 +42,11 @@ namespace MultiGame
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
         private void MoveCharacter(object stateInfo)
         {
-            Point Location = character.Location;
-            if (bLeftDown == true) Location.X -= 2;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
-            if (bRightDown == true) Location.X += 2;                                               // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
+            Point Loc = Location;
+            if (bLeftDown == true) Loc.X -= 2;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
+            if (bRightDown == true) Loc.X += 2;                                               // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
 
-            character.Location = Location;
+            Location = Loc;
             // Console.WriteLine($"X : {Location.X}    Y : {Location.Y}");
         }
 

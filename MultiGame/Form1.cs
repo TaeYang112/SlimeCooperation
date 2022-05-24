@@ -17,8 +17,8 @@ namespace MultiGame
         private MyClient myClient;                                                 // 서버와 TCP통신을 담당하는 객체
         private ClientManager clientManager;                                       // 다른 클라이언트들을 관리하는 객체
         private ClientCharacter userCharacter;
-       
 
+        private System.Threading.Timer InvalidTimer;
         public Form1()
         {
             InitializeComponent();
@@ -26,7 +26,7 @@ namespace MultiGame
             clientManager = new ClientManager();
 
             // 사용자 캐릭터
-            userCharacter = new ClientCharacter(-1, button1);
+            userCharacter = new ClientCharacter(-1, pictureBox1);
 
             // 클라이언트 객체 생성
             myClient = new MyClient();
@@ -41,8 +41,17 @@ namespace MultiGame
         {
             // 클라이언트 시작
             myClient.Start();
+
+
+            // 60프레임 Invalid ( 테스트 )
+            TimerCallback tc = new TimerCallback(Invalidate_);                              
+            InvalidTimer = new System.Threading.Timer(tc, null, 0, 17);  
         }
 
+        public void Invalidate_(object d)
+        {
+            Invalidate();
+        }
 
         // 서버로부터 받은 메세지를 해석함
         private void OnTakeMessage(string message)
@@ -60,6 +69,7 @@ namespace MultiGame
                     // 다른 클라이언트의 캐릭터 위치를 갱신함 ( Location )
                     case "LOC":
                         {
+                            //return;
                             // 플레이어 번호
                             int key = int.Parse(SplitMessage[1]);
 
@@ -81,22 +91,16 @@ namespace MultiGame
                                 if (result == false) continue;
                             }
                             if (key == -1)
-                                Console.WriteLine($"동기화 :: X : {client.character.Location.X}  Y : {client.character.Location.Y}  ->  X : {x}  Y : {y}");
+                                Console.WriteLine($"동기화 :: X : {client.Location.X}  Y : {client.Location.Y}  ->  X : {x}  Y : {y}");
                             else
-                                Console.WriteLine($"{client.key}번 클라이언트 동기화 :: X : {client.character.Location.X}  Y : {client.character.Location.Y}  ->  X : {x}  Y : {y}");
+                                Console.WriteLine($"{client.key}번 클라이언트 동기화 :: X : {client.Location.X}  Y : {client.Location.Y}  ->  X : {x}  Y : {y}");
 
                             // 메인 스레드에 있는 폼에 접근하기 위해서는 Invoke 사용해야됨
-                            if (client.character.InvokeRequired)
+
+                            this.Invoke(new MethodInvoker(delegate ()
                             {
-                                client.character.Invoke(new MethodInvoker(delegate ()
-                                {
-                                    client.character.Location = new Point(x, y);
-                                }));
-                            }
-                            else
-                            {
-                                client.character.Location = new Point(x, y);
-                            }
+                                client.Location = new Point(x, y);
+                            }));
                         }
                     break;
                     // 새로운 클라이언트가 접속함 ( New Client )
@@ -110,28 +114,21 @@ namespace MultiGame
                             int y = int.Parse(SplitMessage[3]);
 
                             // 새로운 클라이언트의 캐릭터 생성
-                            Button character = new Button();
+                            PictureBox character = new PictureBox();
 
                             character.Location = new Point(x, y);
-                            character.Text = key.ToString();
+                            character.Image = MultiGame.Properties.Resources.blue;
 
                             // 관리를 위해 클라이언트 매니저에 등록
                             ClientCharacter clientCharacter = clientManager.AddClient(key, character);
 
                             // 메인 스레드에 있는 폼에 접근하기 위해서는 Invoke 사용해야됨
-                            if (this.InvokeRequired)
+ 
+                            this.Invoke(new MethodInvoker(delegate ()
                             {
-                                this.Invoke(new MethodInvoker(delegate ()
-                                {
-                                    character.Size = new Size(70, 70);
-                                    this.Controls.Add(character);
-                                }));
-                            }
-                            else
-                            {
-                                character.Size = new Size(70, 70);
+                                character.Size = new Size(41, 49);
                                 this.Controls.Add(character);
-                            }
+                            }));
                         }
                         break;
                     // 다른 클라이언트의 키보드 입력 ( Input )
