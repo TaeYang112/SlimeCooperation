@@ -153,11 +153,21 @@ namespace MultiGame
 
                         }
                         break;
+                    // 방에 입장 ( ENTER )
+                    case "ENT":
+                        string RoomCode = SplitMessage[1];
+                        Console.WriteLine(RoomCode + "방에 접속");
+                        break;
                     default:
                         Console.WriteLine("디폴트 : {0}", Messages[i]);
                     break;
                 }
             }
+        }
+
+        public void CreateRoom(string RoomTitle)
+        {
+            myClient.SendMessage($"CRR#{RoomTitle}@");
         }
         
         // 키가 눌렸을 때
@@ -231,6 +241,11 @@ namespace MultiGame
                 item.Value.OnPaint(pe);
             }
             userCharacter.OnPaint(pe);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            CreateRoom("Test");
         }
     }
 }

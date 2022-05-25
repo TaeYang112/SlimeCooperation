@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace MultiGameServer
 {
     // 클라이언트들을 관리하는 클래스
-    class ClientManager
+    public class ClientManager
     {
         // 클라이언트들을 담는 배열
         // 단순 배열과 다른점은 여러개의 스레드가 접근할때 자동으로 동기화 시켜줌
-        public ConcurrentDictionary<int, ClientCharacter> ClientDic { get; set; }
+        public ConcurrentDictionary<int, ClientCharacter> ClientDic { get; }
 
         // 새로운 클라이언트에게 부여할 킷값을 저장
         private int CurrentKey;
@@ -36,8 +36,7 @@ namespace MultiGameServer
 
         public void RemoveClient(ClientCharacter client)
         {
-            ClientCharacter temp;
-            ClientDic.TryRemove(client.key, out temp);
+            ClientDic.TryRemove(client.key, out _);
         }
     }
 }

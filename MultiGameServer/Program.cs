@@ -13,7 +13,7 @@ namespace MultiGameServer
     class Program
     {
         private MyServer server;
-        public ClientManager clientManager { get; set; }        // 클라이언트들을 관리하는 객체
+        public RoomManager roomManager { get; set; }        // 클라이언트들을 관리하는 객체
         
 
         static void Main(string[] args)
@@ -31,7 +31,7 @@ namespace MultiGameServer
             server = new MyServer();
             server.ClientJoin += new ClientJoinEventHandler(OnClientJoin);
 
-            clientManager = new ClientManager();
+            roomManager = new RoomManager();
 
         }
 
@@ -44,7 +44,7 @@ namespace MultiGameServer
         // 서버에 새로운 클라이언트가 접속하면 호출됨
         private void OnClientJoin(ClientData newClientData)
         {
-            ClientCharacter newClient = clientManager.AddClient(newClientData);
+            ClientCharacter newClient = roomManager.clientManager.AddClient(newClientData);
             newClient.LocationSync += SyncLocation;
             newClient.Location = new Point(364, 293);
 
@@ -55,7 +55,7 @@ namespace MultiGameServer
             SendMessage($"LOC#-1#{newClient.Location.X}#{newClient.Location.Y}#@", newClient.key);
 
             // 새로 접속한 클라이언트에게 기존에 있던 클라이언트를 알려줌
-            foreach (var item in clientManager.ClientDic)
+            foreach (var item in roomManager.clientManager.ClientDic)
             {
                 if (item.Value.key == newClient.key) continue;
 
@@ -136,6 +136,22 @@ namespace MultiGameServer
                             if (bKeyDown == false) SyncLocation(clientChar);
                         }
                         break;
+                    // 방 만들기 요청 ( CReate Room )
+                    case "CRR":
+                        {
+                            // 방 제목
+                            string RoomTitle = SplitMessage[1];
+
+                            // 방 생성
+                            RoomManager.Room newRoom = roomManager.CreateRoom(RoomTitle);
+
+                            // 방 입장 ( 서버 관점 )
+                            newRoom.ClientEnter(clientChar.key);
+
+                            // 방 만든사람을 방에 접속시킴
+                            SendMessage($"ENT#{newRoom.key}@",clientChar.key);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -150,7 +166,7 @@ namespace MultiGameServer
             Console.WriteLine("메세지 전송 " + recieverKey + " : " + message);
             ClientCharacter clientChar;
 
-            clientManager.ClientDic.TryGetValue(recieverKey, out clientChar);
+            roomManager.clientManager.ClientDic.TryGetValue(recieverKey, out clientChar);
             server.SendMessage(message, clientChar.clientData);
 
         }
@@ -158,7 +174,7 @@ namespace MultiGameServer
         // 모든 클라이언트들에게 메세지 전송 ( senderKey로 예외 클라이언트 설정 )
         public void SendMessageToAll(string message, int senderKey = -1)
         {
-            foreach (var item in clientManager.ClientDic)
+            foreach (var item in roomManager.clientManager.ClientDic)
             {
                 if (item.Value.key == senderKey) continue;
 
