@@ -83,6 +83,15 @@ namespace MultiGame
             client.GetStream().Write(buf, 0, buf.Length);
         }
 
+        // 메세지를 서버로 보냄
+        public void SendMessage(string message)
+        {
+            // 서버로 메세지 전송 하기 위한 string to byte 형변환
+            byte[] buf = Encoding.Default.GetBytes(message);
+
+            // 서버로 write
+            client.GetStream().Write(buf, 0, buf.Length);
+        }
 
         private void OnMessageReceive(IAsyncResult ar)
         {
