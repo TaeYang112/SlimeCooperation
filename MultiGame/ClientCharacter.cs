@@ -15,23 +15,59 @@ namespace MultiGame
         // 각 클라이언트를 구별하기 위한 킷값
         public int key { get; set; }
 
-        public PictureBox characterBox { get; set; }
+        // 좌표
+        public Point Location { get; set; }
 
-        public Point Location { get { return characterBox.Location; } set { characterBox.Location = value; } }
+        // 크기
+        public Size size { get; set; }
 
-        private System.Threading.Timer MoveTimer;                                           // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
+        // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
+        private System.Threading.Timer MoveTimer;
 
+        // 캐릭터 이미지
+        private Image image;
+        
         // 키가 눌려있는지 확인하는 변수
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
 
-        public ClientCharacter(int key, PictureBox characterBox)
+        public ClientCharacter(int key, Point Location, int skinNum)
         {
             // 멤버변수 초기화
             this.key = key;
-            this.characterBox = characterBox;
+
             bLeftDown = false;
             bRightDown = false;
+            this.Location = Location;
+            size = new Size(41, 49);
+
+            switch (skinNum % 8)
+            {
+                case 0:
+                    image = MultiGame.Properties.Resources.red;
+                    break;
+                case 1:
+                    image = MultiGame.Properties.Resources.orange;
+                    break;
+                case 2:
+                    image = MultiGame.Properties.Resources.yellow;
+                    break;
+                case 3:
+                    image = MultiGame.Properties.Resources.green;
+                    break;
+                case 4:
+                    image = MultiGame.Properties.Resources.blue;
+                    break;
+                case 5:
+                    image = MultiGame.Properties.Resources.purple;
+                    break;
+                case 6:
+                    image = MultiGame.Properties.Resources.pink;
+                    break;
+                case 7:
+                    image = MultiGame.Properties.Resources.gray;
+                    break;
+            }
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveCharacter);                              // 이벤트 발생 처리 루틴
@@ -43,21 +79,27 @@ namespace MultiGame
         private void MoveCharacter(object stateInfo)
         {
             Point Loc = Location;
-            if (bLeftDown == true) Loc.X -= 2;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
-            if (bRightDown == true) Loc.X += 2;                                               // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
+            if (bLeftDown == true) Loc.X -= 1;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
+            if (bRightDown == true) Loc.X += 1;                                               // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
 
             Location = Loc;
-            // Console.WriteLine($"X : {Location.X}    Y : {Location.Y}");
         }
 
         public void MoveStart()
         {
-            MoveTimer.Change(0, 10);
+            MoveTimer.Change(0, 5);
         }
 
         public void MoveStop()
         {
             MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+
+        public void OnPaint(PaintEventArgs pe)
+        {
+             var e = pe.Graphics;
+             e.DrawImage(image,new Rectangle(Location, size ));
+            
         }
     }
 }

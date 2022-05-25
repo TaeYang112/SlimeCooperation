@@ -43,7 +43,7 @@ namespace MultiGameServer
 
         public void MoveStart()
         { 
-            MoveTimer.Change(0, 10);
+            MoveTimer.Change(0, 5);
             SyncTimer.Change(200, 200);
         }
 
@@ -56,8 +56,8 @@ namespace MultiGameServer
         private void MoveCharacter(object clientArgs)
         {
             Point Loc = Location;
-            if (bLeftDown == true) Loc.X -= 2;
-            if (bRightDown == true) Loc.X += 2;
+            if (bLeftDown == true) Loc.X -= 1;
+            if (bRightDown == true) Loc.X += 1;
 
             Location = Loc;
             // Console.WriteLine($"X : {Loc.X}    Y : {Loc.Y}");

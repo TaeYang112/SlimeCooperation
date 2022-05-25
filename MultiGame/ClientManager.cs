@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace MultiGame
 {
@@ -21,9 +22,9 @@ namespace MultiGame
             ClientDic = new ConcurrentDictionary<int, ClientCharacter>();
         }
 
-        public ClientCharacter AddClient(int key, PictureBox character)
+        public ClientCharacter AddClient(int key, Point Location, int skinNum)
         {
-            ClientCharacter newClientCharacter = new ClientCharacter(key, character);
+            ClientCharacter newClientCharacter = new ClientCharacter(key, Location, skinNum);
             // 새로운 클라이언트를 배열에 저장
             ClientDic.TryAdd(key, newClientCharacter);
 

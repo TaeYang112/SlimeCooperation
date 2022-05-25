@@ -26,7 +26,7 @@ namespace MultiGame
             clientManager = new ClientManager();
 
             // 사용자 캐릭터
-            userCharacter = new ClientCharacter(-1, pictureBox1);
+            userCharacter = new ClientCharacter(-1,new Point(364,293), 0);
 
             // 클라이언트 객체 생성
             myClient = new MyClient();
@@ -45,7 +45,7 @@ namespace MultiGame
 
             // 60프레임 Invalid ( 테스트 )
             TimerCallback tc = new TimerCallback(Invalidate_);                              
-            InvalidTimer = new System.Threading.Timer(tc, null, 0, 17);  
+            InvalidTimer = new System.Threading.Timer(tc, null, 0, 10);  
         }
 
         public void Invalidate_(object d)
@@ -69,7 +69,6 @@ namespace MultiGame
                     // 다른 클라이언트의 캐릭터 위치를 갱신함 ( Location )
                     case "LOC":
                         {
-                            //return;
                             // 플레이어 번호
                             int key = int.Parse(SplitMessage[1]);
 
@@ -95,12 +94,7 @@ namespace MultiGame
                             else
                                 Console.WriteLine($"{client.key}번 클라이언트 동기화 :: X : {client.Location.X}  Y : {client.Location.Y}  ->  X : {x}  Y : {y}");
 
-                            // 메인 스레드에 있는 폼에 접근하기 위해서는 Invoke 사용해야됨
-
-                            this.Invoke(new MethodInvoker(delegate ()
-                            {
                                 client.Location = new Point(x, y);
-                            }));
                         }
                     break;
                     // 새로운 클라이언트가 접속함 ( New Client )
@@ -114,21 +108,7 @@ namespace MultiGame
                             int y = int.Parse(SplitMessage[3]);
 
                             // 새로운 클라이언트의 캐릭터 생성
-                            PictureBox character = new PictureBox();
-
-                            character.Location = new Point(x, y);
-                            character.Image = MultiGame.Properties.Resources.blue;
-
-                            // 관리를 위해 클라이언트 매니저에 등록
-                            ClientCharacter clientCharacter = clientManager.AddClient(key, character);
-
-                            // 메인 스레드에 있는 폼에 접근하기 위해서는 Invoke 사용해야됨
- 
-                            this.Invoke(new MethodInvoker(delegate ()
-                            {
-                                character.Size = new Size(41, 49);
-                                this.Controls.Add(character);
-                            }));
+                            ClientCharacter clientCharacter = clientManager.AddClient(key, new Point(41,49), 1);
                         }
                         break;
                     // 다른 클라이언트의 키보드 입력 ( Input )
@@ -237,6 +217,18 @@ namespace MultiGame
 
             userCharacter.MoveStop();
 
+        }
+
+
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            base.OnPaint(pe);
+            
+            foreach(var item in clientManager.ClientDic)
+            {
+                item.Value.OnPaint(pe);
+            }
+            userCharacter.OnPaint(pe);
         }
     }
 }
