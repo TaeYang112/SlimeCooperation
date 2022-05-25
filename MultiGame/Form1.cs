@@ -109,6 +109,8 @@ namespace MultiGame
 
                             // 새로운 클라이언트의 캐릭터 생성
                             ClientCharacter clientCharacter = clientManager.AddClient(key, new Point(41,49), 1);
+
+                            clientCharacter.Location = new Point(x, y);
                         }
                         break;
                     // 다른 클라이언트의 키보드 입력 ( Input )
