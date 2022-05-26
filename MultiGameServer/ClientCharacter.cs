@@ -25,6 +25,7 @@ namespace MultiGameServer
 
         public bool bLeftDown { get; set; }                                                 // 왼쪽 방향키가 눌려있으면 TRUE / FALSE
         public bool bRightDown { get; set; }                                                // 오른쪽 방향키가 눌려있으면 TRUE / FALSE
+        public int RoomKey { get; set; }                                                    // 현재 클라이언트가 속해 있는 방 키
 
         public ClientCharacter(int key, ClientData clientData)
         {
