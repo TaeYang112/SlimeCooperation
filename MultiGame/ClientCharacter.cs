@@ -27,10 +27,13 @@ namespace MultiGame
         // 캐릭터 이미지
         private Image image;
         
+        public bool isVisible { get; set; }
+
         // 키가 눌려있는지 확인하는 변수
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
 
+       
         public ClientCharacter(int key, Point Location, int skinNum)
         {
             // 멤버변수 초기화
@@ -40,6 +43,7 @@ namespace MultiGame
             bRightDown = false;
             this.Location = Location;
             size = new Size(41, 49);
+            isVisible = false;
 
             switch (skinNum % 8)
             {
@@ -97,6 +101,8 @@ namespace MultiGame
 
         public void OnPaint(PaintEventArgs pe)
         {
+            if (isVisible == false) return;
+
              var e = pe.Graphics;
              e.DrawImage(image,new Rectangle(Location, size ));
             

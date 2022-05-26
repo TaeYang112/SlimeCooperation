@@ -17,8 +17,10 @@ namespace MultiGame
         private MyClient myClient;                                                 // 서버와 TCP통신을 담당하는 객체
         private ClientManager clientManager;                                       // 다른 클라이언트들을 관리하는 객체
         private ClientCharacter userCharacter;
+        public bool IsGameStart { get; set; }                                       // 게임 시작 여부
 
         private System.Threading.Timer InvalidTimer;
+
         public Form1()
         {
             InitializeComponent();
@@ -66,8 +68,8 @@ namespace MultiGame
 
                 switch (SplitMessage[0])
                 {
-                    // 다른 클라이언트의 캐릭터 위치를 갱신함 ( Location )
-                    case "LOC":
+                    // 클라이언트의 캐릭터 위치 수신
+                    case "Location":
                         {
                             // 플레이어 번호
                             int key = int.Parse(SplitMessage[1]);
@@ -97,8 +99,8 @@ namespace MultiGame
                                 client.Location = new Point(x, y);
                         }
                     break;
-                    // 새로운 클라이언트가 접속함 ( New Client )
-                    case "NCL":
+                    // 클라이언트 정보 수신
+                    case "ClientInfo":
                         {
                             // 플레이어 번호
                             int key = int.Parse(SplitMessage[1]);
@@ -107,14 +109,26 @@ namespace MultiGame
                             int x = int.Parse(SplitMessage[2]);
                             int y = int.Parse(SplitMessage[3]);
 
-                            // 새로운 클라이언트의 캐릭터 생성
-                            ClientCharacter clientCharacter = clientManager.AddClient(key, new Point(41,49), 1);
+                            
+                            ClientCharacter clientCharacter;
 
+                            // 유저 클라이언트의 정보일경우 ( 자신의 key는 -1 )
+                            if(key == -1)
+                            {
+                                clientCharacter = userCharacter;
+                            }
+                            else
+                            {
+                                // 자신이 아니면 새로운 클라이언트의 캐릭터 생성
+                                clientCharacter = clientManager.AddClient(key, new Point(41, 49), 1);
+                            }
+
+                            clientCharacter.isVisible = true;
                             clientCharacter.Location = new Point(x, y);
                         }
                         break;
                     // 다른 클라이언트의 키보드 입력 ( Input )
-                    case "INP":
+                    case "KeyInput":
                         {
                             // 플레이어 번호
                             int key = int.Parse(SplitMessage[1]);
@@ -154,9 +168,16 @@ namespace MultiGame
                         }
                         break;
                     // 방에 입장 ( ENTER )
-                    case "ENT":
-                        string RoomCode = SplitMessage[1];
-                        Console.WriteLine(RoomCode + "방에 접속");
+                    case "EnterRoom":
+                        {
+                            string RoomCode = SplitMessage[1];
+                            Console.WriteLine(RoomCode + "방에 접속");
+                        }
+                        break;
+                    case "RoomStart":
+                        {
+                            IsGameStart = true;
+                        }
                         break;
                     default:
                         Console.WriteLine("디폴트 : {0}", Messages[i]);
@@ -165,20 +186,36 @@ namespace MultiGame
             }
         }
 
+        // 유저가 입력한 키를 서버로 보냄 ( 입력키, 누르면 true / 뗐으면 false )
+        private void SendInputedKey(char inputKey, bool bPressed)
+        {
+            string message = $"KeyInput#{inputKey}#{(bPressed == true ? 'T' : 'F')}#@";
+            myClient.SendMessage(message);
+        }
+
+        // 서버로 방만들기 요청
         public void CreateRoom(string RoomTitle)
         {
-            myClient.SendMessage($"CRR#{RoomTitle}@");
+            myClient.SendMessage($"CreateRoom#{RoomTitle}@");
         }
         
+        // 방 입장 요청
+        public void EnterRoom(int i)
+        {
+            myClient.SendMessage($"TryEnterRoom#{i}@");
+        }
+
         // 키가 눌렸을 때
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (IsGameStart == false) return base.ProcessCmdKey(ref msg, keyData);
+
             if (keyData == Keys.Left)
             {
                 if (userCharacter.bLeftDown == false)
                 {
                     userCharacter.bLeftDown = true;                                     // bLeftDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
-                    myClient.SendInputedKey('L', true);                                 // 서버한테 이동을 시작했다고 알림
+                    SendInputedKey('L', true);                                 // 서버한테 이동을 시작했다고 알림
                     userCharacter.MoveStart();
                 }
                 return true;
@@ -188,7 +225,7 @@ namespace MultiGame
                 if (userCharacter.bRightDown == false)
                 {
                     userCharacter.bRightDown = true;                                    // bRightDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
-                    myClient.SendInputedKey('R', true);                                 // 서버한테 이동을 시작했다고 알림
+                    SendInputedKey('R', true);                                 // 서버한테 이동을 시작했다고 알림
                     userCharacter.MoveStart();                                            // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
                 }
                     
@@ -200,15 +237,17 @@ namespace MultiGame
         // 키가 뗴어졌을 때
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
+            if (IsGameStart == false) return;
+
             switch (e.KeyCode)
             {
                 case Keys.Left:
                     userCharacter.bLeftDown = false;                                                    // 왼쪽 방향키가 떼어졌다는걸 알림
-                    myClient.SendInputedKey('L', false);
+                    SendInputedKey('L', false);
                     break;
                 case Keys.Right:
                     userCharacter.bRightDown = false;                                                   // 왼쪽 방향키가 떼어졌다는걸 알림
-                    myClient.SendInputedKey('R', false);
+                    SendInputedKey('R', false);
                     break;
             }
 
@@ -221,11 +260,13 @@ namespace MultiGame
         // 폼의 포커스가 풀리면 ( 알트 탭 등 ) Key UP 이벤트가 안생기기 때문에 강제로 키 다운 변수를 false로 바꿈
         private void Form1_Deactivate(object sender, EventArgs e)
         {
+            if (IsGameStart == false) return;
+
             userCharacter.bLeftDown = false;                                                            // 왼쪽 방향키가 떼어졌다는걸 알림
-            myClient.SendInputedKey('L', false);
+            SendInputedKey('L', false);
 
             userCharacter.bRightDown = false;                                                           // 왼쪽 방향키가 떼어졌다는걸 알림
-            myClient.SendInputedKey('R', false);
+            SendInputedKey('R', false);
 
             userCharacter.MoveStop();
 
@@ -246,6 +287,11 @@ namespace MultiGame
         private void button1_Click(object sender, EventArgs e)
         {
             CreateRoom("Test");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            EnterRoom(int.Parse(textBox1.Text));
         }
     }
 }

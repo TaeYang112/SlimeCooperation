@@ -71,18 +71,6 @@ namespace MultiGame
         }
 
 
-        // 클라이언트의 키 입력을 서버로 보냄
-        public void SendInputedKey(char inputKey, bool bPressed)
-        {
-            // 패킷(정보)
-            string message = $"INP#{inputKey}#{(bPressed == true ? 'T' : 'F')}#@";
-            // 서버로 메세지 전송 하기 위한 string to byte 형변환
-            byte[] buf = Encoding.Default.GetBytes(message);
-
-            // 서버로 write
-            client.GetStream().Write(buf, 0, buf.Length);
-        }
-
         // 메세지를 서버로 보냄
         public void SendMessage(string message)
         {
