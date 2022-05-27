@@ -15,12 +15,15 @@ namespace MultiGameServer
     public delegate void ClientJoinEventHandler(ClientData newClient);
     class MyServer
     {
-       
-        public TcpListener server { get; set; }                 // TCP통신에서 서버를 담당하는 클래스
 
-        private Thread server_tr;                               // server를 실행시킬 스레드                               
+        // TCP통신에서 서버를 담당하는 클래스
+        public TcpListener server { get; set; }
 
-        public event ClientJoinEventHandler ClientJoin;         // 클라이언트가 접속할경우 ClientJoin에 연결된 함수를 호출함
+        // server를 실행시킬 스레드    
+        private Thread server_tr;
+
+        // 클라이언트가 접속할경우 ClientJoin에 연결된 함수를 호출함
+        public event ClientJoinEventHandler ClientJoin;         
 
 
         public MyServer()

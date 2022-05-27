@@ -11,11 +11,17 @@ namespace MultiGame
 
     public class MyClient
     {
+        // 서버로부터 메세지가 도착하면 이벤트 알림
         public event TakeMessageEventHandler TakeMessage;
 
-        private byte[] readByteData;                            // 메세지 버퍼
-        private TcpClient client;                               // TcpClient ( 통신 클래스 )
-        private Thread client_tr;                               // client를 실행시킬 스레드                               
+        // 메세지 버퍼
+        private byte[] readByteData;
+
+        // TcpClient ( 통신 클래스 )
+        private TcpClient client;
+
+        // client를 실행시킬 스레드            
+        private Thread client_tr;                                                  
 
 
         public MyClient()

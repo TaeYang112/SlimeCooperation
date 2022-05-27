@@ -74,7 +74,7 @@ namespace MultiGame
             }
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
-            TimerCallback tc = new TimerCallback(MoveCharacter);                              // 이벤트 발생 처리 루틴
+            TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 실행시킬 메소드
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
         }
 
@@ -83,8 +83,12 @@ namespace MultiGame
         private void MoveCharacter(object stateInfo)
         {
             Point Loc = Location;
-            if (bLeftDown == true) Loc.X -= 1;                                                // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
-            if (bRightDown == true) Loc.X += 1;                                               // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
+
+            // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
+            if (bLeftDown == true) Loc.X -= 1;
+
+            // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
+            if (bRightDown == true) Loc.X += 1;                                              
 
             Location = Loc;
         }
