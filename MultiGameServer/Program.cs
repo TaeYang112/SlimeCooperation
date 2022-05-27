@@ -19,7 +19,10 @@ namespace MultiGameServer
         public RoomManager roomManager { get; set; }
 
         // 클라이언트들을 관리하는 객체
-        public ClientManager clientManager { get; set; }    
+        public ClientManager clientManager { get; set; }
+
+        // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메세지를 보냄
+        private System.Threading.Timer HeartBeatTimer;
 
         static void Main(string[] args)
         {
@@ -78,15 +81,24 @@ namespace MultiGameServer
         {
             server = new MyServer();
             server.ClientJoin += new ClientJoinEventHandler(OnClientJoin);
+            server.ClientLeave += new ClientLeaveEventHandler(OnClientLeave);
 
             clientManager = new ClientManager();
             roomManager = new RoomManager();
 
+            // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메세지를 보내는 타이머
+            TimerCallback tc = new TimerCallback(HeartBeat);
+            HeartBeatTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
         }
 
+        ~Program()
+        {
+            HeartBeatTimer.Dispose();
+        }
         public void Start()
         {
             server.Start();
+            HeartBeatTimer.Change(0, 1000);
         }
 
 
@@ -96,11 +108,37 @@ namespace MultiGameServer
             ClientCharacter newClient = clientManager.AddClient(newClientData);
             newClient.LocationSync += SyncLocation;
 
-            Console.WriteLine(newClient.key + "번 클라이언트가 접속하였습니다.");
+            Console.WriteLine("[INFO] "+ newClient.key + "번 클라이언트가 접속하였습니다.");
 
 
             // client의 메세지가 발생하면 DataRecieved 메소드가 호출되도록 예약
             newClient.clientData.client.GetStream().BeginRead(newClient.clientData.byteData, 0, newClient.clientData.byteData.Length, new AsyncCallback(DataRecieved), newClient);
+        }
+
+        // 클라이언트와 연결이 끊기면 호출됨
+        private void OnClientLeave(ClientData oldClientData)
+        {
+            Console.WriteLine("[INFO] " + oldClientData.key + "번 클라이언트와의 연결이 끊겼습니다.");
+
+            // 클라이언트 배열에서 제거
+            ClientCharacter clientChar = clientManager.RemoveClient(oldClientData);
+
+            // 클라이언트가 속해있는 방을 가져옴
+            Room room;
+            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+
+            // 방이 존재하지 않으면 종료
+            if(result == false)
+            {
+                return;
+            }
+
+            // 다른 플레이어들한테 알려줌
+            SendMessageToAll_InRoom($"LeaveRoom#{clientChar.key}@",room.key, clientChar.key);
+
+            // 룸의 클라이언트 배열에서도 제거
+            room.ClientLeave(clientChar);
+
         }
 
 
@@ -128,6 +166,14 @@ namespace MultiGameServer
             }
 
         }
+
+        // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메세지를 보냄
+        private void HeartBeat(object t)
+        {
+            SendMessageToAll("Ping@");
+        }
+
+
 
         // 받은 메세지를 해석함
         private void ParseMessage(ClientCharacter clientChar, string message)

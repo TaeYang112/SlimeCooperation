@@ -15,7 +15,16 @@ namespace MultiGameServer
     public class ClientCharacter
     {
         // 각 클라이언트를 구별하기 위한 킷값
-        public int key { get; set; }
+        public int key {
+            get
+            {
+                return clientData.key;
+            }
+            set
+            {
+                clientData.key = value;
+            }
+        }
 
         // TcpClient 객체
         public ClientData clientData { get; set; }
@@ -40,9 +49,10 @@ namespace MultiGameServer
 
         public ClientCharacter(int key, ClientData clientData)
         {
+            this.clientData = clientData;
             this.key = key;
             Location = new Point(0, 0);
-            this.clientData = clientData;
+            
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 이벤트 발생 처리 루틴
@@ -52,6 +62,14 @@ namespace MultiGameServer
             //  캐릭터가 움직이기 시작하면 주기적으로 호출 ( 캐릭터의 위치를 클라이언트와 동기화 하기 위해 사용 )
             TimerCallback tc2 = new TimerCallback(LocationSyncFunc);
             SyncTimer = new System.Threading.Timer(tc2, null, Timeout.Infinite, Timeout.Infinite);
+        }
+
+
+        // 소멸자 호출시 비관리 메모리 제거
+        ~ClientCharacter()
+        {
+            MoveTimer.Dispose();
+            SyncTimer.Dispose();
         }
 
         public void MoveStart()
@@ -80,5 +98,7 @@ namespace MultiGameServer
         {
             LocationSync(this);
         }
+
+        
     }
 }

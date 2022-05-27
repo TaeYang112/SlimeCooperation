@@ -20,10 +20,20 @@ namespace MultiGameServer
         // 메세지를 받을 때 사용하는 버퍼
         public byte[] byteData { get; set; }                                                
 
+        // 클라이언트 고유 키
+        public int key { get; set; }
+
         public ClientData(TcpClient client)
         {
+            key = -1;
             this.client = client;
             byteData = new byte[1024];
+        }
+
+        ~ClientData()
+        {
+            client.Close();
+            client.Dispose();
         }
     }
 }
