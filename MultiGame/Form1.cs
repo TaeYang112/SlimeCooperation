@@ -171,11 +171,8 @@ namespace MultiGame
                             // 입력된 키
                             char InpKey = char.Parse(SplitMessage[2]);
 
-                            // 눌렸으면 T / 아니면 F
-                            char cKeyDown = char.Parse(SplitMessage[3]);
-
-                            // T 이면 true / F 이면 false
-                            bool bKeyDown = cKeyDown == 'T' ? true : false;
+                            // 눌렸으면 true / 아니면 false
+                            bool bKeyDown = bool.Parse(SplitMessage[3]);
 
                             ClientCharacter client;
 
@@ -230,7 +227,7 @@ namespace MultiGame
         // 유저가 입력한 키를 서버로 보냄 ( 입력키, 누르면 true / 뗐으면 false )
         private void SendInputedKey(char inputKey, bool bPressed)
         {
-            string message = $"KeyInput#{inputKey}#{(bPressed == true ? 'T' : 'F')}#@";
+            string message = $"KeyInput#{inputKey}#{bPressed}#@";
             myClient.SendMessage(message);
         }
 
@@ -244,6 +241,12 @@ namespace MultiGame
         public void EnterRoom(int i)
         {
             myClient.SendMessage($"TryEnterRoom#{i}@");
+        }
+
+        // 준비
+        public void ReadyRoom(bool bReady)
+        {
+            myClient.SendMessage($"Ready#{bReady}@");
         }
 
         // 키가 눌렸을 때
@@ -370,6 +373,11 @@ namespace MultiGame
         private void button2_Click(object sender, EventArgs e)
         {
             EnterRoom(int.Parse(textBox1.Text));
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ReadyRoom(true);
         }
     }
 }

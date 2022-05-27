@@ -191,11 +191,8 @@ namespace MultiGameServer
                             // 입력된 키
                             char InpKey = char.Parse(SplitMessage[1]);
 
-                            // 눌려있으면 T / 아니면 F
-                            char cKeyDown = char.Parse(SplitMessage[2]);
-
-                            // T 이면 true / F 이면 false
-                            bool bKeyDown = cKeyDown == 'T' ? true : false;         
+                            // 눌려있으면 true / 아니면 false
+                            bool bKeyDown = bool.Parse(SplitMessage[2]);
 
                             switch (InpKey)
                             {
@@ -218,7 +215,7 @@ namespace MultiGameServer
                             }
 
                             // 다른 클라이언트들에게 이 클라이언트의 입력을 알림
-                            SendMessageToAll_InRoom($"KeyInput#{clientChar.key}#{InpKey}#{cKeyDown}@",clientChar.RoomKey, clientChar.key);
+                            SendMessageToAll_InRoom($"KeyInput#{clientChar.key}#{InpKey}#{bKeyDown}@",clientChar.RoomKey, clientChar.key);
 
                             // 키가 떼어졌을때 좌표를 보내서 완벽히 동기화 함
                             if (bKeyDown == false)
@@ -240,6 +237,7 @@ namespace MultiGameServer
                             ClientEnterRoom(newRoom.key, clientChar);
                         }
                         break;
+                    // 방 입장 시도
                     case "TryEnterRoom":
                         {
                             // 방 키
@@ -249,7 +247,37 @@ namespace MultiGameServer
                             ClientEnterRoom(roomKey, clientChar);
                         }
                         break;
+                    // 레디
+                    case "Ready":
+                        {
+                            // 레디 여부를 대입
+                            bool bReady = bool.Parse(SplitMessage[1]);
+                            clientChar.bReady = bReady;
+                            
+                            if( bReady == true)
+                            {
+                                // 클라이언트가 들어있는 방을 찾음
+                                Room room;
+                                bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+
+                                // 존재하지 않으면 return
+                                if(result == false)
+                                {
+                                    return;
+                                }
+
+                                // 3명 이상의 클라이언트가 레디했다면
+                                if( room.IsAllReady() == true )
+                                {
+                                    // 게임시작
+                                    RoomStart(room);
+                                }
+                            }
+                            
+                        }
+                        break;
                     default:
+                        Console.WriteLine("디폴트 : {0}", Messages[i]);
                         break;
                 }
             }
@@ -303,7 +331,9 @@ namespace MultiGameServer
         {
             ClientCharacter clientChar;
 
-            clientManager.ClientDic.TryGetValue(recieverKey, out clientChar);
+            bool result = clientManager.ClientDic.TryGetValue(recieverKey, out clientChar);
+            if (result == false) return;
+
             server.SendMessage(message, clientChar.clientData);
 
         }
