@@ -12,9 +12,14 @@ namespace MultiGameServer
 {
     class Program
     {
+        // TCP 서버를 관리하고 클라이언트와 통신하는 객체
         private MyServer server;
-        public RoomManager roomManager { get; set; }        // 방을 관리하는 객체
-        public ClientManager clientManager { get; set; }    // 클라이언트들을 관리하는 객체
+
+        // 방을 관리하는 객체
+        public RoomManager roomManager { get; set; }
+
+        // 클라이언트들을 관리하는 객체
+        public ClientManager clientManager { get; set; }    
 
         static void Main(string[] args)
         {
@@ -137,10 +142,14 @@ namespace MultiGameServer
                     // 클라이언트의 키보드 입력
                     case "KeyInput":
                         {
-                            char InpKey = char.Parse(SplitMessage[1]);                 // 입력된 키
-                            char cKeyDown = char.Parse(SplitMessage[2]);            // 눌려있으면 T / F
+                            // 입력된 키
+                            char InpKey = char.Parse(SplitMessage[1]);
 
-                            bool bKeyDown = cKeyDown == 'T' ? true : false;         // T 이면 true / false
+                            // 눌려있으면 T / 아니면 F
+                            char cKeyDown = char.Parse(SplitMessage[2]);
+
+                            // T 이면 true / F 이면 false
+                            bool bKeyDown = cKeyDown == 'T' ? true : false;         
 
                             switch (InpKey)
                             {
@@ -151,7 +160,12 @@ namespace MultiGameServer
                                     clientChar.bRightDown = bKeyDown;
                                     break;
                             }
-                            if (bKeyDown == true) clientChar.MoveStart();
+                            // 키가 눌렸다면 움직임 타이머 시작
+                            if (bKeyDown == true)
+                            {
+                                clientChar.MoveStart();
+                            }
+                            // 모든 키가 떼어졌다면 움직임 타이머 종료
                             else if (!(clientChar.bLeftDown || clientChar.bRightDown))
                             {
                                 clientChar.MoveStop();
@@ -159,7 +173,12 @@ namespace MultiGameServer
 
                             // 다른 클라이언트들에게 이 클라이언트의 입력을 알림
                             SendMessageToAll_InRoom($"KeyInput#{clientChar.key}#{InpKey}#{cKeyDown}@",clientChar.RoomKey, clientChar.key);
-                            if (bKeyDown == false) SyncLocation(clientChar);
+
+                            // 키가 떼어졌을때 좌표를 보내서 완벽히 동기화 함
+                            if (bKeyDown == false)
+                            {
+                                SyncLocation(clientChar);
+                            }
                         }
                         break;
                     // 방 만들기 요청

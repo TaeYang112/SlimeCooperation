@@ -14,12 +14,20 @@ namespace MultiGame
 {
     public partial class Form1 : Form
     {
-        private MyClient myClient;                                                 // 서버와 TCP통신을 담당하는 객체
-        private ClientManager clientManager;                                       // 다른 클라이언트들을 관리하는 객체
-        private ClientCharacter userCharacter;
-        public bool IsGameStart { get; set; }                                       // 게임 시작 여부
+        // 서버와 TCP통신을 담당하는 객체
+        private MyClient myClient;
 
-        private System.Threading.Timer InvalidTimer;
+        // 다른 클라이언트들을 관리하는 객체
+        private ClientManager clientManager;    
+        
+        // 사용자의 캐릭터
+        private ClientCharacter userCharacter;
+
+        // 게임 시작 여부
+        public bool IsGameStart { get; set; }                                       
+
+        // 화면 업데이트( 60프레임 ) 타이머
+        private System.Threading.Timer UpdateTimer;
 
         public Form1()
         {
@@ -45,12 +53,13 @@ namespace MultiGame
             myClient.Start();
 
 
-            // 60프레임 Invalid ( 테스트 )
-            TimerCallback tc = new TimerCallback(Invalidate_);                              
-            InvalidTimer = new System.Threading.Timer(tc, null, 0, 10);  
+            // 60프레임 화면 업데이트
+            TimerCallback tc = new TimerCallback(Update);                              
+            UpdateTimer = new System.Threading.Timer(tc, null, 0, 10);  
         }
 
-        public void Invalidate_(object d)
+        // 화면 다시그리기
+        public void Update(object temp)
         {
             Invalidate();
         }
@@ -208,25 +217,42 @@ namespace MultiGame
         // 키가 눌렸을 때
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (IsGameStart == false) return base.ProcessCmdKey(ref msg, keyData);
+            // 게임이 시작하지 않았다면 키 입력을 처리할 필요가 없음
+            if (IsGameStart == false)
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
 
+            // 왼쪽 방향키
             if (keyData == Keys.Left)
             {
                 if (userCharacter.bLeftDown == false)
                 {
-                    userCharacter.bLeftDown = true;                                     // bLeftDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
-                    SendInputedKey('L', true);                                 // 서버한테 이동을 시작했다고 알림
+                    // bLeftDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
+                    userCharacter.bLeftDown = true;
+
+                    // 서버한테 이동을 시작했다고 알림
+                    SendInputedKey('L', true);
+
+                    // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
                     userCharacter.MoveStart();
                 }
                 return true;
             }
+
+            // 오른쪽 방향키
             if (keyData == Keys.Right)
             {
                 if (userCharacter.bRightDown == false)
                 {
-                    userCharacter.bRightDown = true;                                    // bRightDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
-                    SendInputedKey('R', true);                                 // 서버한테 이동을 시작했다고 알림
-                    userCharacter.MoveStart();                                            // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
+                    // bRightDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
+                    userCharacter.bRightDown = true;
+
+                    // 서버한테 이동을 시작했다고 알림
+                    SendInputedKey('R', true);
+
+                    // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
+                    userCharacter.MoveStart();                                            
                 }
                     
                 return true;
@@ -237,46 +263,66 @@ namespace MultiGame
         // 키가 뗴어졌을 때
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            if (IsGameStart == false) return;
+            // 게임이 시작하지 않았다면 키 입력을 처리할 필요가 없음
+            if (IsGameStart == false)
+            {
+                return;
+            }
 
             switch (e.KeyCode)
             {
                 case Keys.Left:
-                    userCharacter.bLeftDown = false;                                                    // 왼쪽 방향키가 떼어졌다는걸 알림
+                    // bLeftDown을 False로 바꿔 MoveCharacter_timer이 호출되어도 이동하지 않음
+                    userCharacter.bLeftDown = false;
+
+                    // 왼쪽 방향키가 떼어졌다는걸 알림
                     SendInputedKey('L', false);
                     break;
+
                 case Keys.Right:
-                    userCharacter.bRightDown = false;                                                   // 왼쪽 방향키가 떼어졌다는걸 알림
+                    // bRightDown을 False로 바꿔 MoveCharacter_timer이 호출되어도 이동하지 않음
+                    userCharacter.bRightDown = false;
+
+                    // 왼쪽 방향키가 떼어졌다는걸 알림
                     SendInputedKey('R', false);
                     break;
             }
-
-            if (!(userCharacter.bLeftDown || userCharacter.bRightDown)) userCharacter.MoveStop();     // 왼쪽과 오른쪽 모두 떼어져 있다면 캐릭터 이동 타이머를 멈춤
+            // 왼쪽과 오른쪽 모두 떼어져 있다면 캐릭터 이동 타이머를 멈춤
+            if (!(userCharacter.bLeftDown || userCharacter.bRightDown)) userCharacter.MoveStop();     
         }
 
 
 
 
-        // 폼의 포커스가 풀리면 ( 알트 탭 등 ) Key UP 이벤트가 안생기기 때문에 강제로 키 다운 변수를 false로 바꿈
+        // 폼의 포커스가 풀리면 ( 알트 탭 등 ) Key Up 이벤트가 안생기기 때문에 강제로 Key Up상태로 변경
         private void Form1_Deactivate(object sender, EventArgs e)
         {
-            if (IsGameStart == false) return;
+            // 게임이 시작하지 않았다면 키 입력을 처리할 필요가 없음
+            if (IsGameStart == false)
+            {
+                return;
+            }
 
-            userCharacter.bLeftDown = false;                                                            // 왼쪽 방향키가 떼어졌다는걸 알림
+            // 왼쪽 키가 떼어졌다고 설정 후 서버에 알림
+            userCharacter.bLeftDown = false;                                                            
             SendInputedKey('L', false);
 
-            userCharacter.bRightDown = false;                                                           // 왼쪽 방향키가 떼어졌다는걸 알림
+            // 오른쪽 키가 떼어졌다고 설정 후 서버에 알림
+            userCharacter.bRightDown = false;                                                           
             SendInputedKey('R', false);
 
+            // 이동이 중단되었기 때문에 이동 타이머 멈춤
             userCharacter.MoveStop();
 
         }
 
 
+        // 폼을 그릴때 호출되는 메소드 
         protected override void OnPaint(PaintEventArgs pe)
         {
             base.OnPaint(pe);
             
+            // 캐릭터는 컨트롤( 버튼, 텍스트박스 등..)이 아니므로 수동으로 그려야됨
             foreach(var item in clientManager.ClientDic)
             {
                 item.Value.OnPaint(pe);
