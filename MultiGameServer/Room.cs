@@ -30,5 +30,30 @@ namespace MultiGameServer
             clientChar.RoomKey = -1;
             roomClientDic.TryRemove(clientChar.key, out _);
         }
+
+        public bool IsAllReady()
+        {
+            int count = 0;
+            foreach (var item in roomClientDic)
+            {
+                if (item.Value.bReady == true)
+                {
+                    count++;
+                }
+            }
+            Console.WriteLine("[INFO] " + key + "번 방 "+ count + "/3 READY");
+            // 준비한 캐릭터가 3명 이상일경우 true
+            if (count >= 3)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+
     }
 }
