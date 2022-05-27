@@ -34,9 +34,12 @@ namespace MultiGameServer
             return newClientCharacter;
         }
 
-        public void RemoveClient(ClientCharacter client)
+        public ClientCharacter RemoveClient(ClientData oldClient)
         {
-            ClientDic.TryRemove(client.key, out _);
+            ClientCharacter clientChar;
+            ClientDic.TryRemove(oldClient.key, out clientChar);
+
+            return clientChar;
         }
     }
 }

@@ -33,7 +33,11 @@ namespace MultiGame
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
 
-       
+        ~ClientCharacter()
+        {
+            MoveTimer.Dispose();
+        }
+
         public ClientCharacter(int key, Point Location, int skinNum)
         {
             // 멤버변수 초기화

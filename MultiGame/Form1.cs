@@ -45,6 +45,11 @@ namespace MultiGame
             myClient.TakeMessage += new TakeMessageEventHandler(OnTakeMessage);
 
         }
+        
+        ~Form1()
+        {
+            UpdateTimer.Dispose();
+        }
 
         // 폼이 완전히 로드되었을 때 호출
         private void Form1_Load(object sender, EventArgs e)
@@ -136,6 +141,27 @@ namespace MultiGame
                             clientCharacter.Location = new Point(x, y);
                         }
                         break;
+                        // 클라이언트가 방을 나감
+                    case "LeaveRoom":
+                        {
+                            // 플레이어 번호
+                            int key = int.Parse(SplitMessage[1]);
+
+                            ClientCharacter clientChar;
+
+                            // 키에 해당하는 캐릭터를 찾아 client변수에 대입
+                            bool result = clientManager.ClientDic.TryGetValue(key, out clientChar);
+
+                            // 만약 존재하지 않으면 리턴
+                            if(result == false)
+                            {
+                                return;
+                            }
+
+                            //클라이언트 배열에서 제거
+                            clientManager.RemoveClient(clientChar);
+                        }
+                        break;
                     // 다른 클라이언트의 키보드 입력 ( Input )
                     case "KeyInput":
                         {
@@ -186,6 +212,12 @@ namespace MultiGame
                     case "RoomStart":
                         {
                             IsGameStart = true;
+                        }
+                        break;
+                    case "Ping":
+                        {
+                            // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
+                            // 클라이언트는 반응이 없어도 됨
                         }
                         break;
                     default:
