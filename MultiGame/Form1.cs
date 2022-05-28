@@ -317,7 +317,6 @@ namespace MultiGame
                                         {
                                             this.Invoke(new MethodInvoker(delegate ()
                                             {
-                                                Console.WriteLine("제거하래");
                                                 // 방 제거
                                                 findRoom_Screen.roomList_GridView.Rows.Remove(item);
                                             }));
@@ -756,6 +755,8 @@ namespace MultiGame
                         // 방찾기화면으로 이동, 방목록 정보 수신
                         findRoom_Screen.roomList_GridView.Rows.Clear();
                         RequestLobbyInfo(true);
+
+                        userCharacter.isReady = false;
                         this.Controls.Clear();
                         this.Controls.Add(findRoom_Screen);
                     }

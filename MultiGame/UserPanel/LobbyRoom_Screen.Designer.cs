@@ -48,13 +48,13 @@ namespace MultiGame.UserPanel
             // 
             // roomTitle_lbl
             // 
-            this.roomTitle_lbl.AutoSize = true;
             this.roomTitle_lbl.Font = new System.Drawing.Font("맑은 고딕", 19F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.roomTitle_lbl.Location = new System.Drawing.Point(316, 41);
+            this.roomTitle_lbl.Location = new System.Drawing.Point(126, 41);
             this.roomTitle_lbl.Name = "roomTitle_lbl";
-            this.roomTitle_lbl.Size = new System.Drawing.Size(102, 36);
+            this.roomTitle_lbl.Size = new System.Drawing.Size(513, 36);
             this.roomTitle_lbl.TabIndex = 0;
             this.roomTitle_lbl.Text = "방 이름";
+            this.roomTitle_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // leftPicBox
             // 
@@ -153,7 +153,6 @@ namespace MultiGame.UserPanel
             ((System.ComponentModel.ISupportInitialize)(this.centerCheckPicBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightCheckPicBox)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
