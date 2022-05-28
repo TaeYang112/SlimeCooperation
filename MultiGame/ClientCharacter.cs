@@ -114,7 +114,7 @@ namespace MultiGame
             MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        public void OnPaint(PaintEventArgs pe)
+        public void OnPaint(Object obj, PaintEventArgs pe)
         {
             if (isVisible == false) return;
 

@@ -32,7 +32,7 @@ namespace MultiGame.UserPanel
             this.label1 = new System.Windows.Forms.Label();
             this.roomTitle_TB = new System.Windows.Forms.TextBox();
             this.make_btn = new System.Windows.Forms.Button();
-            this.cancleMakeRoom_btn = new System.Windows.Forms.Button();
+            this.cancelMakeRoom_btn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
@@ -62,14 +62,14 @@ namespace MultiGame.UserPanel
             this.make_btn.Text = "만들기";
             this.make_btn.UseVisualStyleBackColor = true;
             // 
-            // cancleMakeRoom_btn
+            // cancelMakeRoom_btn
             // 
-            this.cancleMakeRoom_btn.Location = new System.Drawing.Point(324, 100);
-            this.cancleMakeRoom_btn.Name = "cancleMakeRoom_btn";
-            this.cancleMakeRoom_btn.Size = new System.Drawing.Size(75, 23);
-            this.cancleMakeRoom_btn.TabIndex = 3;
-            this.cancleMakeRoom_btn.Text = "취소";
-            this.cancleMakeRoom_btn.UseVisualStyleBackColor = true;
+            this.cancelMakeRoom_btn.Location = new System.Drawing.Point(324, 100);
+            this.cancelMakeRoom_btn.Name = "cancelMakeRoom_btn";
+            this.cancelMakeRoom_btn.Size = new System.Drawing.Size(75, 23);
+            this.cancelMakeRoom_btn.TabIndex = 3;
+            this.cancelMakeRoom_btn.Text = "취소";
+            this.cancelMakeRoom_btn.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
@@ -84,7 +84,7 @@ namespace MultiGame.UserPanel
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(607, 145);
-            this.Controls.Add(this.cancleMakeRoom_btn);
+            this.Controls.Add(this.cancelMakeRoom_btn);
             this.Controls.Add(this.make_btn);
             this.Controls.Add(this.roomTitle_TB);
             this.Controls.Add(this.label1);
@@ -103,7 +103,7 @@ namespace MultiGame.UserPanel
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox roomTitle_TB;
         public System.Windows.Forms.Button make_btn;
-        public System.Windows.Forms.Button cancleMakeRoom_btn;
+        public System.Windows.Forms.Button cancelMakeRoom_btn;
         private System.Windows.Forms.Panel panel1;
     }
 }
