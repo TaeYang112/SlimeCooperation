@@ -245,7 +245,7 @@ namespace MultiGameServer
                             Room newRoom = roomManager.CreateRoom(RoomTitle);
 
                             // 방 만든사람을 방에 접속시킴
-                            ClientEnterRoom(newRoom.key, clientChar);
+                            ClientEnterRoom(newRoom, clientChar);
 
                             clientChar.bFindingRoom = false;
 
@@ -266,14 +266,31 @@ namespace MultiGameServer
                             // 방 키
                             int roomKey = int.Parse(SplitMessage[1]);
 
-                            // 입장
-                            ClientEnterRoom(roomKey, clientChar);
-
+                            // 방키로 방을 찾음
                             Room room;
-                            bool result = roomManager.RoomDic.TryGetValue(roomKey,out room);
+                            bool result = roomManager.RoomDic.TryGetValue(roomKey, out room);
 
-                            if (result == false) continue;
+                            // 방을 찾지 못할경우
+                            if (result == false)
+                            {
+                                // 방이 없다고 에러 보냄
+                                SendMessage("Error#1@", clientChar.key);
+                                continue;
+                            }
 
+                            // 인원수가 3명 이상일경우
+                            if (room.GetPeopleCount() >= 3)
+                            {
+                                // 방이 꽉찼다고 에러 보냄
+                                SendMessage("Error#0@", clientChar.key);
+                                continue;
+                            }
+
+
+                            // 입장
+                            ClientEnterRoom(room, clientChar);
+
+                            
                             // 인원수가 바뀐것을 클라이언트들에게 알려줌
                             SendUpdateRoomInfo(room);
                             
@@ -402,15 +419,8 @@ namespace MultiGameServer
         }
 
         // 클라이언트를 방에 입장시킬 때 호출
-        public void ClientEnterRoom(int roomKey, ClientCharacter clientChar)
+        public void ClientEnterRoom(Room room, ClientCharacter clientChar)
         {
-            // roomKey를 이용하여 room 객체를 찾음, 만약 없으면 return
-            Room room;
-            bool result = roomManager.RoomDic.TryGetValue(roomKey, out room);
-
-            if (result == false) return;
-
-
 
             // 방 입장 ( 서버 관점 )
             room.ClientEnter(clientChar);

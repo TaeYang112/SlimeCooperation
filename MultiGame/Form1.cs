@@ -349,6 +349,28 @@ namespace MultiGame
                             }
                     }
                     break;
+                case "Error":
+                    {
+                        int errorCode = int.Parse(SplitMessage[1]);
+
+                        switch(errorCode)
+                        {
+                            case 0:
+                                {
+                                    MessageBox.Show("해당 방은 꽉찼습니다.", $"에러코드 : {errorCode}", MessageBoxButtons.OK);
+                                }
+                                break;
+                            case 1:
+                                {
+                                    MessageBox.Show("존재하지 않은 방입니다.",$"에러코드 : {errorCode}", MessageBoxButtons.OK);
+                                }
+                                break;
+                            default:
+                                Console.WriteLine("알수 없는 에러코드 {0}",errorCode);
+                                break;
+                        }
+                    }
+                    break;
                 default:
                     Console.WriteLine("디폴트 : {0}", Message);
                     break;
