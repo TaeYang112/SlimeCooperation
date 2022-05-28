@@ -29,13 +29,13 @@ namespace MultiGame.UserPanel
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.backToMain_btn = new System.Windows.Forms.Button();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.findToMain_btn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.roomList_GridView = new System.Windows.Forms.DataGridView();
             this.roomNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,14 +45,14 @@ namespace MultiGame.UserPanel
             ((System.ComponentModel.ISupportInitialize)(this.roomList_GridView)).BeginInit();
             this.SuspendLayout();
             // 
-            // backToMain_btn
+            // findToMain_btn
             // 
-            this.backToMain_btn.Location = new System.Drawing.Point(653, 29);
-            this.backToMain_btn.Name = "backToMain_btn";
-            this.backToMain_btn.Size = new System.Drawing.Size(114, 31);
-            this.backToMain_btn.TabIndex = 0;
-            this.backToMain_btn.Text = "뒤로가기";
-            this.backToMain_btn.UseVisualStyleBackColor = true;
+            this.findToMain_btn.Location = new System.Drawing.Point(653, 29);
+            this.findToMain_btn.Name = "findToMain_btn";
+            this.findToMain_btn.Size = new System.Drawing.Size(114, 31);
+            this.findToMain_btn.TabIndex = 0;
+            this.findToMain_btn.Text = "뒤로가기";
+            this.findToMain_btn.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -72,36 +72,36 @@ namespace MultiGame.UserPanel
             this.roomList_GridView.AllowUserToResizeRows = false;
             this.roomList_GridView.BackgroundColor = System.Drawing.SystemColors.ScrollBar;
             this.roomList_GridView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.roomList_GridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.ButtonFace;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.roomList_GridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.roomList_GridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.roomList_GridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.roomNum,
             this.roomName,
             this.personNum});
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.roomList_GridView.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.roomList_GridView.DefaultCellStyle = dataGridViewCellStyle11;
             this.roomList_GridView.EnableHeadersVisualStyles = false;
             this.roomList_GridView.Location = new System.Drawing.Point(159, 238);
             this.roomList_GridView.MultiSelect = false;
             this.roomList_GridView.Name = "roomList_GridView";
             this.roomList_GridView.ReadOnly = true;
             this.roomList_GridView.RowHeadersVisible = false;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
-            this.roomList_GridView.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.Black;
+            this.roomList_GridView.RowsDefaultCellStyle = dataGridViewCellStyle12;
             this.roomList_GridView.RowTemplate.Height = 25;
             this.roomList_GridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.roomList_GridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -110,8 +110,8 @@ namespace MultiGame.UserPanel
             // 
             // roomNum
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.roomNum.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.roomNum.DefaultCellStyle = dataGridViewCellStyle8;
             this.roomNum.HeaderText = "방 번호";
             this.roomNum.Name = "roomNum";
             this.roomNum.ReadOnly = true;
@@ -120,16 +120,16 @@ namespace MultiGame.UserPanel
             // roomName
             // 
             this.roomName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.roomName.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.roomName.DefaultCellStyle = dataGridViewCellStyle9;
             this.roomName.HeaderText = "방 이름";
             this.roomName.Name = "roomName";
             this.roomName.ReadOnly = true;
             // 
             // personNum
             // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.personNum.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.personNum.DefaultCellStyle = dataGridViewCellStyle10;
             this.personNum.HeaderText = "인원수";
             this.personNum.Name = "personNum";
             this.personNum.ReadOnly = true;
@@ -150,7 +150,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.enterRoom_btn);
             this.Controls.Add(this.roomList_GridView);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.backToMain_btn);
+            this.Controls.Add(this.findToMain_btn);
             this.Name = "FindRoom_Screen";
             this.Size = new System.Drawing.Size(800, 450);
             ((System.ComponentModel.ISupportInitialize)(this.roomList_GridView)).EndInit();
@@ -164,7 +164,7 @@ namespace MultiGame.UserPanel
         private System.Windows.Forms.DataGridViewTextBoxColumn roomNum;
         private System.Windows.Forms.DataGridViewTextBoxColumn roomName;
         private System.Windows.Forms.DataGridViewTextBoxColumn personNum;
-        public System.Windows.Forms.Button backToMain_btn;
+        public System.Windows.Forms.Button findToMain_btn;
         public System.Windows.Forms.DataGridView roomList_GridView;
         public System.Windows.Forms.Button enterRoom_btn;
     }
