@@ -137,10 +137,18 @@ namespace MultiGameServer
             SendMessageToAll_InRoom($"LeaveRoom#{clientChar.key}@",room.key, clientChar.key);
 
             // 룸의 클라이언트 배열에서도 제거
-            room.ClientLeave(clientChar);
+            int peopleCount = room.ClientLeave(clientChar);
 
-            
-            UpdateRoomInfo(room);
+            if(peopleCount < 1)
+            {
+                roomManager.RemoveRoom(room);
+                SendDelRoomInfo(room);
+            }
+            else
+            {
+                // 방의 인원수가 바뀐것을 클라이언트들 에게 알려줌
+                SendUpdateRoomInfo(room);
+            }
 
         }
 
@@ -238,6 +246,18 @@ namespace MultiGameServer
 
                             // 방 만든사람을 방에 접속시킴
                             ClientEnterRoom(newRoom.key, clientChar);
+
+                            clientChar.bFindingRoom = false;
+
+                            // 방찾기에 있는 클라이언트한테 방이 새로 생긴걸 알려줌
+                            foreach (var item in clientManager.ClientDic)
+                            {
+                                if (item.Value.bFindingRoom == true)
+                                {
+                                    SendMessage($"RoomList#Add#{newRoom.key}#{newRoom.RoomTitle}#{newRoom.GetPeopleCount()}@", item.Key);
+                                }
+                            }
+
                         }
                         break;
                     // 방 입장 시도
@@ -248,6 +268,15 @@ namespace MultiGameServer
 
                             // 입장
                             ClientEnterRoom(roomKey, clientChar);
+
+                            Room room;
+                            bool result = roomManager.RoomDic.TryGetValue(roomKey,out room);
+
+                            if (result == false) continue;
+
+                            // 인원수가 바뀐것을 클라이언트들에게 알려줌
+                            SendUpdateRoomInfo(room);
+                            
                         }
                         break;
                     // 레디
@@ -256,27 +285,34 @@ namespace MultiGameServer
                             // 레디 여부를 대입
                             bool bReady = bool.Parse(SplitMessage[1]);
                             clientChar.bReady = bReady;
-                            
-                            if( bReady == true)
+
+
+                            // 클라이언트가 들어있는 방을 찾음
+                            Room room;
+                            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+
+                            // 존재하지 않으면 return
+                            if (result == false)
                             {
-                                // 클라이언트가 들어있는 방을 찾음
-                                Room room;
-                                bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+                                return;
+                            }
 
-                                // 존재하지 않으면 return
-                                if(result == false)
-                                {
-                                    return;
-                                }
+                            // 방안의 다른 클라이언트한테 레디했다고 알려줌
+                            SendMessageToAll_InRoom($"ReadyOther#{clientChar.key}#{bReady}@", room.key, clientChar.key);
 
+                            if (bReady == true)
+                            {
                                 // 3명 이상의 클라이언트가 레디했다면
-                                if( room.IsAllReady() == true )
+                                if (room.IsAllReady() == true)
                                 {
                                     // 게임시작
                                     RoomStart(room);
+
+                                    // 방찾기 중인 클라이언트들의 방목록에서 시작한 방을 제거
+                                    SendDelRoomInfo(room);
                                 }
                             }
-                            
+
                         }
                         break;
                     // 클라이언트가 로비 정보 요청 / 요청 종료
@@ -284,13 +320,53 @@ namespace MultiGameServer
                         {
                             clientChar.bFindingRoom = bool.Parse(SplitMessage[1]);
 
-                            foreach(var item in roomManager.RoomDic)
+                            // 정보 요청이 true라면 원래 있던 방목록을 전달함
+                            if(clientChar.bFindingRoom == true)
                             {
-                                if(item.Value.bGameStart == false)
+                                foreach (var item in roomManager.RoomDic)
                                 {
-                                    SendMessage($"RoomList#Add#{item.Value.key}#{item.Value.RoomTitle}#{item.Value.GetPeopleCount()}@",clientChar.key);
+                                    if (item.Value.bGameStart == false)
+                                    {
+                                        SendMessage($"RoomList#Add#{item.Value.key}#{item.Value.RoomTitle}#{item.Value.GetPeopleCount()}@", clientChar.key);
+                                    }
                                 }
                             }
+                            
+                        }
+                        break;
+                    // 클라이언트가 로비를 나감
+                    case "ExitLobby":
+                        {
+                            // 클라이언트가 속해있는 방을 가져옴
+                            Room room;
+                            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+
+                            // 방이 존재하지 않으면 종료
+                            if (result == false)
+                            {
+                                continue;
+                            }
+
+                            // 다른 플레이어들한테 알려줌
+                            SendMessageToAll_InRoom($"LeaveRoom#{clientChar.key}@", room.key, clientChar.key);
+
+                            // 룸의 클라이언트 배열에서도 제거
+                            room.ClientLeave(clientChar);
+
+                            // 만약 클라이언트가 나감으로서 아무도 방에 남지않을경우 방을 제거
+                            if(room.GetPeopleCount() == 0)
+                            {
+                                roomManager.RemoveRoom(room);
+                                
+                                // 방찾기 중인 클라이언트한테 알려줌
+                                SendDelRoomInfo(room);
+                            }
+                            else
+                            {
+                                // 아니면 클라이언트들에게 인원수가 바뀐것을 알려줌
+                                SendUpdateRoomInfo(room);
+                            }
+                            
                         }
                         break;
                     default:
@@ -302,13 +378,25 @@ namespace MultiGameServer
 
 
         // 방찾기 화면에 있는 클라이언트들에게 방의 인원수가 바뀐것을 알림
-        public void UpdateRoomInfo(Room room)
+        public void SendUpdateRoomInfo(Room room)
         {
             foreach(var item in clientManager.ClientDic)
             {
                 if (item.Value.bFindingRoom == true)
                 {
                     SendMessage($"RoomList#Update#{room.key}#{room.GetPeopleCount()}@", item.Key);
+                }
+            }
+        }
+
+        // 방찾기 화면에 있는 클라이언트들에게 방의 정보를 없애라고 알림 ( 인원수 0명이 되었거나 게임이 시작할경우 호출) 
+        public void SendDelRoomInfo(Room room)
+        {
+            foreach (var item in clientManager.ClientDic)
+            {
+                if (item.Value.bFindingRoom == true)
+                {
+                    SendMessage($"RoomList#Del#{room.key}@", item.Key);
                 }
             }
         }
@@ -348,7 +436,9 @@ namespace MultiGameServer
         // 로비단계에 있는 게임 방을 시작시킴
         public void RoomStart(Room room)
         {
-            // room.start();
+            room.bGameStart = true;
+
+            
             foreach(var item in room.roomClientDic)
             {
                 // 클라이언트에게 게임이 시작하였다고 알림

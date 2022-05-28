@@ -34,10 +34,16 @@ namespace MultiGame.UserPanel
             this.centerPicBox = new System.Windows.Forms.PictureBox();
             this.rightPicBox = new System.Windows.Forms.PictureBox();
             this.ready_btn = new System.Windows.Forms.Button();
-            this.goMain_btn = new System.Windows.Forms.Button();
+            this.lobbyToFind_btn = new System.Windows.Forms.Button();
+            this.leftCheckPicBox = new System.Windows.Forms.PictureBox();
+            this.centerCheckPicBox = new System.Windows.Forms.PictureBox();
+            this.rightCheckPicBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.leftPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.centerPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightPicBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leftCheckPicBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.centerCheckPicBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rightCheckPicBox)).BeginInit();
             this.SuspendLayout();
             // 
             // roomTitle_lbl
@@ -89,20 +95,50 @@ namespace MultiGame.UserPanel
             this.ready_btn.Text = "준비";
             this.ready_btn.UseVisualStyleBackColor = true;
             // 
-            // goMain_btn
+            // lobbyToFind_btn
             // 
-            this.goMain_btn.Location = new System.Drawing.Point(702, 405);
-            this.goMain_btn.Name = "goMain_btn";
-            this.goMain_btn.Size = new System.Drawing.Size(75, 23);
-            this.goMain_btn.TabIndex = 5;
-            this.goMain_btn.Text = "나가기";
-            this.goMain_btn.UseVisualStyleBackColor = true;
+            this.lobbyToFind_btn.Location = new System.Drawing.Point(702, 405);
+            this.lobbyToFind_btn.Name = "lobbyToFind_btn";
+            this.lobbyToFind_btn.Size = new System.Drawing.Size(75, 23);
+            this.lobbyToFind_btn.TabIndex = 5;
+            this.lobbyToFind_btn.Text = "나가기";
+            this.lobbyToFind_btn.UseVisualStyleBackColor = true;
+            // 
+            // leftCheckPicBox
+            // 
+            this.leftCheckPicBox.Location = new System.Drawing.Point(174, 140);
+            this.leftCheckPicBox.Name = "leftCheckPicBox";
+            this.leftCheckPicBox.Size = new System.Drawing.Size(20, 20);
+            this.leftCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.leftCheckPicBox.TabIndex = 6;
+            this.leftCheckPicBox.TabStop = false;
+            // 
+            // centerCheckPicBox
+            // 
+            this.centerCheckPicBox.Location = new System.Drawing.Point(366, 140);
+            this.centerCheckPicBox.Name = "centerCheckPicBox";
+            this.centerCheckPicBox.Size = new System.Drawing.Size(20, 20);
+            this.centerCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.centerCheckPicBox.TabIndex = 6;
+            this.centerCheckPicBox.TabStop = false;
+            // 
+            // rightCheckPicBox
+            // 
+            this.rightCheckPicBox.Location = new System.Drawing.Point(571, 140);
+            this.rightCheckPicBox.Name = "rightCheckPicBox";
+            this.rightCheckPicBox.Size = new System.Drawing.Size(20, 20);
+            this.rightCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.rightCheckPicBox.TabIndex = 6;
+            this.rightCheckPicBox.TabStop = false;
             // 
             // LobbyRoom_Screen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.goMain_btn);
+            this.Controls.Add(this.rightCheckPicBox);
+            this.Controls.Add(this.centerCheckPicBox);
+            this.Controls.Add(this.leftCheckPicBox);
+            this.Controls.Add(this.lobbyToFind_btn);
             this.Controls.Add(this.ready_btn);
             this.Controls.Add(this.rightPicBox);
             this.Controls.Add(this.centerPicBox);
@@ -113,6 +149,9 @@ namespace MultiGame.UserPanel
             ((System.ComponentModel.ISupportInitialize)(this.leftPicBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.centerPicBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightPicBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leftCheckPicBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.centerCheckPicBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rightCheckPicBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -123,7 +162,10 @@ namespace MultiGame.UserPanel
         public System.Windows.Forms.PictureBox centerPicBox;
         public System.Windows.Forms.PictureBox rightPicBox;
         public System.Windows.Forms.Button ready_btn;
-        public System.Windows.Forms.Button goMain_btn;
+        public System.Windows.Forms.Button lobbyToFind_btn;
         public System.Windows.Forms.Label roomTitle_lbl;
+        public System.Windows.Forms.PictureBox leftCheckPicBox;
+        public System.Windows.Forms.PictureBox centerCheckPicBox;
+        public System.Windows.Forms.PictureBox rightCheckPicBox;
     }
 }

@@ -29,10 +29,13 @@ namespace MultiGameServer
             roomClientDic.TryAdd(clientChar.key, clientChar);
         }
 
-        public void ClientLeave(ClientCharacter clientChar)
+        // 클라이언트를 나가게 한뒤, 남은 인원수 반환
+        public int ClientLeave(ClientCharacter clientChar)
         {
             clientChar.RoomKey = -1;
             roomClientDic.TryRemove(clientChar.key, out _);
+
+            return GetPeopleCount();
         }
 
         public bool IsAllReady()

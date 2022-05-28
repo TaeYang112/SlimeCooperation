@@ -157,6 +157,7 @@ namespace MultiGame
 
                         //클라이언트 배열에서 제거
                         clientManager.RemoveClient(clientChar);
+                        UpdateLobby();
                     }
                     break;
                 // 다른 클라이언트의 키보드 입력
@@ -224,12 +225,41 @@ namespace MultiGame
                         // 플레이어 번호
                         int key = int.Parse(SplitMessage[1]);
 
+                        // 레디 여부
+                        bool bReady = bool.Parse(SplitMessage[2]);
+
                         ClientCharacter clientCharacter;
 
-                        // 자신이 아닐경우 새로운 클라이언트를 만들던가 기존의 클라이언트를 받아옴
+                        // 새로운 클라이언트 생성
                         clientCharacter = clientManager.AddOrGetClient(key, new Point(0, 0), 1);
+                        clientCharacter.isReady = false;
 
                         inGame_Screen.Paint += clientCharacter.OnPaint;
+
+                        this.Invoke(new MethodInvoker(delegate ()
+                        {
+                            UpdateLobby();
+                        }));
+                    }
+                    break;
+                // 다른 클라이언트가 레디함
+                case "ReadyOther":
+                    {
+                        // 플레이어 번호
+                        int key = int.Parse(SplitMessage[1]);
+
+                        // 레디 여부
+                        bool bReady = bool.Parse(SplitMessage[2]);
+
+                        // 플레이어 번호를 가지고 플레이어를 찾음
+                        ClientCharacter clientCharacter;
+
+                        bool result = clientManager.ClientDic.TryGetValue(key, out clientCharacter);
+
+                        // 존재하지 않은 클라이언트면 종료
+                        if (result == false) return;
+
+                        clientCharacter.isReady = bReady;
 
                         this.Invoke(new MethodInvoker(delegate ()
                         {
@@ -279,21 +309,39 @@ namespace MultiGame
                                 break;
                             // 방 정보 삭제 ( 방이 사라짐 or 해당 방 게임이 시작함 )
                             case "Del":
+                                {
+                                    foreach (DataGridViewRow item in findRoom_Screen.roomList_GridView.Rows)
+                                    {
+                                        // 방 배열을 돌면서 방번호와 같은 방을 찾음
+                                        if (item.Cells[0].Value.ToString() == SplitMessage[2])
+                                        {
+                                            this.Invoke(new MethodInvoker(delegate ()
+                                            {
+                                                Console.WriteLine("제거하래");
+                                                // 방 제거
+                                                findRoom_Screen.roomList_GridView.Rows.Remove(item);
+                                            }));
+                                        }
+                                    }
+
+                                }
                                 break;
                             // 방 정보 수정 ( 방의 인원수가 변경됨 )
                             case "Update":
-                                this.Invoke(new MethodInvoker(delegate ()
                                 {
-                                    foreach(DataGridViewRow item in findRoom_Screen.roomList_GridView.Rows)
+                                    foreach (DataGridViewRow item in findRoom_Screen.roomList_GridView.Rows)
                                     {
                                         // 방 배열을 돌면서 방번호와 같은 방을 찾음
-                                        if( item.Cells[0].Value.ToString() == SplitMessage[2])
+                                        if (item.Cells[0].Value.ToString() == SplitMessage[2])
                                         {
-                                            // 인원수 업데이트
-                                            item.Cells[2].Value = SplitMessage[3]+"/3";
+                                            this.Invoke(new MethodInvoker(delegate ()
+                                            {
+                                                // 인원수 업데이트
+                                                item.Cells[2].Value = SplitMessage[3] + "/3";
+                                            }));
                                         }
                                     }
-                                }));
+                                }
                                 break;
                             default:
                                 break;
@@ -346,13 +394,13 @@ namespace MultiGame
             if (this.Controls.Contains(lobbyRoom_Screen) == false) return;
 
 
-            ClientCharacter []clientChar = new ClientCharacter[2] { null, null };
+            ClientCharacter[] clientChar = new ClientCharacter[2] { null, null };
 
             int count = 0;
 
 
             // 로비에 있는 다른 두 플레이어를 찾음
-            foreach(var item in clientManager.ClientDic)
+            foreach (var item in clientManager.ClientDic)
             {
                 clientChar[count] = item.Value;
                 count++;
@@ -360,27 +408,63 @@ namespace MultiGame
                 if (count > 2) break;
             }
 
+
+
+
             // 로비화면 캐릭터 이미지 업데이트
             lobbyRoom_Screen.centerPicBox.Image = userCharacter.image;
+
+            // 레디했으면 레디버튼 삽입
+            if (userCharacter.isReady == true)
+            {
+                lobbyRoom_Screen.centerCheckPicBox.Image = MultiGame.Properties.Resources.ReadyCheck;
+            }
+            else
+            {
+                lobbyRoom_Screen.centerCheckPicBox.Image = null;
+            }
 
             // 다른 클라이언트를 못찾았으면 빈 이미지 삽입
             if (clientChar[0] == null)
             {
                 lobbyRoom_Screen.leftPicBox.Image = null;
+                lobbyRoom_Screen.leftCheckPicBox.Image = null;
             }
             else
             {
                 lobbyRoom_Screen.leftPicBox.Image = clientChar[0].image;
+
+                // 레디 했으면 레디버튼 삽입
+                if (clientChar[0].isReady == true)
+                {
+                    lobbyRoom_Screen.leftCheckPicBox.Image = MultiGame.Properties.Resources.ReadyCheck;
+                }
+                else
+                {
+                    lobbyRoom_Screen.leftCheckPicBox.Image = null;
+                }
+                   
             }
 
             // 다른 클라이언트를 못찾았으면 빈 이미지 삽입
             if ( clientChar[1] == null)
             {
                 lobbyRoom_Screen.rightPicBox.Image = null;
+                lobbyRoom_Screen.rightCheckPicBox.Image = null;
             }
             else
             {
                 lobbyRoom_Screen.rightPicBox.Image = clientChar[1].image;
+
+                // 레디 했으면 레디버튼 삽입
+                if (clientChar[1].isReady == true)
+                {
+                    lobbyRoom_Screen.rightCheckPicBox.Image = MultiGame.Properties.Resources.ReadyCheck;
+                }
+                else
+                {
+                    lobbyRoom_Screen.rightCheckPicBox.Image = null;
+                }
             }
 
             // 레디 버튼 텍스트 업데이트
@@ -414,20 +498,23 @@ namespace MultiGame
             // 로비
             lobbyRoom_Screen = new UserPanel.LobbyRoom_Screen();
             lobbyRoom_Screen.ready_btn.Click += button_Click;
-            lobbyRoom_Screen.goMain_btn.Click += button_Click;
+            lobbyRoom_Screen.lobbyToFind_btn.Click += button_Click;
 
             // 방찾기
             findRoom_Screen = new UserPanel.FindRoom_Screen();
-            findRoom_Screen.backToMain_btn.Click += button_Click;
+            findRoom_Screen.findToMain_btn.Click += button_Click;
             findRoom_Screen.enterRoom_btn.Click += button_Click;
+            findRoom_Screen.roomList_GridView.CellDoubleClick += DataGridDoubleClick;
 
             // 인게임
             inGame_Screen = new UserPanel.InGame_Screen();
+          
 
             // 방만들기
             makeRoom_Form = new UserPanel.MakeRoom_Form();
             makeRoom_Form.make_btn.Click += button_Click;
             makeRoom_Form.cancelMakeRoom_btn.Click += button_Click;
+
         }
 
         // 키가 눌렸을 때
@@ -537,13 +624,6 @@ namespace MultiGame
         protected override void OnPaint(PaintEventArgs pe)
         {
             base.OnPaint(pe);
-            Console.WriteLine("sda");
-            // 캐릭터는 컨트롤( 버튼, 텍스트박스 등..)이 아니므로 수동으로 그려야됨
-            foreach(var item in clientManager.ClientDic)
-            {
-                item.Value.OnPaint(pe);
-            }
-            userCharacter.OnPaint(pe);
         }
         */
 
@@ -555,52 +635,116 @@ namespace MultiGame
             {
                 // 메인메뉴 화면 ( MainMenu_Screen )
                 case "makeRoom_btn":    // 방만들기
-                    makeRoom_Form.roomTitle_TB.Text = "";
-                    makeRoom_Form.ShowDialog();
+                    {
+                        makeRoom_Form.roomTitle_TB.Text = "";
+
+                        // 방제목 입력하는 폼을 띄움
+                        makeRoom_Form.ShowDialog();
+                    }
                     break;
                 case "findRoom_btn":    // 방찾기
-                    findRoom_Screen.roomList_GridView.Rows.Clear();
-                    RequestLobbyInfo(true);
-                    this.Controls.Clear();
-                    this.Controls.Add(findRoom_Screen);
+                    {
+                        // 방목록 초기화
+                        findRoom_Screen.roomList_GridView.Rows.Clear();
+
+                        // 앞으로 서버로 부터 방목록 정보를 받도록 설정
+                        RequestLobbyInfo(true);
+
+                        // 방찾기 창을 띄움
+                        this.Controls.Clear();
+                        this.Controls.Add(findRoom_Screen);
+                    }
                     break;
                 case "exitGame_btn":    // 게임종료
-                    MessageBox.Show("종료", "게임을 종료합니다.", MessageBoxButtons.OK);
-                    Application.Exit();
+                    {
+                        MessageBox.Show("종료", "게임을 종료합니다.", MessageBoxButtons.OK);
+                        Application.Exit();
+                    }
                     break;
 
                 // 방 만들기 화면 ( MakeRoom_Screen )
                 case "cancelMakeRoom_btn":// 취소
-                    this.Controls.Clear();
-                    this.Controls.Add(mainMenu_Screen);
-                    makeRoom_Form.Close();
+                    {
+                        // 방만들기 폼을 종료하고 메인화면으로 이동
+                        this.Controls.Clear();
+                        this.Controls.Add(mainMenu_Screen);
+                        makeRoom_Form.Close();
+                    }
                     break;
                 case "make_btn":        // 만들기
-                    RequestCreateRoom(makeRoom_Form.roomTitle_TB.Text);
-                    makeRoom_Form.Close();
+                    {
+                        // 서버로 제목과 함께 방만들기 요청을 보냄
+                        RequestCreateRoom(makeRoom_Form.roomTitle_TB.Text);
+
+                        // 방만들기 폼 종료
+                        makeRoom_Form.Close();
+                    }
                     break;
 
                 // 방 찾기 화면 ( FindRoom_Screen )
                 case "enterRoom_btn": // 입장
-                    int roomKey = int.Parse(findRoom_Screen.roomList_GridView.SelectedRows[0].Cells[0].Value.ToString());
-                    RequestEnterRoom(roomKey);
+                    {
+                        // 선택한 방이 없으면 무시
+                        if (findRoom_Screen.roomList_GridView.SelectedRows.Count == 0)
+                        {
+                            return;
+                        }
+
+                        // 선택한 방( 행 )의 키를 받음
+                        int roomKey = int.Parse(findRoom_Screen.roomList_GridView.SelectedRows[0].Cells[0].Value.ToString());
+
+                        // 서버로 입장 요청
+                        RequestEnterRoom(roomKey);
+                    }
                     break;
-                case "backToMain_btn":  // 뒤로가기
-                    RequestLobbyInfo(false);
-                    this.Controls.Clear();
-                    this.Controls.Add(mainMenu_Screen);
+                case "findToMain_btn":  // 뒤로가기
+                    {
+                        // 서버로부터 받는 방목록 정보 수신을 종료함
+                        RequestLobbyInfo(false);
+
+                        // 메인화면으로 이동
+                        this.Controls.Clear();
+                        this.Controls.Add(mainMenu_Screen);
+                    }
                     break;
                 // 방 대기 화면 ( Room_Screen )  
                 case "ready_btn":       // 준비 / 준비 취소
-                    // 준비(true) 와 준비X (false) 를 전환함
-                    userCharacter.isReady = !( userCharacter.isReady );
-                    UpdateLobby();
+                    {
+                        // 유저가 준비상태에서 버튼 누름
+                        if ( userCharacter.isReady == true )
+                        {
+                            // 준비 취소 시킴
+                            RequestReady(false);
+                            userCharacter.isReady = false;
+                        }
+                        else
+                        {
+                            // 준비 상태로 만듬
+                            RequestReady(true);
+                            userCharacter.isReady = true;
+                        }
+                        UpdateLobby();
+                    }
+                    break;
+                case "lobbyToFind_btn":     // 나가기
+                    {
+                        // 서버로 방을 나갔다고 알림
+                        myClient.SendMessage($"ExitLobby#d@");
+
+                        // 방찾기화면으로 이동, 방목록 정보 수신
+                        findRoom_Screen.roomList_GridView.Rows.Clear();
+                        RequestLobbyInfo(true);
+                        this.Controls.Clear();
+                        this.Controls.Add(findRoom_Screen);
+                    }
                     break;
 
                 // 모든 화면 공용
                 case "goMain_btn":     // 메인화면으로, 뒤로가기 등..
-                    this.Controls.Clear();
-                    this.Controls.Add(mainMenu_Screen);
+                    {
+                        this.Controls.Clear();
+                        this.Controls.Add(mainMenu_Screen);
+                    }
                     break;
                 default:
                     break;
@@ -608,6 +752,12 @@ namespace MultiGame
 
             
         }
+        private void DataGridDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int roomKey = int.Parse(findRoom_Screen.roomList_GridView.SelectedRows[0].Cells[0].Value.ToString());
+            RequestEnterRoom(roomKey);
+        }
+
         #endregion
     }
 }
