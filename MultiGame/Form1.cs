@@ -51,7 +51,7 @@ namespace MultiGame
 
             // 사용자 캐릭터
             userCharacter = new ClientCharacter(-1,new Point(364,293), 0);
-            inGame_Screen.Paint += userCharacter.OnPaint;
+
 
             // 클라이언트 객체 생성
             myClient = new MyClient();
@@ -157,7 +157,15 @@ namespace MultiGame
 
                         //클라이언트 배열에서 제거
                         clientManager.RemoveClient(clientChar);
-                        UpdateLobby();
+                        inGame_Screen.Paint -= clientChar.OnPaint;
+
+
+                        // 게임이 시작하지 않았다면 로비 업데이트 
+                        if( IsGameStart == false)
+                        {
+                            UpdateLobby();
+                        }
+                        
                     }
                     break;
                 // 다른 클라이언트의 키보드 입력
@@ -234,7 +242,7 @@ namespace MultiGame
                         clientCharacter = clientManager.AddOrGetClient(key, new Point(0, 0), 1);
                         clientCharacter.isReady = false;
 
-                        inGame_Screen.Paint += clientCharacter.OnPaint;
+                        
 
                         this.Invoke(new MethodInvoker(delegate ()
                         {
@@ -280,10 +288,13 @@ namespace MultiGame
 
                         foreach (var item in clientManager.ClientDic)
                         {
+                            inGame_Screen.Paint += item.Value.OnPaint;
                             item.Value.isVisible = true;
                             item.Value.Location = new Point(0, 0);
                         }
-                        
+
+                        // 유저 캐릭터
+                        inGame_Screen.Paint += userCharacter.OnPaint;
                         userCharacter.isReady = false;
                         userCharacter.Location = new Point(0, 0);
                         userCharacter.isVisible = true;
