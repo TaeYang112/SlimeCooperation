@@ -25,9 +25,11 @@ namespace MultiGame
         private System.Threading.Timer MoveTimer;
 
         // 캐릭터 이미지
-        private Image image;
+        public Image image { get; set; }
         
         public bool isVisible { get; set; }
+        public bool isReady { get; set; }
+
 
         // 키가 눌려있는지 확인하는 변수
         public bool bLeftDown { get; set; }
@@ -48,7 +50,17 @@ namespace MultiGame
             this.Location = Location;
             size = new Size(41, 49);
             isVisible = false;
+            isReady = false;
 
+            SetSkin(skinNum);
+
+            // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
+            TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 실행시킬 메소드
+            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
+        }
+
+        public void SetSkin(int skinNum)
+        {
             switch (skinNum % 8)
             {
                 case 0:
@@ -76,12 +88,7 @@ namespace MultiGame
                     image = MultiGame.Properties.Resources.gray;
                     break;
             }
-
-            // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
-            TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 실행시킬 메소드
-            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
         }
-
 
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
         private void MoveCharacter(object stateInfo)

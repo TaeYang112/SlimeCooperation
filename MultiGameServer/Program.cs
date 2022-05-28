@@ -292,12 +292,27 @@ namespace MultiGameServer
 
             if (result == false) return;
 
+
+
             // 방 입장 ( 서버 관점 )
             room.ClientEnter(clientChar);
 
             // 방 입장을 클라이언트한테 알림
-            SendMessage($"EnterRoom#{room.key}@", clientChar.key);
+            SendMessage($"EnterRoom#{room.key}#{room.RoomTitle}@", clientChar.key);
+
+
+            // 접속한 클라이언트에게 방에 있는 클라이언트들 정보를 알려줌
+            foreach (var item2 in room.roomClientDic)
+            {
+                SendMessage($"EnterRoomOther#{item2.Key}#{item2.Value.bReady}#@", clientChar.key);
+            }
+
+            // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
+            SendMessageToAll_InRoom($"EnterRoomOther#{clientChar.key}#False#@", clientChar.RoomKey, clientChar.key);
         }
+
+
+
 
         // 로비단계에 있는 게임 방을 시작시킴
         public void RoomStart(Room room)
@@ -308,19 +323,7 @@ namespace MultiGameServer
                 // 클라이언트에게 게임이 시작하였다고 알림
                 SendMessage($"RoomStart@", item.Key);
 
-                // 접속한 클라이언트에게 방에 있는 클라이언트들 정보를 알려줌
-                foreach (var item2 in room.roomClientDic)
-                {
-                    // 본인 정보는 킷값을 -1로 전송
-                    if (item2.Key == item.Key) 
-                        SendMessage($"ClientInfo#-1#{item.Value.Location.X}#{item.Value.Location.Y}#@", item.Key);
-                    else
-                        SendMessage($"ClientInfo#{item2.Key}#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
-                }
-
-
-                // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
-                SendMessageToAll_InRoom($"ClientInfo#{item.Key}#{item.Value.Location.X}#{item.Value.Location.Y}#@",item.Value.RoomKey, item.Key);
+               
 
             }
         }

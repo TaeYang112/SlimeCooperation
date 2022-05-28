@@ -22,13 +22,22 @@ namespace MultiGame
             ClientDic = new ConcurrentDictionary<int, ClientCharacter>();
         }
 
-        public ClientCharacter AddClient(int key, Point Location, int skinNum)
+        public ClientCharacter AddOrGetClient(int key, Point Location, int skinNum)
         {
-            ClientCharacter newClientCharacter = new ClientCharacter(key, Location, skinNum);
+            ClientCharacter ClientChar = new ClientCharacter(key, Location, skinNum);
             // 새로운 클라이언트를 배열에 저장
-            ClientDic.TryAdd(key, newClientCharacter);
+            bool result = ClientDic.TryAdd(key, ClientChar);
 
-            return newClientCharacter;
+            // 이미 존재함
+            if(result == false)
+            {
+                // 이미 존재하는 클라이언트 반환
+                ClientDic.TryGetValue(key, out ClientChar);
+
+                ClientChar.Location = Location;
+                ClientChar.SetSkin(skinNum);
+            }
+            return ClientChar;
         }
 
         public void RemoveClient(ClientCharacter clientCharacter)
