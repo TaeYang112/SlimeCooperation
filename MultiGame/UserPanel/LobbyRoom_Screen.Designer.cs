@@ -52,25 +52,31 @@ namespace MultiGame.UserPanel
             // 
             // leftPicBox
             // 
+            this.leftPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.leftPicBox.Location = new System.Drawing.Point(126, 130);
             this.leftPicBox.Name = "leftPicBox";
             this.leftPicBox.Size = new System.Drawing.Size(121, 151);
+            this.leftPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.leftPicBox.TabIndex = 1;
             this.leftPicBox.TabStop = false;
             // 
             // centerPicBox
             // 
+            this.centerPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.centerPicBox.Location = new System.Drawing.Point(316, 130);
             this.centerPicBox.Name = "centerPicBox";
             this.centerPicBox.Size = new System.Drawing.Size(121, 151);
+            this.centerPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.centerPicBox.TabIndex = 2;
             this.centerPicBox.TabStop = false;
             // 
             // rightPicBox
             // 
+            this.rightPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.rightPicBox.Location = new System.Drawing.Point(518, 130);
             this.rightPicBox.Name = "rightPicBox";
             this.rightPicBox.Size = new System.Drawing.Size(121, 151);
+            this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.rightPicBox.TabIndex = 3;
             this.rightPicBox.TabStop = false;
             // 

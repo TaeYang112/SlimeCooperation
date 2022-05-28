@@ -12,11 +12,15 @@ namespace MultiGameServer
         public int key { get; }
         public ConcurrentDictionary<int, ClientCharacter> roomClientDic { get; }
         public string RoomTitle { get; set; }
+
+        public bool bGameStart { get; set; }
+
         public Room(int key, string RoomTitle)
         {
             this.key = key;
             this.RoomTitle = RoomTitle;
             roomClientDic = new ConcurrentDictionary<int, ClientCharacter>();
+            bGameStart = false;
         }
 
         public void ClientEnter(ClientCharacter clientChar)
@@ -53,6 +57,10 @@ namespace MultiGameServer
             }
         }
 
+        public int GetPeopleCount()
+        {
+            return roomClientDic.Count;
+        }
 
 
     }

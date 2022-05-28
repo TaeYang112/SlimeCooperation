@@ -51,12 +51,16 @@ namespace MultiGameServer
         // 레디 여부
         public bool bReady { get; set; }
 
+        // 방을 찾고있는지 여부
+        public bool bFindingRoom { get; set; }
+
         public ClientCharacter(int key, ClientData clientData)
         {
             this.clientData = clientData;
             this.key = key;
             Location = new Point(0, 0);
             bReady = false;
+            bFindingRoom = false;
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 이벤트 발생 처리 루틴

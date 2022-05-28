@@ -139,6 +139,9 @@ namespace MultiGameServer
             // 룸의 클라이언트 배열에서도 제거
             room.ClientLeave(clientChar);
 
+            
+            UpdateRoomInfo(room);
+
         }
 
 
@@ -276,9 +279,36 @@ namespace MultiGameServer
                             
                         }
                         break;
+                    // 클라이언트가 로비 정보 요청 / 요청 종료
+                    case "LobbyInfo":
+                        {
+                            clientChar.bFindingRoom = bool.Parse(SplitMessage[1]);
+
+                            foreach(var item in roomManager.RoomDic)
+                            {
+                                if(item.Value.bGameStart == false)
+                                {
+                                    SendMessage($"RoomList#Add#{item.Value.key}#{item.Value.RoomTitle}#{item.Value.GetPeopleCount()}@",clientChar.key);
+                                }
+                            }
+                        }
+                        break;
                     default:
                         Console.WriteLine("디폴트 : {0}", Messages[i]);
                         break;
+                }
+            }
+        }
+
+
+        // 방찾기 화면에 있는 클라이언트들에게 방의 인원수가 바뀐것을 알림
+        public void UpdateRoomInfo(Room room)
+        {
+            foreach(var item in clientManager.ClientDic)
+            {
+                if (item.Value.bFindingRoom == true)
+                {
+                    SendMessage($"RoomList#Update#{room.key}#{room.GetPeopleCount()}@", item.Key);
                 }
             }
         }
@@ -302,9 +332,10 @@ namespace MultiGameServer
 
 
             // 접속한 클라이언트에게 방에 있는 클라이언트들 정보를 알려줌
-            foreach (var item2 in room.roomClientDic)
+            foreach (var item in room.roomClientDic)
             {
-                SendMessage($"EnterRoomOther#{item2.Key}#{item2.Value.bReady}#@", clientChar.key);
+                if (item.Key == clientChar.key) continue;
+                SendMessage($"EnterRoomOther#{item.Key}#{item.Value.bReady}#@", clientChar.key);
             }
 
             // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
@@ -322,9 +353,6 @@ namespace MultiGameServer
             {
                 // 클라이언트에게 게임이 시작하였다고 알림
                 SendMessage($"RoomStart@", item.Key);
-
-               
-
             }
         }
         
@@ -380,6 +408,7 @@ namespace MultiGameServer
             // 방 안의 다른 클라이언트에도 이 클라이언트가 있어야할 위치를 알려줌
             SendMessageToAll_InRoom($"Location#{clientChar.key}#{clientChar.Location.X}#{clientChar.Location.Y}#@",clientChar.RoomKey ,clientChar.key);
         }
+
     }
 
 }
