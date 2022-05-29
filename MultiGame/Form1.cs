@@ -135,7 +135,32 @@ namespace MultiGame
                 // 클라이언트 정보 업데이트
                 case "UpdateClient":
                     {
+                        // 플레이어 번호
+                        int key = int.Parse(SplitMessage[1]);
 
+                        // 스킨 번호
+                        int skinNum = int.Parse(SplitMessage[2]);
+
+                        ClientCharacter client;
+
+                        // key == -1 ( 유저 캐릭터 )
+                        if (key == -1)
+                            client = userCharacter;
+                        else
+                        {
+                            // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
+                            bool result = clientManager.ClientDic.TryGetValue(key, out client);
+
+                            // 해당 클라이언트가 존재하지 않을경우 리턴
+                            if (result == false) return;
+                        }
+
+                        client.SetSkin(skinNum);
+
+                        this.Invoke(new MethodInvoker(delegate ()
+                        {
+                            UpdateLobby();
+                        }));
                     }
                     break;
                 // 다른 클라이언트가 방을 나감
@@ -236,12 +261,15 @@ namespace MultiGame
                         // 레디 여부
                         bool bReady = bool.Parse(SplitMessage[2]);
 
+                        // 스킨 번호
+                        int skinNum = int.Parse(SplitMessage[3]);
+
                         ClientCharacter clientCharacter;
 
                         // 새로운 클라이언트 생성
                         clientCharacter = clientManager.AddOrGetClient(key, new Point(0, 0), 1);
                         clientCharacter.isReady = false;
-
+                        clientCharacter.SetSkin(skinNum);
                         
 
                         this.Invoke(new MethodInvoker(delegate ()

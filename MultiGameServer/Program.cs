@@ -428,16 +428,18 @@ namespace MultiGameServer
             // 방 입장을 클라이언트한테 알림
             SendMessage($"EnterRoom#{room.key}#{room.RoomTitle}@", clientChar.key);
 
+            // 자신의 정보를 알려줌
+            SendMessage($"UpdateClient#-1#{clientChar.SkinNum}@", clientChar.key);
 
             // 접속한 클라이언트에게 방에 있는 클라이언트들 정보를 알려줌
             foreach (var item in room.roomClientDic)
             {
                 if (item.Key == clientChar.key) continue;
-                SendMessage($"EnterRoomOther#{item.Key}#{item.Value.bReady}#@", clientChar.key);
+                SendMessage($"EnterRoomOther#{item.Key}#{item.Value.bReady}#{item.Value.SkinNum}@", clientChar.key);
             }
 
             // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
-            SendMessageToAll_InRoom($"EnterRoomOther#{clientChar.key}#False#@", clientChar.RoomKey, clientChar.key);
+            SendMessageToAll_InRoom($"EnterRoomOther#{clientChar.key}#False#{clientChar.SkinNum}@", clientChar.RoomKey, clientChar.key);
         }
 
 
