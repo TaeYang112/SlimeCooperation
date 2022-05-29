@@ -32,6 +32,9 @@ namespace MultiGameServer
         // 캐릭터의 위치
         public Point Location { get; set; }
 
+        // 캐릭터 스킨 번호
+        public int SkinNum { get; set; }
+
         // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
         private System.Threading.Timer MoveTimer;
         // 캐릭터가 움직이기 시작하면 주기적으로 호출 ( 캐릭터의 위치를 클라이언트와 동기화 하기 위해 사용 )
