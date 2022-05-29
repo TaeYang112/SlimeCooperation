@@ -8,11 +8,14 @@ using System.Threading;
 namespace MultiGame
 {
     public delegate void TakeMessageEventHandler(string message);
-
+    public delegate void ExceptionEventHandler(Exception exception);
     public class MyClient
     {
         // 서버로부터 메세지가 도착하면 이벤트 알림
         public event TakeMessageEventHandler TakeMessage;
+
+        // 에러가 발생하면 이벤트 알림
+        public event ExceptionEventHandler onException;
 
         // 메세지 버퍼
         private byte[] readByteData;
@@ -83,8 +86,15 @@ namespace MultiGame
             // 서버로 메세지 전송 하기 위한 string to byte 형변환
             byte[] buf = Encoding.Default.GetBytes(message);
 
-            // 서버로 write
-            client.GetStream().Write(buf, 0, buf.Length);
+            try
+            {
+                // 서버로 write
+                client.GetStream().Write(buf, 0, buf.Length);
+            }
+            catch(System.InvalidOperationException e)
+            {
+                onException(e);
+            }
         }
 
         private void OnMessageReceive(IAsyncResult ar)
