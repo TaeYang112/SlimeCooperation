@@ -57,9 +57,10 @@ namespace MultiGame
             myClient = new MyClient();
 
             // 서버로부터 메세지를 받으면 onTakeMessage함수 호출
-            myClient.TakeMessage += new TakeMessageEventHandler(TakeMessage);
+            myClient.TakeMessage += TakeMessage;
 
-            
+            // 서버로부터 에러를 받으면 TakeException 함수 호출
+            myClient.onException += TakeException;
 
             this.Controls.Add(mainMenu_Screen);
         }
@@ -90,6 +91,16 @@ namespace MultiGame
             {
                 // 메세지 해석
                 ParseMessage(Messages[i]);
+            }
+        }
+
+        // TCP 통신중 발생한 에러 처리
+        private void TakeException(Exception e)
+        {
+            if (e.GetType().ToString() == "System.InvalidOperationException")
+            {
+                MessageBox.Show("서버와 연결되어있지 않습니다.", $"에러코드 : {-1}", MessageBoxButtons.OK);
+                Application.Exit();
             }
         }
 
@@ -441,7 +452,7 @@ namespace MultiGame
             myClient.SendMessage($"TryEnterRoom#{i}@");
         }
 
-        // 준비
+        // 준비 요청
         public void RequestReady(bool bReady)
         {
             myClient.SendMessage($"Ready#{bReady}@");
@@ -467,8 +478,6 @@ namespace MultiGame
 
                 if (count > 2) break;
             }
-
-
 
 
             // 로비화면 캐릭터 이미지 업데이트
