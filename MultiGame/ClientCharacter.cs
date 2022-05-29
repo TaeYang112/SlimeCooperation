@@ -9,6 +9,9 @@ using System.Drawing;
 
 namespace MultiGame
 {
+
+   
+
     // Client 정보를 갖는 클래스
     public class ClientCharacter
     {
@@ -26,7 +29,10 @@ namespace MultiGame
 
         // 캐릭터 이미지
         public Image image { get; set; }
-        
+
+        // 플레이어가 쳐다보는 방향
+        private Direction lookingDirection;
+
         public bool isVisible { get; set; }
         public bool isReady { get; set; }
 
@@ -34,6 +40,14 @@ namespace MultiGame
         // 키가 눌려있는지 확인하는 변수
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
+
+
+        public enum Direction
+        {
+            Default,
+            Left,
+            Right
+        }
 
         ~ClientCharacter()
         {
@@ -51,6 +65,7 @@ namespace MultiGame
             size = new Size(41, 49);
             isVisible = false;
             isReady = false;
+            lookingDirection = Direction.Right;
 
             SetSkin(skinNum);
 
@@ -94,13 +109,26 @@ namespace MultiGame
         private void MoveCharacter(object stateInfo)
         {
             Point Loc = Location;
+            Direction moveDirection = Direction.Default;
 
             // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
-            if (bLeftDown == true) Loc.X -= 1;
+            if (bLeftDown == true)
+            {
+                Loc.X -= 1;
+                moveDirection = Direction.Left;
+            }
 
             // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
-            if (bRightDown == true) Loc.X += 1;                                              
+            if (bRightDown == true)
+            {
+                Loc.X += 1;
+                moveDirection = Direction.Right;
+            }
 
+            // 움직인 방향에 따라 이미지를 뒤집음
+            PlipImageWithDirection(moveDirection);
+
+            // 좌표 대입
             Location = Loc;
         }
 
@@ -119,8 +147,26 @@ namespace MultiGame
             if (isVisible == false) return;
 
              var e = pe.Graphics;
+                
              e.DrawImage(image,new Rectangle(Location, size ));
             
+        }
+
+        public void PlipImageWithDirection(Direction moveDirection)
+        {
+            // 움직이지 않고 있다면 리턴
+            if (moveDirection == Direction.Default)
+            {
+                return;
+            }
+
+            // 움직이는 방향과 쳐다보는 방향이 다르면 뒤집음
+            if( lookingDirection != moveDirection)
+            {
+                image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                lookingDirection = moveDirection;
+            }
+
         }
     }
 }
