@@ -32,7 +32,8 @@ namespace MultiGame
 
         // 플레이어가 쳐다보는 방향
         private Direction lookingDirection;
-
+        // 플레이어가 움직이는 방향
+        private Direction movingDirection;
         public bool isVisible { get; set; }
         public bool isReady { get; set; }
 
@@ -66,6 +67,7 @@ namespace MultiGame
             isVisible = false;
             isReady = false;
             lookingDirection = Direction.Right;
+            movingDirection = Direction.Default;
 
             SetSkin(skinNum);
 
@@ -79,28 +81,28 @@ namespace MultiGame
             switch (skinNum % 8)
             {
                 case 0:
-                    image = MultiGame.Properties.Resources.red;
+                    image = MultiGame.Properties.Resources.red.Clone() as Image;
                     break;
                 case 1:
-                    image = MultiGame.Properties.Resources.orange;
+                    image = MultiGame.Properties.Resources.orange.Clone() as Image;
                     break;
                 case 2:
-                    image = MultiGame.Properties.Resources.yellow;
+                    image = MultiGame.Properties.Resources.yellow.Clone() as Image;
                     break;
                 case 3:
-                    image = MultiGame.Properties.Resources.green;
+                    image = MultiGame.Properties.Resources.green.Clone() as Image;
                     break;
                 case 4:
-                    image = MultiGame.Properties.Resources.blue;
+                    image = MultiGame.Properties.Resources.blue.Clone() as Image;
                     break;
                 case 5:
-                    image = MultiGame.Properties.Resources.purple;
+                    image = MultiGame.Properties.Resources.purple.Clone() as Image;
                     break;
                 case 6:
-                    image = MultiGame.Properties.Resources.pink;
+                    image = MultiGame.Properties.Resources.pink.Clone() as Image;
                     break;
                 case 7:
-                    image = MultiGame.Properties.Resources.gray;
+                    image = MultiGame.Properties.Resources.gray.Clone() as Image;
                     break;
             }
         }
@@ -109,24 +111,20 @@ namespace MultiGame
         private void MoveCharacter(object stateInfo)
         {
             Point Loc = Location;
-            Direction moveDirection = Direction.Default;
 
             // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
             if (bLeftDown == true)
             {
                 Loc.X -= 1;
-                moveDirection = Direction.Left;
+                movingDirection = Direction.Left;
             }
 
             // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
             if (bRightDown == true)
             {
                 Loc.X += 1;
-                moveDirection = Direction.Right;
+                movingDirection = Direction.Right;
             }
-
-            // 움직인 방향에 따라 이미지를 뒤집음
-            PlipImageWithDirection(moveDirection);
 
             // 좌표 대입
             Location = Loc;
@@ -147,24 +145,27 @@ namespace MultiGame
             if (isVisible == false) return;
 
              var e = pe.Graphics;
-                
-             e.DrawImage(image,new Rectangle(Location, size ));
+
+            // 움직인 방향에 따라 이미지를 뒤집음
+            PlipImageWithDirection();
+
+            e.DrawImage(image,new Rectangle(Location, size ));
             
         }
 
-        public void PlipImageWithDirection(Direction moveDirection)
+        private void PlipImageWithDirection()
         {
             // 움직이지 않고 있다면 리턴
-            if (moveDirection == Direction.Default)
+            if (movingDirection == Direction.Default)
             {
                 return;
             }
 
             // 움직이는 방향과 쳐다보는 방향이 다르면 뒤집음
-            if( lookingDirection != moveDirection)
+            if( lookingDirection != movingDirection)
             {
                 image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                lookingDirection = moveDirection;
+                lookingDirection = movingDirection;
             }
 
         }

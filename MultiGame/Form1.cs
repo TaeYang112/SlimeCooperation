@@ -481,7 +481,7 @@ namespace MultiGame
 
 
             // 로비화면 캐릭터 이미지 업데이트
-            lobbyRoom_Screen.centerPicBox.Image = userCharacter.image;
+            lobbyRoom_Screen.centerPicBox.Image = userCharacter.image.Clone() as Image;
 
             // 레디했으면 레디버튼 삽입
             if (userCharacter.isReady == true)
@@ -501,7 +501,7 @@ namespace MultiGame
             }
             else
             {
-                lobbyRoom_Screen.leftPicBox.Image = clientChar[0].image;
+                lobbyRoom_Screen.leftPicBox.Image = clientChar[0].image.Clone() as Image;
 
                 // 레디 했으면 레디버튼 삽입
                 if (clientChar[0].isReady == true)
@@ -523,7 +523,7 @@ namespace MultiGame
             }
             else
             {
-                lobbyRoom_Screen.rightPicBox.Image = clientChar[1].image;
+                lobbyRoom_Screen.rightPicBox.Image = clientChar[1].image.Clone() as Image;
 
                 // 레디 했으면 레디버튼 삽입
                 if (clientChar[1].isReady == true)
