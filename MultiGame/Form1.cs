@@ -803,6 +803,7 @@ namespace MultiGame
                         // 방찾기화면으로 이동, 방목록 정보 수신
                         findRoom_Screen.roomList_GridView.Rows.Clear();
                         RequestLobbyInfo(true);
+                        clientManager.ClientDic.Clear();
 
                         userCharacter.isReady = false;
                         this.Controls.Clear();
