@@ -279,7 +279,7 @@ namespace MultiGame
 
                         // 새로운 클라이언트 생성
                         clientCharacter = clientManager.AddOrGetClient(key, new Point(0, 0), 1);
-                        clientCharacter.isReady = false;
+                        clientCharacter.isReady = bReady;
                         clientCharacter.SetSkin(skinNum);
                         
 
