@@ -32,6 +32,8 @@ namespace MultiGameServer
         // 캐릭터의 위치
         public Point Location { get; set; }
 
+        public Size size { get; set; }
+
         // 캐릭터 스킨 번호
         public int SkinNum { get; set; }
 
@@ -62,6 +64,7 @@ namespace MultiGameServer
             this.clientData = clientData;
             this.key = key;
             Location = new Point(0, 0);
+            size = new Size(41, 49);
             bReady = false;
             bFindingRoom = false;
 
@@ -101,7 +104,8 @@ namespace MultiGameServer
             if (bLeftDown == true) Loc.X -= 1;
             if (bRightDown == true) Loc.X += 1;
 
-            Location = Loc;
+            //Location = Loc;
+            Program.GetInstance().MoveObject(this, Loc);
             // Console.WriteLine($"X : {Loc.X}    Y : {Loc.Y}");
         }
 

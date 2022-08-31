@@ -126,8 +126,7 @@ namespace MultiGame
                 movingDirection = Direction.Right;
             }
 
-            // 좌표 대입
-            Location = Loc;
+            GameManager.GetInstance().MoveObject(this, Loc);
         }
 
         public void MoveStart()
@@ -147,13 +146,13 @@ namespace MultiGame
              var e = pe.Graphics;
 
             // 움직인 방향에 따라 이미지를 뒤집음
-            PlipImageWithDirection();
+            FlipImageWithDirection();
 
             e.DrawImage(image,new Rectangle(Location, size ));
             
         }
 
-        private void PlipImageWithDirection()
+        private void FlipImageWithDirection()
         {
             // 움직이지 않고 있다면 리턴
             if (movingDirection == Direction.Default)
