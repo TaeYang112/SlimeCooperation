@@ -62,7 +62,7 @@ namespace MultiGame
                 try
                 {
                     // 서버에 연결 ( 서버IP, 포트 )
-                    client.Connect("222.108.250.61", 8898);
+                    client.Connect("119.196.90.61", 8898);
                 }
                 catch
                 {
@@ -74,7 +74,7 @@ namespace MultiGame
                 Console.WriteLine("서버에 접속하였습니다.");
                 break;
             }
-
+            
             // 서버로 부터 메세지를 받을경우 OnMessageReceive 메소드 호출
             client.GetStream().BeginRead(readByteData, 0, readByteData.Length, new AsyncCallback(OnMessageReceive), null);
         }

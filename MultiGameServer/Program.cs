@@ -12,6 +12,8 @@ namespace MultiGameServer
 {
     class Program
     {
+        public static Program program = null;
+
         // TCP 서버를 관리하고 클라이언트와 통신하는 객체
         private MyServer server;
 
@@ -26,7 +28,7 @@ namespace MultiGameServer
 
         static void Main(string[] args)
         {
-            Program program = new Program();
+            Program program = Program.GetInstance();
             program.Start();
 
             while(true)
@@ -77,7 +79,16 @@ namespace MultiGameServer
 
         }
 
-        public Program()
+        public static Program GetInstance()
+        {
+            if(program == null)
+            {
+                program = new Program();
+            }
+            return program;
+        }
+
+        private Program()
         {
             server = new MyServer();
             server.ClientJoin += new ClientJoinEventHandler(OnClientJoin);
@@ -450,11 +461,30 @@ namespace MultiGameServer
         {
             room.bGameStart = true;
 
-            
-            foreach(var item in room.roomClientDic)
+            // 내부적으로 각 클라이언트 시작 위치 설정
+            int X = 0;
+            foreach (var item in room.roomClientDic)
+            {
+                item.Value.Location = new Point(X,300);
+                X += 100;
+            }
+
+            foreach (var item in room.roomClientDic)
             {
                 // 클라이언트에게 게임이 시작하였다고 알림
                 SendMessage($"RoomStart@", item.Key);
+
+                // 클라이언트들의 시작 위치를 알려줌
+                foreach (var item2 in room.roomClientDic)
+                {
+                    // 해당 클라이언트의 위치 전송
+                    if (item.Key == item2.Key)
+                        SendMessage($"Location#-1#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
+
+                    // 각 플레이어들의 위치를 전송
+                    else
+                        SendMessage($"Location#{item2.Key}#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
+                }
             }
         }
         
@@ -509,6 +539,29 @@ namespace MultiGameServer
 
             // 방 안의 다른 클라이언트에도 이 클라이언트가 있어야할 위치를 알려줌
             SendMessageToAll_InRoom($"Location#{clientChar.key}#{clientChar.Location.X}#{clientChar.Location.Y}#@",clientChar.RoomKey ,clientChar.key);
+        }
+
+        // 오브젝트 이동
+        public void MoveObject(ClientCharacter client, Point newLocation)
+        {
+            // 모든 오브젝트를 가져옴
+            foreach (var item in clientManager.ClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                // 자기 자신은 무시
+                if (otherClient == client) continue;
+
+                Rectangle a = new Rectangle(newLocation, client.size);
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return;
+                }
+            }
+            client.Location = newLocation;
         }
 
     }
