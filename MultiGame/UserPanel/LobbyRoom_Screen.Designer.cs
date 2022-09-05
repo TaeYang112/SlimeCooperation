@@ -62,7 +62,7 @@ namespace MultiGame.UserPanel
             this.leftPicBox.Location = new System.Drawing.Point(126, 130);
             this.leftPicBox.Name = "leftPicBox";
             this.leftPicBox.Size = new System.Drawing.Size(121, 151);
-            this.leftPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.leftPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.leftPicBox.TabIndex = 1;
             this.leftPicBox.TabStop = false;
             // 
@@ -72,7 +72,7 @@ namespace MultiGame.UserPanel
             this.centerPicBox.Location = new System.Drawing.Point(316, 130);
             this.centerPicBox.Name = "centerPicBox";
             this.centerPicBox.Size = new System.Drawing.Size(121, 151);
-            this.centerPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.centerPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.centerPicBox.TabIndex = 2;
             this.centerPicBox.TabStop = false;
             // 
@@ -82,7 +82,7 @@ namespace MultiGame.UserPanel
             this.rightPicBox.Location = new System.Drawing.Point(518, 130);
             this.rightPicBox.Name = "rightPicBox";
             this.rightPicBox.Size = new System.Drawing.Size(121, 151);
-            this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.rightPicBox.TabIndex = 3;
             this.rightPicBox.TabStop = false;
             // 
