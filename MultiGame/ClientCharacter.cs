@@ -63,7 +63,7 @@ namespace MultiGame
             bLeftDown = false;
             bRightDown = false;
             this.Location = Location;
-            size = new Size(41, 49);
+            size = new Size(70, 70);
             isVisible = false;
             isReady = false;
             lookingDirection = Direction.Right;
