@@ -82,7 +82,7 @@ namespace MultiGame.UserPanel
             this.rightPicBox.Location = new System.Drawing.Point(518, 130);
             this.rightPicBox.Name = "rightPicBox";
             this.rightPicBox.Size = new System.Drawing.Size(121, 151);
-            this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.rightPicBox.TabIndex = 3;
             this.rightPicBox.TabStop = false;
             // 

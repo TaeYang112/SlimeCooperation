@@ -234,6 +234,15 @@ namespace MultiGame
                     
                 return true;
             }
+
+            // 점프
+            if (keyData == Keys.Space)
+            {
+                userCharacter.Jump();
+
+                gameManager.SendInputedKey('J', true);
+                return true;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 

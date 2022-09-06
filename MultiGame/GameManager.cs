@@ -215,6 +215,9 @@ namespace MultiGame
                             case 'R':
                                 client.bRightDown = bKeyDown;
                                 break;
+                            case 'J':
+                                client.Jump();
+                                break;
                         }
                         if (bKeyDown == true) client.MoveStart();
                         else if (!(client.bLeftDown || client.bRightDown))
@@ -442,8 +445,10 @@ namespace MultiGame
         // 오브젝트 이동
         public void MoveObject(ClientCharacter client, Point newLocation)
         {
+            if (newLocation.Y >= 400) return;
+
             // 움직인 캐릭터가  자신과 부딪히는지 체크함
-            if(client != userCharacter)
+            if (client != userCharacter)
             {
                 Rectangle a = new Rectangle(newLocation, client.size);
                 Rectangle b = new Rectangle(userCharacter.Location, userCharacter.size);
