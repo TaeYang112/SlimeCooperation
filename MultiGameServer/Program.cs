@@ -224,6 +224,9 @@ namespace MultiGameServer
                                 case 'R':
                                     clientChar.bRightDown = bKeyDown;
                                     break;
+                                case 'J':
+                                    clientChar.Jump();
+                                    break;
                             }
                             // 키가 눌렸다면 움직임 타이머 시작
                             if (bKeyDown == true)
@@ -465,7 +468,7 @@ namespace MultiGameServer
             int X = 0;
             foreach (var item in room.roomClientDic)
             {
-                item.Value.Location = new Point(X,300);
+                item.Value.Location = new Point(X,00);
                 X += 100;
             }
 
@@ -485,6 +488,12 @@ namespace MultiGameServer
                     else
                         SendMessage($"Location#{item2.Key}#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
                 }
+            }
+
+
+            foreach (var item in room.roomClientDic)
+            {
+                item.Value.GameStart();
             }
         }
         
@@ -544,6 +553,7 @@ namespace MultiGameServer
         // 오브젝트 이동
         public void MoveObject(ClientCharacter client, Point newLocation)
         {
+            if(newLocation.Y >= 400) return;
             // 모든 오브젝트를 가져옴
             foreach (var item in clientManager.ClientDic)
             {

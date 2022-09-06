@@ -42,12 +42,21 @@ namespace MultiGameServer
         // 캐릭터가 움직이기 시작하면 주기적으로 호출 ( 캐릭터의 위치를 클라이언트와 동기화 하기 위해 사용 )
         private System.Threading.Timer SyncTimer;
 
+        private System.Threading.Timer GravityTimer;
+
+        private System.Threading.Timer JumpTimer;
+
+        private Semaphore sema;
+
         // 캐릭터의 위치를 클라이언트와 동기화 하기 위한 이벤트
         public event LocSyncEventHandler LocationSync;                                      
 
         // 클라이언트의 키 입력을 관리하는 속성
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
+
+        // 점프중인지
+        public bool isJump { get; set; }
 
         // 현재 클라이언트가 속해 있는 방 키
         public int RoomKey { get; set; }                                                    
@@ -64,9 +73,10 @@ namespace MultiGameServer
             this.clientData = clientData;
             this.key = key;
             Location = new Point(0, 0);
-            size = new Size(41, 49);
+            size = new Size(50, 50);
             bReady = false;
             bFindingRoom = false;
+            isJump = false;
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 이벤트 발생 처리 루틴
@@ -76,6 +86,14 @@ namespace MultiGameServer
             //  캐릭터가 움직이기 시작하면 주기적으로 호출 ( 캐릭터의 위치를 클라이언트와 동기화 하기 위해 사용 )
             TimerCallback tc2 = new TimerCallback(LocationSyncFunc);
             SyncTimer = new System.Threading.Timer(tc2, null, Timeout.Infinite, Timeout.Infinite);
+
+            TimerCallback tc3 = new TimerCallback(Gravity);                                    // 실행시킬 메소드
+            GravityTimer = new System.Threading.Timer(tc3, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
+
+            TimerCallback tc4 = new TimerCallback(JumpStop);                                    // 실행시킬 메소드
+            JumpTimer = new System.Threading.Timer(tc4, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
+
+            sema = new Semaphore(1, 1);
         }
 
 
@@ -84,22 +102,29 @@ namespace MultiGameServer
         {
             MoveTimer.Dispose();
             SyncTimer.Dispose();
+            GravityTimer.Dispose();
+        }
+
+        public void GameStart()
+        {
+            SyncTimer.Change(0, 200);
+            GravityTimer.Change(0, 5);
         }
 
         public void MoveStart()
         { 
             MoveTimer.Change(0, 5);
-            SyncTimer.Change(200, 200);
         }
 
         public void MoveStop()
         {
             MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            SyncTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void MoveCharacter(object clientArgs)
         {
+            sema.WaitOne();
+
             Point Loc = Location;
             if (bLeftDown == true) Loc.X -= 1;
             if (bRightDown == true) Loc.X += 1;
@@ -107,6 +132,38 @@ namespace MultiGameServer
             //Location = Loc;
             Program.GetInstance().MoveObject(this, Loc);
             // Console.WriteLine($"X : {Loc.X}    Y : {Loc.Y}");
+
+            sema.Release();
+        }
+
+        private void Gravity(object stateInfo)
+        {
+            sema.WaitOne();
+
+            Point Loc = Location;
+
+            if (isJump)
+            {
+                Loc.Y -= 2;
+            }
+            else
+            {
+                Loc.Y += 1;
+            }
+            Program.GetInstance().MoveObject(this, Loc);
+
+            sema.Release();
+        }
+
+        public void Jump()
+        {
+            isJump = true;
+            JumpTimer.Change(800, Timeout.Infinite);
+        }
+
+        public void JumpStop(object stateInfo)
+        {
+            isJump = false;
         }
 
         private void LocationSyncFunc(object clientArgs)
