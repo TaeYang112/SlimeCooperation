@@ -39,14 +39,13 @@ namespace MultiGameServer
 
         // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
         private System.Threading.Timer MoveTimer;
+
         // 캐릭터가 움직이기 시작하면 주기적으로 호출 ( 캐릭터의 위치를 클라이언트와 동기화 하기 위해 사용 )
         private System.Threading.Timer SyncTimer;
 
-        private System.Threading.Timer GravityTimer;
-
+        // 언제 점프를 멈추게 정하는 타이머 ( 점프 지속시간 결정 )
         private System.Threading.Timer JumpTimer;
 
-        private Semaphore sema;
 
         // 캐릭터의 위치를 클라이언트와 동기화 하기 위한 이벤트
         public event LocSyncEventHandler LocationSync;                                      
@@ -73,7 +72,7 @@ namespace MultiGameServer
             this.clientData = clientData;
             this.key = key;
             Location = new Point(0, 0);
-            size = new Size(50, 50);
+            size = new Size(60, 50);
             bReady = false;
             bFindingRoom = false;
             isJump = false;
@@ -82,18 +81,14 @@ namespace MultiGameServer
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 이벤트 발생 처리 루틴
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
 
-
             //  캐릭터가 움직이기 시작하면 주기적으로 호출 ( 캐릭터의 위치를 클라이언트와 동기화 하기 위해 사용 )
             TimerCallback tc2 = new TimerCallback(LocationSyncFunc);
             SyncTimer = new System.Threading.Timer(tc2, null, Timeout.Infinite, Timeout.Infinite);
 
-            TimerCallback tc3 = new TimerCallback(Gravity);                                    // 실행시킬 메소드
-            GravityTimer = new System.Threading.Timer(tc3, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
-
-            TimerCallback tc4 = new TimerCallback(JumpStop);                                    // 실행시킬 메소드
+            // 언제 점프를 멈추게 정하는 타이머 ( 점프 지속시간 결정 )
+            TimerCallback tc4 = new TimerCallback(JumpStop);                                         // 실행시킬 메소드
             JumpTimer = new System.Threading.Timer(tc4, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
 
-            sema = new Semaphore(1, 1);
         }
 
 
@@ -102,63 +97,43 @@ namespace MultiGameServer
         {
             MoveTimer.Dispose();
             SyncTimer.Dispose();
-            GravityTimer.Dispose();
         }
 
         public void GameStart()
         {
             SyncTimer.Change(0, 200);
-            GravityTimer.Change(0, 5);
-        }
-
-        public void MoveStart()
-        { 
             MoveTimer.Change(0, 5);
-        }
-
-        public void MoveStop()
-        {
-            MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void MoveCharacter(object clientArgs)
         {
-            sema.WaitOne();
-
-            Point Loc = Location;
-            if (bLeftDown == true) Loc.X -= 1;
-            if (bRightDown == true) Loc.X += 1;
-
-            //Location = Loc;
-            Program.GetInstance().MoveObject(this, Loc);
-            // Console.WriteLine($"X : {Loc.X}    Y : {Loc.Y}");
-
-            sema.Release();
-        }
-
-        private void Gravity(object stateInfo)
-        {
-            sema.WaitOne();
-
             Point Loc = Location;
 
+            // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
+            if (bLeftDown == true) 
+                Loc.X -= 2;
+
+            // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
+            if (bRightDown == true) 
+                Loc.X += 2;
+
+            // 중력
             if (isJump)
             {
-                Loc.Y -= 2;
+                Loc.Y -= 3;
             }
             else
             {
-                Loc.Y += 1;
+                Loc.Y += 3;
             }
-            Program.GetInstance().MoveObject(this, Loc);
 
-            sema.Release();
+            Program.GetInstance().MoveObject(this, Loc);
         }
 
         public void Jump()
         {
             isJump = true;
-            JumpTimer.Change(800, Timeout.Infinite);
+            JumpTimer.Change(300, Timeout.Infinite);
         }
 
         public void JumpStop(object stateInfo)

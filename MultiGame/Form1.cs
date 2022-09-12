@@ -46,6 +46,12 @@ namespace MultiGame
             InitializeComponent();
             InitializeScreen();
 
+            // 최적화
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
             gameManager = GameManager.GetInstance();
 
             this.Controls.Add(mainMenu_Screen);
@@ -210,9 +216,6 @@ namespace MultiGame
 
                     // 서버한테 이동을 시작했다고 알림
                     gameManager.SendInputedKey('L', true);
-
-                    // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
-                    userCharacter.MoveStart();
                 }
                 return true;
             }
@@ -226,10 +229,7 @@ namespace MultiGame
                     userCharacter.bRightDown = true;
 
                     // 서버한테 이동을 시작했다고 알림
-                    gameManager.SendInputedKey('R', true);
-
-                    // MoveCharacter_timer을 주기적으로 호출하는 타이머 시작
-                    userCharacter.MoveStart();                                            
+                    gameManager.SendInputedKey('R', true);                                        
                 }
                     
                 return true;
@@ -276,8 +276,6 @@ namespace MultiGame
                     gameManager.SendInputedKey('R', false);
                     break;
             }
-            // 왼쪽과 오른쪽 모두 떼어져 있다면 캐릭터 이동 타이머를 멈춤
-            if (!(userCharacter.bLeftDown || userCharacter.bRightDown)) userCharacter.MoveStop();     
         }
 
 
@@ -302,9 +300,6 @@ namespace MultiGame
             // 오른쪽 키가 떼어졌다고 설정 후 서버에 알림
             userCharacter.bRightDown = false;                                                           
             gameManager.SendInputedKey('R', false);
-
-            // 이동이 중단되었기 때문에 이동 타이머 멈춤
-            userCharacter.MoveStop();
 
         }
 
@@ -448,13 +443,7 @@ namespace MultiGame
 
         #endregion
 
-        public class ddff
-        {
-            public static void GetInstance()
-            {
 
-            }
-        }
     }
 
     

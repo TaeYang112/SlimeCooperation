@@ -16,5 +16,11 @@ namespace MultiGame.UserPanel
         {
             InitializeComponent();
         }
+
+        private void roomTitle_TB_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                make_btn.PerformClick();
+        }
     }
 }

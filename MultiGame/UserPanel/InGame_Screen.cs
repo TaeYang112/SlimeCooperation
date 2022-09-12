@@ -24,14 +24,19 @@ namespace MultiGame.UserPanel
             TimerCallback tc = new TimerCallback(Update);
             UpdateTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
 
-            this.DoubleBuffered = true;
+            // 최적화
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         }
 
         public void StartUpdateScreen(bool bStart)
         {
             if(bStart == true)
             {
-                UpdateTimer.Change(0,10);
+                UpdateTimer.Change(0,5);
             }
             else
             {

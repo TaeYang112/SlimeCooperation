@@ -158,7 +158,7 @@ namespace MultiGame
                     }
                     break;
                 // 다른 클라이언트가 방을 나감
-                case "LeaveRoom":
+                case "LeaveRoomOther":
                     {
                         // 플레이어 번호
                         int key = int.Parse(SplitMessage[1]);
@@ -188,7 +188,7 @@ namespace MultiGame
                     }
                     break;
                 // 다른 클라이언트의 키보드 입력
-                case "KeyInput":
+                case "KeyInputOther":
                     {
                         // 플레이어 번호
                         int key = int.Parse(SplitMessage[1]);
@@ -218,11 +218,6 @@ namespace MultiGame
                             case 'J':
                                 client.Jump();
                                 break;
-                        }
-                        if (bKeyDown == true) client.MoveStart();
-                        else if (!(client.bLeftDown || client.bRightDown))
-                        {
-                            client.MoveStop();
                         }
 
                     }
@@ -300,10 +295,13 @@ namespace MultiGame
                         }));
                     }
                     break;
-                // 게임시 시작함
+                // 게임이 시작함
                 case "RoomStart":
                     {
+                        // 플래그 변수 변경
                         IsGameStart = true;
+
+                        // 인게임 화면으로 변경
                         form1.Invoke(new MethodInvoker(delegate ()
                         {
                             form1.Controls.Clear();
@@ -311,16 +309,22 @@ namespace MultiGame
                             form1.inGame_Screen.StartUpdateScreen(true);
                         }));
 
+                        // 각 캐릭터들 설정
                         foreach (var item in clientManager.ClientDic)
                         {
+                            // 화면에 출력
                             form1.inGame_Screen.Paint += item.Value.OnPaint;
                             item.Value.isVisible = true;
+
+                            // 움직임 시작
+                            item.Value.GameStart();
                         }
 
                         // 유저 캐릭터
                         form1.inGame_Screen.Paint += userCharacter.OnPaint;
                         userCharacter.isReady = false;
                         userCharacter.isVisible = true;
+                        userCharacter.GameStart();
                     }
                     break;
                 // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
@@ -442,35 +446,79 @@ namespace MultiGame
             myClient.SendMessage($"Ready#{bReady}@");
         }
 
+
         // 오브젝트 이동
         public void MoveObject(ClientCharacter client, Point newLocation)
         {
-            if (newLocation.Y >= 400) return;
+            Point resultLoc = client.Location;
+            Point tempLoc;
 
-            // 움직인 캐릭터가  자신과 부딪히는지 체크함
+            // X의 변화가 있다면 x의 변화에 대한 충돌판정
+            if (newLocation.X - client.Location.X != 0)
+            {
+                // 양옆으로 가지는지 체크 후 True라면 움직임
+                tempLoc = new Point(newLocation.X, resultLoc.Y);
+
+                if (CollisionCheck(client, tempLoc))
+                {
+                    resultLoc = tempLoc;
+                }
+            }
+
+            // 위아래로 가지는지 체크 후 True라면 움직임
+            tempLoc = new Point(resultLoc.X, newLocation.Y);
+
+            if (CollisionCheck(client, tempLoc))
+            {
+                resultLoc = tempLoc;
+            }
+
+
+            // 실제 좌표를 이동시킴
+            client.Location = resultLoc;
+        }
+
+        public bool CollisionCheck(ClientCharacter client, Point newLocation)
+        {
+            // 임시 바닥
+            if (newLocation.Y >= 400) return false;
+
+
+            // 움직인 캐릭터가 자신과 부딪히는지 체크함
             if (client != userCharacter)
             {
                 Rectangle a = new Rectangle(newLocation, client.size);
                 Rectangle b = new Rectangle(userCharacter.Location, userCharacter.size);
 
                 // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false) return;
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return false;
+                }
             }
 
             // 모든 오브젝트와 부딪히는지 체크함
-            foreach(var item in clientManager.ClientDic)
+            foreach (var item in clientManager.ClientDic)
             {
                 ClientCharacter otherClient = item.Value;
 
-                if (item.Value == client) continue;
+                if (item.Value == client)
+                {
+                    continue;
+                }
 
                 Rectangle a = new Rectangle(newLocation, client.size);
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size );
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
 
                 // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false) return;
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return false;
+                }
             }
             client.Location = newLocation;
+
+            return true;
         }
     }
 }

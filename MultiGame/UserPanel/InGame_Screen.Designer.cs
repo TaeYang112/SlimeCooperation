@@ -35,6 +35,7 @@ namespace MultiGame.UserPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.DoubleBuffered = true;
             this.Name = "InGame_Screen";
             this.Size = new System.Drawing.Size(800, 450);
             this.ResumeLayout(false);
