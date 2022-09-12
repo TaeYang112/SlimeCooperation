@@ -26,6 +26,9 @@ namespace MultiGameServer
         // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메세지를 보냄
         private System.Threading.Timer HeartBeatTimer;
 
+        // 하나의 클라이언트가 여러번 나가는거를 막기위한 세마포
+        public Semaphore sema_ClientLeave;
+
         static void Main(string[] args)
         {
             Program program = Program.GetInstance();
@@ -97,6 +100,8 @@ namespace MultiGameServer
             clientManager = new ClientManager();
             roomManager = new RoomManager();
 
+            sema_ClientLeave = new Semaphore(1, 1);
+
             // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메세지를 보내는 타이머
             TimerCallback tc = new TimerCallback(HeartBeat);
             HeartBeatTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
@@ -126,41 +131,78 @@ namespace MultiGameServer
             newClient.clientData.client.GetStream().BeginRead(newClient.clientData.byteData, 0, newClient.clientData.byteData.Length, new AsyncCallback(DataRecieved), newClient);
         }
 
+
         // 클라이언트와 연결이 끊기면 호출됨
         private void OnClientLeave(ClientData oldClientData)
         {
-            Console.WriteLine("[INFO] " + oldClientData.key + "번 클라이언트와의 연결이 끊겼습니다.");
+            sema_ClientLeave.WaitOne();
 
-            // 클라이언트 배열에서 제거
-            ClientCharacter clientChar = clientManager.RemoveClient(oldClientData);
+            // 클라이언트 배열에서 가져옴
+            ClientCharacter clientChar;
+            bool bClientValid = clientManager.ClientDic.TryGetValue(oldClientData.key, out clientChar);
 
-            // 클라이언트가 속해있는 방을 가져옴
-            Room room;
-            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
-
-            // 방이 존재하지 않으면 종료
-            if(result == false)
+            // 클라이언트가 존재하지 않으면 리턴
+            if(bClientValid == false)
             {
+                sema_ClientLeave.Release();
                 return;
             }
 
-            // 다른 플레이어들한테 알려줌
-            SendMessageToAll_InRoom($"LeaveRoom#{clientChar.key}@",room.key, clientChar.key);
+            Console.WriteLine("[INFO] " + oldClientData.key + "번 클라이언트와의 연결이 끊겼습니다.");
 
-            // 룸의 클라이언트 배열에서도 제거
-            int peopleCount = room.ClientLeave(clientChar);
+            // 클라이언트가 속해있는 방을 가져옴
+            Room room;
+            bool bRoomValid = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
 
-            if(peopleCount < 1)
+            // 방이 존재하면
+            if(bRoomValid)
             {
-                roomManager.RemoveRoom(room);
-                SendDelRoomInfo(room);
-            }
-            else
-            {
-                // 방의 인원수가 바뀐것을 클라이언트들 에게 알려줌
-                SendUpdateRoomInfo(room);
+                // 방에서 클라이언트 제거
+                int peopleCount = room.ClientLeave(clientChar);
+
+                // 방이 대기상태일 때
+                if (room.bGameStart == false)
+                {
+                    // 만약 방에 남은 인원이 없으면
+                    if (peopleCount < 1)
+                    {
+                        // 방 제거
+                        roomManager.RemoveRoom(room);
+
+                        // 방찾기 화면에 있는 클라들한테 방이 없어졌다고 알려줌
+                        SendDelRoomInfo(room);
+                    }
+                    else
+                    {
+                        // 방 안의 다른 플레이어들한테 알려줌
+                        SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", room.key, clientChar.key);
+
+                        // 방의 인원수가 바뀐것을 클라이언트들에게 알려줌
+                        SendUpdateRoomInfo(room);
+                    }
+
+                }
+                // 게임이 시작한 상태
+                else
+                {
+                    // 만약 방에 남은 인원이 없으면
+                    if (peopleCount < 1)
+                    {
+                        // 방 제거
+                        roomManager.RemoveRoom(room);
+                    }
+                    else
+                    {
+                        // 방 안의 다른 플레이어들한테 알려줌
+                        SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", room.key, clientChar.key);
+                    }
+                }
             }
 
+            // 최종적으로 클라이언트 관리목록에서 제거
+            clientManager.RemoveClient(oldClientData);
+
+            sema_ClientLeave.Release();
         }
 
 
@@ -228,25 +270,10 @@ namespace MultiGameServer
                                     clientChar.Jump();
                                     break;
                             }
-                            // 키가 눌렸다면 움직임 타이머 시작
-                            if (bKeyDown == true)
-                            {
-                                clientChar.MoveStart();
-                            }
-                            // 모든 키가 떼어졌다면 움직임 타이머 종료
-                            else if (!(clientChar.bLeftDown || clientChar.bRightDown))
-                            {
-                                clientChar.MoveStop();
-                            }
 
                             // 다른 클라이언트들에게 이 클라이언트의 입력을 알림
-                            SendMessageToAll_InRoom($"KeyInput#{clientChar.key}#{InpKey}#{bKeyDown}@",clientChar.RoomKey, clientChar.key);
+                            SendMessageToAll_InRoom($"KeyInputOther#{clientChar.key}#{InpKey}#{bKeyDown}@",clientChar.RoomKey, clientChar.key);
 
-                            // 키가 떼어졌을때 좌표를 보내서 완벽히 동기화 함
-                            if (bKeyDown == false)
-                            {
-                                SyncLocation(clientChar);
-                            }
                         }
                         break;
                     // 방 만들기 요청
@@ -379,7 +406,7 @@ namespace MultiGameServer
                             }
 
                             // 다른 플레이어들한테 알려줌
-                            SendMessageToAll_InRoom($"LeaveRoom#{clientChar.key}@", room.key, clientChar.key);
+                            SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", room.key, clientChar.key);
 
                             // 룸의 클라이언트 배열에서도 제거
                             room.ClientLeave(clientChar);
@@ -553,8 +580,42 @@ namespace MultiGameServer
         // 오브젝트 이동
         public void MoveObject(ClientCharacter client, Point newLocation)
         {
-            if(newLocation.Y >= 400) return;
-            // 모든 오브젝트를 가져옴
+            Point resultLoc = client.Location;
+            Point tempLoc;
+
+            // X의 변화가 있을때만 X방향에 대한 충돌 검사
+            if( newLocation.X - client.Location.X != 0)
+            {
+                // 양옆으로 가지는지 체크 후 True라면 움직임
+                tempLoc = new Point(newLocation.X, resultLoc.Y);
+
+                if (CollisionCheck(client, tempLoc))
+                {
+                    resultLoc = tempLoc;
+                }
+            }
+
+            // 위아래로 가지는지 체크 후 True라면 움직임
+            tempLoc = new Point(resultLoc.X, newLocation.Y);
+
+            if (CollisionCheck(client, tempLoc))
+            {
+                resultLoc = tempLoc;
+            }
+
+
+            // 실제 좌표를 이동시킴
+            client.Location = resultLoc;
+        }
+
+        // 충돌 검사 후 겹친다면 false 반환
+        public bool CollisionCheck(ClientCharacter client, Point newLocation)
+        {
+            // 임시 바닥
+            if (newLocation.Y >= 400) return false;
+
+
+            // 캐릭터들과의 충돌 판정 검사
             foreach (var item in clientManager.ClientDic)
             {
                 ClientCharacter otherClient = item.Value;
@@ -568,10 +629,11 @@ namespace MultiGameServer
                 // 만약 움직였을때 겹친다면 리턴
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
-                    return;
+                    return false;
                 }
             }
-            client.Location = newLocation;
+
+            return true;
         }
 
     }

@@ -38,12 +38,18 @@ namespace MultiGame.UserPanel
             this.leftCheckPicBox = new System.Windows.Forms.PictureBox();
             this.centerCheckPicBox = new System.Windows.Forms.PictureBox();
             this.rightCheckPicBox = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.leftPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.centerPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.leftCheckPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.centerCheckPicBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightCheckPicBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // roomTitle_lbl
@@ -58,31 +64,28 @@ namespace MultiGame.UserPanel
             // 
             // leftPicBox
             // 
-            this.leftPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.leftPicBox.Location = new System.Drawing.Point(126, 130);
+            this.leftPicBox.Location = new System.Drawing.Point(156, 192);
             this.leftPicBox.Name = "leftPicBox";
-            this.leftPicBox.Size = new System.Drawing.Size(121, 151);
-            this.leftPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.leftPicBox.Size = new System.Drawing.Size(60, 50);
+            this.leftPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.leftPicBox.TabIndex = 1;
             this.leftPicBox.TabStop = false;
             // 
             // centerPicBox
             // 
-            this.centerPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.centerPicBox.Location = new System.Drawing.Point(316, 130);
+            this.centerPicBox.Location = new System.Drawing.Point(346, 192);
             this.centerPicBox.Name = "centerPicBox";
-            this.centerPicBox.Size = new System.Drawing.Size(121, 151);
-            this.centerPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.centerPicBox.Size = new System.Drawing.Size(60, 50);
+            this.centerPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.centerPicBox.TabIndex = 2;
             this.centerPicBox.TabStop = false;
             // 
             // rightPicBox
             // 
-            this.rightPicBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rightPicBox.Location = new System.Drawing.Point(518, 130);
+            this.rightPicBox.Location = new System.Drawing.Point(548, 192);
             this.rightPicBox.Name = "rightPicBox";
-            this.rightPicBox.Size = new System.Drawing.Size(121, 151);
-            this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.rightPicBox.Size = new System.Drawing.Size(60, 50);
+            this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.rightPicBox.TabIndex = 3;
             this.rightPicBox.TabStop = false;
             // 
@@ -106,7 +109,7 @@ namespace MultiGame.UserPanel
             // 
             // leftCheckPicBox
             // 
-            this.leftCheckPicBox.Location = new System.Drawing.Point(174, 140);
+            this.leftCheckPicBox.Location = new System.Drawing.Point(176, 140);
             this.leftCheckPicBox.Name = "leftCheckPicBox";
             this.leftCheckPicBox.Size = new System.Drawing.Size(20, 20);
             this.leftCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -124,12 +127,42 @@ namespace MultiGame.UserPanel
             // 
             // rightCheckPicBox
             // 
-            this.rightCheckPicBox.Location = new System.Drawing.Point(571, 140);
+            this.rightCheckPicBox.Location = new System.Drawing.Point(568, 140);
             this.rightCheckPicBox.Name = "rightCheckPicBox";
             this.rightCheckPicBox.Size = new System.Drawing.Size(20, 20);
             this.rightCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.rightCheckPicBox.TabIndex = 6;
             this.rightCheckPicBox.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox1.Location = new System.Drawing.Point(518, 130);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(121, 151);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox2.Location = new System.Drawing.Point(316, 130);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(121, 151);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 7;
+            this.pictureBox2.TabStop = false;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox3.Location = new System.Drawing.Point(126, 130);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(121, 151);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 8;
+            this.pictureBox3.TabStop = false;
             // 
             // LobbyRoom_Screen
             // 
@@ -144,6 +177,9 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.centerPicBox);
             this.Controls.Add(this.leftPicBox);
             this.Controls.Add(this.roomTitle_lbl);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox3);
             this.Name = "LobbyRoom_Screen";
             this.Size = new System.Drawing.Size(800, 450);
             ((System.ComponentModel.ISupportInitialize)(this.leftPicBox)).EndInit();
@@ -152,6 +188,9 @@ namespace MultiGame.UserPanel
             ((System.ComponentModel.ISupportInitialize)(this.leftCheckPicBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.centerCheckPicBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightCheckPicBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -166,5 +205,8 @@ namespace MultiGame.UserPanel
         public System.Windows.Forms.PictureBox leftCheckPicBox;
         public System.Windows.Forms.PictureBox centerCheckPicBox;
         public System.Windows.Forms.PictureBox rightCheckPicBox;
+        public System.Windows.Forms.PictureBox pictureBox1;
+        public System.Windows.Forms.PictureBox pictureBox2;
+        public System.Windows.Forms.PictureBox pictureBox3;
     }
 }

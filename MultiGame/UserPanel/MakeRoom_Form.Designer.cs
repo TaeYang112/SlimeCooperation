@@ -52,6 +52,7 @@ namespace MultiGame.UserPanel
             this.roomTitle_TB.Name = "roomTitle_TB";
             this.roomTitle_TB.Size = new System.Drawing.Size(365, 23);
             this.roomTitle_TB.TabIndex = 1;
+            this.roomTitle_TB.KeyDown += new System.Windows.Forms.KeyEventHandler(this.roomTitle_TB_KeyDown);
             // 
             // make_btn
             // 

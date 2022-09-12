@@ -27,11 +27,7 @@ namespace MultiGame
         // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
         private System.Threading.Timer MoveTimer;
 
-        private System.Threading.Timer GravityTimer;
-
         private System.Threading.Timer JumpTimer;
-
-        private Semaphore sema;
 
         // 캐릭터 이미지
         public Image image { get; set; }
@@ -72,7 +68,7 @@ namespace MultiGame
             bRightDown = false;
             isJump = false;
             this.Location = Location;
-            size = new Size(50, 50);
+            size = new Size(60, 50);
             isVisible = false;
             isReady = false;
             lookingDirection = Direction.Right;
@@ -84,13 +80,9 @@ namespace MultiGame
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 실행시킬 메소드
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
 
-            TimerCallback tc2 = new TimerCallback(Gravity);                                    // 실행시킬 메소드
-            GravityTimer = new System.Threading.Timer(tc2, null, 0, 5);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
-
-            TimerCallback tc3 = new TimerCallback(JumpStop);                                    // 실행시킬 메소드
-            JumpTimer = new System.Threading.Timer(tc3, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
-
-            sema = new Semaphore(1, 1);
+            // 점프를 종료시키는 타이머
+            TimerCallback tc3 = new TimerCallback(JumpStop);
+            JumpTimer = new System.Threading.Timer(tc3, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         public void SetSkin(int skinNum)
@@ -123,59 +115,47 @@ namespace MultiGame
                     break;
             }
         }
+        public void GameStart()
+        {
+            MoveTimer.Change(0, 5);
+        }
 
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
         private void MoveCharacter(object stateInfo)
         {
-            sema.WaitOne();
-
             Point Loc = Location;
 
             // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
             if (bLeftDown == true)
             {
-                Loc.X -= 1;
+                Loc.X -= 2;
                 movingDirection = Direction.Left;
             }
 
             // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
             if (bRightDown == true)
             {
-                Loc.X += 1;
+                Loc.X += 2;
                 movingDirection = Direction.Right;
             }
 
-            GameManager.GetInstance().MoveObject(this, Loc);
-
-            sema.Release();
-        }
-
-        // 현재 KeyDown 되어있는 키를 확인하여 움직임
-        private void Gravity(object stateInfo)
-        {
-            sema.WaitOne();
-
-            Point Loc = Location;
-
+            // 중력
             if (isJump)
             {
-                Loc.Y -= 2;
+                Loc.Y -= 3;
             }
             else
             {
-                Loc.Y += 1;
+                Loc.Y += 3;
             }
 
             GameManager.GetInstance().MoveObject(this, Loc);
-
-            sema.Release();
         }
-
 
         public void Jump()
         {
             isJump = true;
-            JumpTimer.Change(800, Timeout.Infinite);
+            JumpTimer.Change(300, Timeout.Infinite);
         }
 
         public void JumpStop(object stateInfo)
@@ -183,16 +163,6 @@ namespace MultiGame
             isJump = false;
         }
 
-
-        public void MoveStart()
-        {
-            MoveTimer.Change(0, 5);
-        }
-
-        public void MoveStop()
-        {
-            MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
-        }
 
         public void OnPaint(Object obj, PaintEventArgs pe)
         {
