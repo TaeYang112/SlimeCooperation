@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows;
 using System.Collections;
+using System.Threading;
 
 namespace MultiGame
 {
@@ -31,6 +32,7 @@ namespace MultiGame
 
         private Form1 form1;
 
+        private System.Threading.Timer MoveTimer;
 
         public static GameManager GetInstance()
         {
@@ -57,6 +59,9 @@ namespace MultiGame
 
             // 사용자 캐릭터
             userCharacter = new ClientCharacter(-1, new Point(364, 293), 0);
+
+            TimerCallback tc = new TimerCallback((obj) => { myClient.SendMessage($"Loc#{userCharacter.Location.X}#{userCharacter.Location.Y}@"); });                                    // 실행시킬 메소드
+            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
         }
 
         public void Start(Form1 form1)
@@ -327,6 +332,7 @@ namespace MultiGame
                         userCharacter.isReady = false;
                         userCharacter.isVisible = true;
                         userCharacter.GameStart();
+                        MoveTimer.Change(0, 100);
                     }
                     break;
                 // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
