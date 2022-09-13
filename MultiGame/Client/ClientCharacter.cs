@@ -49,6 +49,10 @@ namespace MultiGame
         public bool bRightDown { get; set; }
         public bool bJumpDown { get; set; }
 
+        // 다른 캐릭터 위에있을때 받는 힘 ( 밑에 캐릭터가 움직일때 같이 움직여짐 )
+        public Point ForceByHead { get; set; }
+        
+
 
         public enum Direction
         {
@@ -74,6 +78,7 @@ namespace MultiGame
             isGround = true;
             this.Location = Location;
             size = new Size(60, 50);
+            ForceByHead = new Point(0, 0);
             isVisible = false;
             isReady = false;
             lookingDirection = Direction.Right;
@@ -126,23 +131,20 @@ namespace MultiGame
             MoveTimer.Change(0, 5);
         }
 
-        // 현재 KeyDown 되어있는 키를 확인하여 움직임
-        private void MoveCharacter(object stateInfo)
+        private Point GetVelocity()
         {
-            Point Loc = Location;
+            Point Loc = new Point(0,0);
 
             // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
             if (bLeftDown == true)
             {
                 Loc.X -= 2;
-                movingDirection = Direction.Left;
             }
 
             // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
             if (bRightDown == true)
             {
                 Loc.X += 2;
-                movingDirection = Direction.Right;
             }
 
             // 중력
@@ -155,7 +157,25 @@ namespace MultiGame
                 Loc.Y += 3;
             }
 
-            GameManager.GetInstance().MoveObject(this, Loc);
+            Loc.X += ForceByHead.X;
+            Loc.Y += ForceByHead.Y;
+
+            ForceByHead = new Point(0, 0);
+            
+            return Loc;
+        }
+
+        // 현재 KeyDown 되어있는 키를 확인하여 움직임
+        private void MoveCharacter(object stateInfo)
+        {
+            Point velocity = GetVelocity();
+
+            if (velocity.X < 0)
+                movingDirection = Direction.Left;
+            else if(velocity.X > 0)
+                movingDirection = Direction.Right;
+
+            GameManager.GetInstance().MoveObject(this, velocity);
         }
 
         public void Jump()

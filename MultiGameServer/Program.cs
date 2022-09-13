@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Threading;
@@ -579,26 +580,39 @@ namespace MultiGameServer
         }
 
         // 오브젝트 이동
-        public void MoveObject(ClientCharacter client, Point newLocation)
+        public void MoveObject(ClientCharacter client, Point velocity)
         {
             Point resultLoc = client.Location;
             Point tempLoc;
 
-            // X의 변화가 있을때만 X방향에 대한 충돌 검사
-            if( newLocation.X - client.Location.X != 0)
+            // X의 변화가 있다면 x의 변화에 대한 충돌판정
+            if (velocity.X != 0)
             {
-                // 양옆으로 가지는지 체크 후 True라면 움직임
-                tempLoc = new Point(newLocation.X, resultLoc.Y);
+                tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
 
+                // 충돌하지 않았으면
                 if (CollisionCheck(client, tempLoc))
                 {
+                    // 움직이기 위해 좌표 저장
                     resultLoc = tempLoc;
+
+                    // 머리위에 다른 캐릭터가 있는지 검사
+                    List<ClientCharacter> list = GetClientsOverTheHead(client);
+
+                    // 머리위 캐릭터들에게 자신이 움직이는 방향으로 같이 움직이게함
+                    foreach (var item in list)
+                    {
+                        item.ForceByHead = new Point(velocity.X, 0);
+                        Console.WriteLine("머리에서 내려와");
+                    }
                 }
+
             }
 
-            // 위아래로 가지는지 체크 후 True라면 움직임
-            tempLoc = new Point(resultLoc.X, newLocation.Y);
 
+            tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+
+            // 위, 아래에 대한 충돌 판정
             if (CollisionCheck(client, tempLoc))
             {
                 resultLoc = tempLoc;
@@ -606,11 +620,19 @@ namespace MultiGameServer
             }
             else
             {
-                client.isGround = true;
+                // 만약 밑으로 가던중 충돌판정이 일어나면 
+                if (velocity.Y > 0)
+                {
+                    //땅위에 있다는 플래그변수 true
+                    client.isGround = true;
 
-                if(client.bJumpDown == true)
-                    client.Jump();
+                    // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
+                    if (client.bJumpDown == true)
+                        client.Jump();
+                }
+
             }
+
 
             // 실제 좌표를 이동시킴
             client.Location = resultLoc;
@@ -622,16 +644,20 @@ namespace MultiGameServer
             // 임시 바닥
             if (newLocation.Y >= 400) return false;
 
+            // 해당 오브젝트의 충돌 박스
+            Rectangle a = new Rectangle(newLocation, client.size);
 
-            // 캐릭터들과의 충돌 판정 검사
+            // 모든 오브젝트와 부딪히는지 체크함
             foreach (var item in clientManager.ClientDic)
             {
                 ClientCharacter otherClient = item.Value;
 
-                // 자기 자신은 무시
-                if (otherClient == client) continue;
+                if (item.Value == client)
+                {
+                    continue;
+                }
 
-                Rectangle a = new Rectangle(newLocation, client.size);
+                // 대상 오브젝트의 충돌 박스
                 Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
 
                 // 만약 움직였을때 겹친다면 리턴
@@ -640,8 +666,42 @@ namespace MultiGameServer
                     return false;
                 }
             }
+            client.Location = newLocation;
 
             return true;
+        }
+
+        // 대상 클라이언트 머리위에 있는 클라이언트 리스트 반환
+        public List<ClientCharacter> GetClientsOverTheHead(ClientCharacter client)
+        {
+            List<ClientCharacter> list = new List<ClientCharacter>();
+
+            // 대상의 머리위 충돌박스
+            Size size = new Size(client.size.Width, 10);
+            Point location = new Point(client.Location.X, client.Location.Y - 10);
+            Rectangle a = new Rectangle(location, size);
+
+            // 모든 클라이언트와 비교
+            foreach (var item in clientManager.ClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (item.Value == client)
+                {
+                    continue;
+                }
+
+                // 대상 충돌판정
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    list.Add(otherClient);
+                }
+            }
+
+            return list;
         }
 
     }
