@@ -42,9 +42,12 @@ namespace MultiGame
         // 점프중인지
         public bool isJump { get; set; }
 
+        public bool isGround { get; set; }
+
         // 키가 눌려있는지 확인하는 변수
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
+        public bool bJumpDown { get; set; }
 
 
         public enum Direction
@@ -66,13 +69,16 @@ namespace MultiGame
 
             bLeftDown = false;
             bRightDown = false;
+            bJumpDown = false;
             isJump = false;
+            isGround = true;
             this.Location = Location;
             size = new Size(60, 50);
             isVisible = false;
             isReady = false;
             lookingDirection = Direction.Right;
             movingDirection = Direction.Default;
+
 
             SetSkin(skinNum);
 
@@ -154,6 +160,8 @@ namespace MultiGame
 
         public void Jump()
         {
+            if (isJump == true || isGround == false) return;
+
             isJump = true;
             JumpTimer.Change(300, Timeout.Infinite);
         }

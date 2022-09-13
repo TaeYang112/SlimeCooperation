@@ -216,7 +216,8 @@ namespace MultiGame
                                 client.bRightDown = bKeyDown;
                                 break;
                             case 'J':
-                                client.Jump();
+                                client.bJumpDown = bKeyDown;
+                                if(bKeyDown) client.Jump();
                                 break;
                         }
 
@@ -471,6 +472,14 @@ namespace MultiGame
             if (CollisionCheck(client, tempLoc))
             {
                 resultLoc = tempLoc;
+                client.isGround = false;
+            }
+            else
+            {
+                client.isGround = true;
+
+                if (client.bJumpDown == true)
+                    client.Jump();
             }
 
 
