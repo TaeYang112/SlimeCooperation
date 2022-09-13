@@ -239,8 +239,9 @@ namespace MultiGame
             if (keyData == Keys.Space)
             {
                 userCharacter.Jump();
-
+                userCharacter.bJumpDown = true;
                 gameManager.SendInputedKey('J', true);
+                
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -258,7 +259,7 @@ namespace MultiGame
                 return;
             }
 
-            switch (e.KeyCode)
+            switch (e.KeyData)
             {
                 case Keys.Left:
                     // bLeftDown을 False로 바꿔 MoveCharacter_timer이 호출되어도 이동하지 않음
@@ -275,6 +276,15 @@ namespace MultiGame
                     // 왼쪽 방향키가 떼어졌다는걸 알림
                     gameManager.SendInputedKey('R', false);
                     break;
+
+                case Keys.Space:
+                    userCharacter.bJumpDown = false;
+                     gameManager.SendInputedKey('J', false);
+                    break;
+                default:
+                    break;
+                    
+                    
             }
         }
 

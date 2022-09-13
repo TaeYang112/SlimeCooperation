@@ -267,7 +267,8 @@ namespace MultiGameServer
                                     clientChar.bRightDown = bKeyDown;
                                     break;
                                 case 'J':
-                                    clientChar.Jump();
+                                    clientChar.bJumpDown = bKeyDown;
+                                    if (bKeyDown) clientChar.Jump();
                                     break;
                             }
 
@@ -601,8 +602,15 @@ namespace MultiGameServer
             if (CollisionCheck(client, tempLoc))
             {
                 resultLoc = tempLoc;
+                client.isGround = false;
             }
+            else
+            {
+                client.isGround = true;
 
+                if(client.bJumpDown == true)
+                    client.Jump();
+            }
 
             // 실제 좌표를 이동시킴
             client.Location = resultLoc;

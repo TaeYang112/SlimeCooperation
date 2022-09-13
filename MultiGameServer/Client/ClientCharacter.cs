@@ -53,9 +53,11 @@ namespace MultiGameServer
         // 클라이언트의 키 입력을 관리하는 속성
         public bool bLeftDown { get; set; }
         public bool bRightDown { get; set; }
+        public bool bJumpDown { get; set; }
 
         // 점프중인지
         public bool isJump { get; set; }
+        public bool isGround { get; set; }
 
         // 현재 클라이언트가 속해 있는 방 키
         public int RoomKey { get; set; }                                                    
@@ -76,6 +78,10 @@ namespace MultiGameServer
             bReady = false;
             bFindingRoom = false;
             isJump = false;
+            isGround = false;
+            bLeftDown = false;
+            bRightDown = false;
+            bRightDown = false;
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 이벤트 발생 처리 루틴
@@ -132,6 +138,8 @@ namespace MultiGameServer
 
         public void Jump()
         {
+            if (isJump == true || isGround == false) return;
+
             isJump = true;
             JumpTimer.Change(300, Timeout.Infinite);
         }
