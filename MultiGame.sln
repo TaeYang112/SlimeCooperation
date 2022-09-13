@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.32413.511
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiGame", "MultiGame\MultiGame.csproj", "{22044178-0109-4A8D-AB70-00753ED5F9BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiGameServer", "MultiGameServer\MultiGameServer.csproj", "{991AD495-0774-4FE0-B6FA-A188FD393BB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiGameServer", "MultiGameServer\MultiGameServer.csproj", "{991AD495-0774-4FE0-B6FA-A188FD393BB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
