@@ -55,6 +55,9 @@ namespace MultiGameServer
         public bool bRightDown { get; set; }
         public bool bJumpDown { get; set; }
 
+        // 다른 캐릭터 위에있을때 받는 힘 ( 밑에 캐릭터가 움직일때 같이 움직여짐 )
+        public Point ForceByHead { get; set; }
+
         // 점프중인지
         public bool isJump { get; set; }
         public bool isGround { get; set; }
@@ -75,6 +78,7 @@ namespace MultiGameServer
             this.key = key;
             Location = new Point(0, 0);
             size = new Size(60, 50);
+            ForceByHead = new Point(0, 0);
             bReady = false;
             bFindingRoom = false;
             isJump = false;
@@ -111,17 +115,21 @@ namespace MultiGameServer
             MoveTimer.Change(0, 5);
         }
 
-        private void MoveCharacter(object clientArgs)
+        private Point GetVelocity()
         {
-            Point Loc = Location;
+            Point Loc = new Point(0, 0);
 
             // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
-            if (bLeftDown == true) 
+            if (bLeftDown == true)
+            {
                 Loc.X -= 2;
+            }
 
             // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
-            if (bRightDown == true) 
+            if (bRightDown == true)
+            {
                 Loc.X += 2;
+            }
 
             // 중력
             if (isJump)
@@ -133,7 +141,17 @@ namespace MultiGameServer
                 Loc.Y += 3;
             }
 
-            Program.GetInstance().MoveObject(this, Loc);
+            Loc.X += ForceByHead.X;
+            Loc.Y += ForceByHead.Y;
+            ForceByHead = new Point(0, 0);
+            return Loc;
+        }
+
+        private void MoveCharacter(object clientArgs)
+        {
+            Point velocity = GetVelocity();
+
+            Program.GetInstance().MoveObject(this, velocity);
         }
 
         public void Jump()
