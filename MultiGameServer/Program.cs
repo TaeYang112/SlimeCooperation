@@ -611,8 +611,7 @@ namespace MultiGameServer
                     // 머리위 캐릭터들에게 자신이 움직이는 방향으로 같이 움직이게함
                     foreach (var item in list)
                     {
-                        item.ForceByHead = new Point(velocity.X, 0);
-                        Console.WriteLine("머리에서 내려와");
+                        item.MoveCharacter(new Point(velocity.X,0));
                     }
                 }
 

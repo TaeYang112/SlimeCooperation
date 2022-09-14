@@ -51,8 +51,8 @@ namespace MultiGame
 
         // 다른 캐릭터 위에있을때 받는 힘 ( 밑에 캐릭터가 움직일때 같이 움직여짐 )
         public Point ForceByHead { get; set; }
-        
 
+        private Semaphore sema_move;
 
         public enum Direction
         {
@@ -83,7 +83,7 @@ namespace MultiGame
             isReady = false;
             lookingDirection = Direction.Right;
             movingDirection = Direction.Default;
-
+            sema_move = new Semaphore(1, 1);
 
             SetSkin(skinNum);
 
@@ -166,8 +166,10 @@ namespace MultiGame
         }
 
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
-        private void MoveCharacter(object stateInfo)
+        public void MoveCharacter(object stateInfo)
         {
+            sema_move.WaitOne(1);
+
             Point velocity = GetVelocity();
 
             if (velocity.X < 0)
@@ -176,6 +178,18 @@ namespace MultiGame
                 movingDirection = Direction.Right;
 
             GameManager.GetInstance().MoveObject(this, velocity);
+
+            sema_move.Release(1);
+        }
+
+        // 현재 KeyDown 되어있는 키를 확인하여 움직임
+        public void MoveCharacter(Point velocity)
+        {
+            sema_move.WaitOne(1);
+
+            GameManager.GetInstance().MoveObject(this, velocity);
+
+            sema_move.Release(1);
         }
 
         public void Jump()

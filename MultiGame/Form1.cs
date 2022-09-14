@@ -311,6 +311,9 @@ namespace MultiGame
             userCharacter.bRightDown = false;                                                           
             gameManager.SendInputedKey('R', false);
 
+            userCharacter.bJumpDown = false;
+            gameManager.SendInputedKey('J', false);
+
         }
 
         // 버튼을 클릭했을 때 호출됨

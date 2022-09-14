@@ -72,6 +72,8 @@ namespace MultiGameServer
         // 방을 찾고있는지 여부
         public bool bFindingRoom { get; set; }
 
+        private Semaphore sema_move;
+
         public ClientCharacter(int key, ClientData clientData)
         {
             this.clientData = clientData;
@@ -86,7 +88,7 @@ namespace MultiGameServer
             bLeftDown = false;
             bRightDown = false;
             bRightDown = false;
-
+            sema_move = new Semaphore(1, 1);
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 이벤트 발생 처리 루틴
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
@@ -147,11 +149,26 @@ namespace MultiGameServer
             return Loc;
         }
 
-        private void MoveCharacter(object clientArgs)
+        // 현재 KeyDown 되어있는 키를 확인하여 움직임
+        public void MoveCharacter(object stateInfo)
         {
+            sema_move.WaitOne(1);
+
             Point velocity = GetVelocity();
 
             Program.GetInstance().MoveObject(this, velocity);
+
+            sema_move.Release(1);
+        }
+
+        // 현재 KeyDown 되어있는 키를 확인하여 움직임
+        public void MoveCharacter(Point velocity)
+        {
+            sema_move.WaitOne(1);
+
+            Program.GetInstance().MoveObject(this, velocity);
+
+            sema_move.Release(1);
         }
 
         public void Jump()
