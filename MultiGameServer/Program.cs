@@ -431,10 +431,12 @@ namespace MultiGameServer
                         break;
                     case "Loc":
                         {
+                            /*
                             int x = int.Parse(SplitMessage[1]);
                             int y = int.Parse(SplitMessage[2]);
 
                             SendMessageToAll_InRoom($"Location#{clientChar.key}#{x}#{y}@",clientChar.RoomKey,clientChar.key);
+                        */
                         }
                         break;
                     default:
@@ -580,7 +582,6 @@ namespace MultiGameServer
         // 각 캐릭터의 좌표를 클라이언트와 서버간 동기화하기 위해 호출
         public void SyncLocation(ClientCharacter clientChar)
         {
-            return;
             // 클라이언트에게 있어야 할 위치를 알려줌
             SendMessage($"Location#-1#{clientChar.Location.X}#{clientChar.Location.Y}#@", clientChar.key);
 
