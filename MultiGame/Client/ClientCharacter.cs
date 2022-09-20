@@ -83,7 +83,7 @@ namespace MultiGame
             isReady = false;
             lookingDirection = Direction.Right;
             movingDirection = Direction.Default;
-            sema_move = new Semaphore(1, 1);
+            sema_move = new Semaphore(0, 1);
 
             SetSkin(skinNum);
 
@@ -168,7 +168,7 @@ namespace MultiGame
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
         public void MoveCharacter(object stateInfo)
         {
-            sema_move.WaitOne(1);
+            sema_move.WaitOne();
 
             Point velocity = GetVelocity();
 
@@ -179,17 +179,18 @@ namespace MultiGame
 
             GameManager.GetInstance().MoveObject(this, velocity);
 
-            sema_move.Release(1);
+            sema_move.Release();
         }
 
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
         public void MoveCharacter(Point velocity)
         {
-            sema_move.WaitOne(1);
+            sema_move.WaitOne();
 
             GameManager.GetInstance().MoveObject(this, velocity);
 
-            sema_move.Release(1);
+            sema_move.Release();
+            
         }
 
         public void Jump()
