@@ -454,9 +454,8 @@ namespace MultiGame
             gameManager.RequestEnterRoom(roomKey);
         }
 
+
         #endregion
-
-
     }
 
     

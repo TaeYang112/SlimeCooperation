@@ -88,7 +88,7 @@ namespace MultiGameServer
             bLeftDown = false;
             bRightDown = false;
             bRightDown = false;
-            sema_move = new Semaphore(0, 1);
+            sema_move = new Semaphore(1, 1);
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveCharacter);                                    // 이벤트 발생 처리 루틴
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
@@ -113,7 +113,7 @@ namespace MultiGameServer
 
         public void GameStart()
         {
-            SyncTimer.Change(0, 200);
+            SyncTimer.Change(0, 5);
             MoveTimer.Change(0, 5);
         }
 

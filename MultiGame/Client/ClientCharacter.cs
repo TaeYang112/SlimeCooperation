@@ -83,7 +83,7 @@ namespace MultiGame
             isReady = false;
             lookingDirection = Direction.Right;
             movingDirection = Direction.Default;
-            sema_move = new Semaphore(0, 1);
+            sema_move = new Semaphore(1, 1);
 
             SetSkin(skinNum);
 
