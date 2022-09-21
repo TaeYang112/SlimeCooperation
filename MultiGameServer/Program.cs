@@ -261,21 +261,13 @@ namespace MultiGameServer
 
                             switch (InpKey)
                             {
-                                case 'L':
-                                    clientChar.bLeftDown = bKeyDown;
-                                    break;
-                                case 'R':
-                                    clientChar.bRightDown = bKeyDown;
-                                    break;
                                 case 'J':
                                     clientChar.bJumpDown = bKeyDown;
                                     if (bKeyDown) clientChar.Jump();
                                     break;
                             }
 
-                            // 다른 클라이언트들에게 이 클라이언트의 입력을 알림
-                            SendMessageToAll_InRoom($"KeyInputOther#{clientChar.key}#{InpKey}#{bKeyDown}@",clientChar.RoomKey, clientChar.key);
-
+                            
                         }
                         break;
                     // 방 만들기 요청
