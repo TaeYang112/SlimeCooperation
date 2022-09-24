@@ -34,6 +34,8 @@ namespace MultiGame
             // 클라이언트 생성
             client = new TcpClient();
 
+            client.NoDelay = true;
+
             // 클라이언트 실행시킬 스레드
             client_tr = new Thread(TryToConnect);
             client_tr.IsBackground = true;

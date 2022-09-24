@@ -123,7 +123,6 @@ namespace MultiGameServer
         private void OnClientJoin(ClientData newClientData)
         {
             ClientCharacter newClient = clientManager.AddClient(newClientData);
-            newClient.LocationSync += SyncLocation;
 
             Console.WriteLine("[INFO] "+ newClient.key + "번 클라이언트가 접속하였습니다.");
 
@@ -243,33 +242,12 @@ namespace MultiGameServer
         // 받은 메세지를 해석함
         private void ParseMessage(ClientCharacter clientChar, string message)
         {
-            Console.WriteLine("[INFO] 메세지 수신 : " + message);
             string[] Messages = message.Split('@');
             for (int i = 0; i < Messages.Length - 1; i++)
             {
                 string[] SplitMessage = Messages[i].Split('#');
                 switch (SplitMessage[0])
                 {
-                    // 클라이언트의 키보드 입력
-                    case "KeyInput":
-                        {
-                            // 입력된 키
-                            char InpKey = char.Parse(SplitMessage[1]);
-
-                            // 눌려있으면 true / 아니면 false
-                            bool bKeyDown = bool.Parse(SplitMessage[2]);
-
-                            switch (InpKey)
-                            {
-                                case 'J':
-                                    clientChar.bJumpDown = bKeyDown;
-                                    if (bKeyDown) clientChar.Jump();
-                                    break;
-                            }
-
-                            
-                        }
-                        break;
                     // 방 만들기 요청
                     case "CreateRoom":
                         {
@@ -346,7 +324,7 @@ namespace MultiGameServer
                             // 존재하지 않으면 return
                             if (result == false)
                             {
-                                return;
+                                continue;
                             }
 
                             // 방안의 다른 클라이언트한테 레디했다고 알려줌
@@ -421,14 +399,35 @@ namespace MultiGameServer
                             
                         }
                         break;
-                    case "Loc":
+                    // 클라이언트의 좌표를 받아 다른 클라이언트에게 알려줌
+                    case "Location":
                         {
-                            /*
                             int x = int.Parse(SplitMessage[1]);
                             int y = int.Parse(SplitMessage[2]);
 
+                            int originX = clientChar.Location.X;
+                            clientChar.Location = new Point(x, y);
+
+                            // 전체 클라이언트에게 전송
                             SendMessageToAll_InRoom($"Location#{clientChar.key}#{x}#{y}@",clientChar.RoomKey,clientChar.key);
-                        */
+                           
+                            // 움직인 클라이언트 위에 다른 클라이언트가 있는지 확인
+                            List<ClientCharacter> list = GetClientsOverTheHead(clientChar);
+
+                            // 위에 있는 클라이언트들도 같은 방향으로 움직이게 함
+                            foreach(var client in list)
+                            {
+                                SendMessage($"Move#{x - originX}#{0}@", client.key);
+                                Console.WriteLine("이동");
+                            }
+                        }
+                        break;
+                    // 플레이어가 쳐다보는 방향 수신 ( true : 오른쪽 )
+                    case "LookR":
+                        {
+                            bool bLookRight = bool.Parse(SplitMessage[1]);
+
+                            SendMessageToAll_InRoom($"LookR#{clientChar.key}#{bLookRight}@",clientChar.RoomKey,clientChar.key);
                         }
                         break;
                     default:
@@ -499,21 +498,19 @@ namespace MultiGameServer
             int X = 0;
             foreach (var item in room.roomClientDic)
             {
-                item.Value.Location = new Point(X,00);
+                item.Value.Location = new Point(X,0);
                 X += 100;
             }
 
             foreach (var item in room.roomClientDic)
             {
-                // 클라이언트에게 게임이 시작하였다고 알림
-                SendMessage($"RoomStart@", item.Key);
+                // 클라이언트에게 게임 시작을 알려주고 시작 위치 설정
+                SendMessage($"RoomStart#{item.Value.Location.X}#{item.Value.Location.Y}@", item.Key);
 
                 // 클라이언트들의 시작 위치를 알려줌
                 foreach (var item2 in room.roomClientDic)
                 {
-                    // 해당 클라이언트의 위치 전송
-                    if (item.Key == item2.Key)
-                        SendMessage($"Location#-1#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
+                    if (item.Key == item2.Key) continue;
 
                     // 각 플레이어들의 위치를 전송
                     else
@@ -571,106 +568,6 @@ namespace MultiGameServer
 
         }
 
-        // 각 캐릭터의 좌표를 클라이언트와 서버간 동기화하기 위해 호출
-        public void SyncLocation(ClientCharacter clientChar)
-        {
-            // 클라이언트에게 있어야 할 위치를 알려줌
-            SendMessage($"Location#-1#{clientChar.Location.X}#{clientChar.Location.Y}#@", clientChar.key);
-
-            // 방 안의 다른 클라이언트에도 이 클라이언트가 있어야할 위치를 알려줌
-            SendMessageToAll_InRoom($"Location#{clientChar.key}#{clientChar.Location.X}#{clientChar.Location.Y}#@",clientChar.RoomKey ,clientChar.key);
-        }
-
-        // 오브젝트 이동
-        public void MoveObject(ClientCharacter client, Point velocity)
-        {
-            Point resultLoc = client.Location;
-            Point tempLoc;
-
-            // X의 변화가 있다면 x의 변화에 대한 충돌판정
-            if (velocity.X != 0)
-            {
-                tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
-
-                // 충돌하지 않았으면
-                if (CollisionCheck(client, tempLoc))
-                {
-                    // 움직이기 위해 좌표 저장
-                    resultLoc = tempLoc;
-
-                    // 머리위에 다른 캐릭터가 있는지 검사
-                    List<ClientCharacter> list = GetClientsOverTheHead(client);
-
-                    // 머리위 캐릭터들에게 자신이 움직이는 방향으로 같이 움직이게함
-                    foreach (var item in list)
-                    {
-                        item.MoveCharacter(new Point(velocity.X,0));
-                    }
-                }
-
-            }
-
-
-            tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
-
-            // 위, 아래에 대한 충돌 판정
-            if (CollisionCheck(client, tempLoc))
-            {
-                resultLoc = tempLoc;
-                client.isGround = false;
-            }
-            else
-            {
-                // 만약 밑으로 가던중 충돌판정이 일어나면 
-                if (velocity.Y > 0)
-                {
-                    //땅위에 있다는 플래그변수 true
-                    client.isGround = true;
-
-                    // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
-                    if (client.bJumpDown == true)
-                        client.Jump();
-                }
-
-            }
-
-
-            // 실제 좌표를 이동시킴
-            client.Location = resultLoc;
-        }
-
-        // 충돌 검사 후 겹친다면 false 반환
-        public bool CollisionCheck(ClientCharacter client, Point newLocation)
-        {
-            // 임시 바닥
-            if (newLocation.Y >= 400) return false;
-
-            // 해당 오브젝트의 충돌 박스
-            Rectangle a = new Rectangle(newLocation, client.size);
-
-            // 모든 오브젝트와 부딪히는지 체크함
-            foreach (var item in clientManager.ClientDic)
-            {
-                ClientCharacter otherClient = item.Value;
-
-                if (item.Value == client)
-                {
-                    continue;
-                }
-
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    return false;
-                }
-            }
-            client.Location = newLocation;
-
-            return true;
-        }
 
         // 대상 클라이언트 머리위에 있는 클라이언트 리스트 반환
         public List<ClientCharacter> GetClientsOverTheHead(ClientCharacter client)

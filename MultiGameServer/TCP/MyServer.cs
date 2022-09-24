@@ -89,9 +89,10 @@ namespace MultiGameServer
                 // 메세지 전송
                 receiver.client.GetStream().Write(buf, 0, buf.Length);
             }
-            catch(System.InvalidOperationException)
+            catch
             {
                 ClientLeave(receiver);
+                Console.WriteLine("에러메세지 : " + message);
             }
         }
 

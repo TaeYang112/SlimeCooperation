@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
+using MultiGame.Client;
 
 namespace MultiGame
 {
@@ -76,7 +77,7 @@ namespace MultiGame
             if (this.Controls.Contains(lobbyRoom_Screen) == false) return;
 
             // 사용자 캐릭터
-            ClientCharacter userCharacter = gameManager.userCharacter;
+            ClientCharacter userCharacter = gameManager.userClient.Character;
 
             ClientCharacter[] clientChar = new ClientCharacter[2] { null, null };
 
@@ -198,7 +199,7 @@ namespace MultiGame
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // 사용자 캐릭터
-            ClientCharacter userCharacter = gameManager.userCharacter;
+            UserClient userClient = gameManager.userClient;
 
             // 게임이 시작하지 않았다면 키 입력을 처리할 필요가 없음
             if (gameManager.IsGameStart == false)
@@ -209,93 +210,59 @@ namespace MultiGame
             // 왼쪽 방향키
             if (keyData == Keys.Left)
             {
-                if (userCharacter.bLeftDown == false)
-                {
-                    // bLeftDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
-                    userCharacter.bLeftDown = true;
-
-                    // 서버한테 이동을 시작했다고 알림
-                    gameManager.SendInputedKey('L', true);
-                }
+                userClient.LeftDown = true;
                 return true;
             }
 
             // 오른쪽 방향키
             if (keyData == Keys.Right)
             {
-                if (userCharacter.bRightDown == false)
-                {
-                    // bRightDown을 True로 바꿔 MoveCharacter_timer이 호출될 때 마다 이동하게 함
-                    userCharacter.bRightDown = true;
-
-                    // 서버한테 이동을 시작했다고 알림
-                    gameManager.SendInputedKey('R', true);                                        
-                }
-                    
+                userClient.RightDown = true;
                 return true;
             }
 
             // 점프
             if (keyData == Keys.Space)
             {
-                userCharacter.Jump();
-                userCharacter.bJumpDown = true;
-                gameManager.SendInputedKey('J', true);
-                
+                userClient.Jump();
+                userClient.JumpDown = true;
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        // 키가 뗴어졌을 때
+        // 키가 떼어졌을 때
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             // 사용자 캐릭터
-            ClientCharacter userCharacter = gameManager.userCharacter;
+            UserClient userClient = gameManager.userClient;
 
             // 게임이 시작하지 않았다면 키 입력을 처리할 필요가 없음
             if (gameManager.IsGameStart == false)
             {
                 return;
             }
-
             switch (e.KeyData)
             {
                 case Keys.Left:
-                    // bLeftDown을 False로 바꿔 MoveCharacter_timer이 호출되어도 이동하지 않음
-                    userCharacter.bLeftDown = false;
-
-                    // 왼쪽 방향키가 떼어졌다는걸 알림
-                    gameManager.SendInputedKey('L', false);
+                    userClient.LeftDown = false;
                     break;
-
                 case Keys.Right:
-                    // bRightDown을 False로 바꿔 MoveCharacter_timer이 호출되어도 이동하지 않음
-                    userCharacter.bRightDown = false;
-
-                    // 왼쪽 방향키가 떼어졌다는걸 알림
-                    gameManager.SendInputedKey('R', false);
+                    userClient.RightDown = false;
                     break;
-
                 case Keys.Space:
-                    userCharacter.bJumpDown = false;
-                     gameManager.SendInputedKey('J', false);
+                    userClient.JumpDown = false;
                     break;
                 default:
-                    break;
-                    
-                    
+                    break;   
             }
         }
-
-
-
 
         // 폼의 포커스가 풀리면 ( 알트 탭, 다른 윈도우 선택시 ) 이벤트 발생
         private void Form1_Deactivate(object sender, EventArgs e)
         {
             // 사용자 캐릭터
-            ClientCharacter userCharacter = gameManager.userCharacter;
+            UserClient userClient = gameManager.userClient;
 
             // 게임이 시작하지 않았다면 키 입력을 처리할 필요가 없음
             if (gameManager.IsGameStart == false)
@@ -303,17 +270,10 @@ namespace MultiGame
                 return;
             }
 
-            // 왼쪽 키가 떼어졌다고 설정 후 서버에 알림
-            userCharacter.bLeftDown = false;                                                            
-            gameManager.SendInputedKey('L', false);
-
-            // 오른쪽 키가 떼어졌다고 설정 후 서버에 알림
-            userCharacter.bRightDown = false;                                                           
-            gameManager.SendInputedKey('R', false);
-
-            userCharacter.bJumpDown = false;
-            gameManager.SendInputedKey('J', false);
-
+            // 입력중인 키 모두 해제
+            userClient.LeftDown = false;                                                            
+            userClient.RightDown = false;                                                           
+            userClient.JumpDown = false;
         }
 
         // 버튼을 클릭했을 때 호출됨
@@ -322,7 +282,7 @@ namespace MultiGame
             Button btn = sender as Button;
 
             // 사용자 캐릭터
-            ClientCharacter userCharacter = gameManager.userCharacter;
+            UserClient userClient = gameManager.userClient;
 
             switch (btn.Name)
             {
@@ -404,17 +364,17 @@ namespace MultiGame
                 case "ready_btn":       // 준비 / 준비 취소
                     {
                         // 유저가 준비상태에서 버튼 누름
-                        if ( userCharacter.isReady == true )
+                        if ( userClient.Character.isReady == true )
                         {
                             // 준비 취소 시킴
                             gameManager.RequestReady(false);
-                            userCharacter.isReady = false;
+                            userClient.Character.isReady = false;
                         }
                         else
                         {
                             // 준비 상태로 만듬
                             gameManager.RequestReady(true);
-                            userCharacter.isReady = true;
+                            userClient.Character.isReady = true;
                         }
                         UpdateLobby();
                     }
@@ -429,7 +389,7 @@ namespace MultiGame
                         gameManager.RequestLobbyInfo(true);
                         gameManager.clientManager.ClientDic.Clear();
 
-                        userCharacter.isReady = false;
+                        userClient.Character.isReady = false;
                         this.Controls.Clear();
                         this.Controls.Add(findRoom_Screen);
                     }
