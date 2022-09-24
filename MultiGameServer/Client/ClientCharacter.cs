@@ -12,27 +12,10 @@ using System.Threading;
 namespace MultiGameServer
 {
     public delegate void LocSyncEventHandler(ClientCharacter clientCharacter);
-    public class ClientCharacter
+    public class ClientCharacter : GameObject
     {
-        // 각 클라이언트를 구별하기 위한 킷값
-        public int key {
-            get
-            {
-                return clientData.key;
-            }
-            set
-            {
-                clientData.key = value;
-            }
-        }
-
         // TcpClient 객체
         public ClientData clientData { get; set; }
-
-        // 캐릭터의 위치
-        public Point Location { get; set; }
-
-        public Size size { get; set; }
 
         // 캐릭터 스킨 번호
         public int SkinNum { get; set; }                                   
@@ -49,19 +32,12 @@ namespace MultiGameServer
         public bool bFindingRoom { get; set; }
 
         public ClientCharacter(int key, ClientData clientData)
+            :base(key,new Point(0,0), new Size(60,50))
         {
             this.clientData = clientData;
-            this.key = key;
-            Location = new Point(0, 0);
-            size = new Size(60, 50);
+            clientData.key = key;
             bReady = false;
             bFindingRoom = false;
-        }
-
-
-        // 소멸자 호출시 비관리 메모리 제거
-        ~ClientCharacter()
-        {
         }
 
         public void GameStart()

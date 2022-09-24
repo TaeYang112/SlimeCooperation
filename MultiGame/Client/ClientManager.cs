@@ -22,7 +22,7 @@ namespace MultiGame
             ClientDic = new ConcurrentDictionary<int, ClientCharacter>();
         }
 
-        public ClientCharacter AddOrGetClient(int key, Point Location, int skinNum)
+        public ClientCharacter AddClient(int key, Point Location, int skinNum)
         {
             ClientCharacter ClientChar = new ClientCharacter(key, Location, skinNum);
             // 새로운 클라이언트를 배열에 저장

@@ -58,7 +58,7 @@ namespace MultiGameServer
                                     Console.WriteLine("[ERROR] 존재하지 않은 방입니다.");
                                     continue;
                                 }
-                                program.RoomStart(room);
+                                room.GameStart();
                                 Console.WriteLine("[INFO] " + roomKey + "번 방을 시작하였습니다.");
                             }
                             catch(FormatException)
@@ -336,7 +336,7 @@ namespace MultiGameServer
                                 if (room.IsAllReady() == true)
                                 {
                                     // 게임시작
-                                    RoomStart(room);
+                                    room.GameStart();
 
                                     // 방찾기 중인 클라이언트들의 방목록에서 시작한 방을 제거
                                     SendDelRoomInfo(room);
@@ -405,7 +405,7 @@ namespace MultiGameServer
                             int x = int.Parse(SplitMessage[1]);
                             int y = int.Parse(SplitMessage[2]);
 
-                            int originX = clientChar.Location.X;
+                            int velocity_x = x - clientChar.Location.X;
                             clientChar.Location = new Point(x, y);
 
                             // 전체 클라이언트에게 전송
@@ -414,11 +414,13 @@ namespace MultiGameServer
                             // 움직인 클라이언트 위에 다른 클라이언트가 있는지 확인
                             List<ClientCharacter> list = GetClientsOverTheHead(clientChar);
 
-                            // 위에 있는 클라이언트들도 같은 방향으로 움직이게 함
-                            foreach(var client in list)
+                            if(velocity_x != 0)
                             {
-                                SendMessage($"Move#{x - originX}#{0}@", client.key);
-                                Console.WriteLine("이동");
+                                // 위에 있는 클라이언트들도 같은 방향으로 움직이게 함
+                                foreach (var client in list)
+                                {
+                                    SendMessage($"Move#{velocity_x}#{0}@", client.key);
+                                }
                             }
                         }
                         break;
@@ -485,46 +487,7 @@ namespace MultiGameServer
             // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
             SendMessageToAll_InRoom($"EnterRoomOther#{clientChar.key}#False#{clientChar.SkinNum}@", clientChar.RoomKey, clientChar.key);
         }
-
-
-
-
-        // 로비단계에 있는 게임 방을 시작시킴
-        public void RoomStart(Room room)
-        {
-            room.bGameStart = true;
-
-            // 내부적으로 각 클라이언트 시작 위치 설정
-            int X = 0;
-            foreach (var item in room.roomClientDic)
-            {
-                item.Value.Location = new Point(X,0);
-                X += 100;
-            }
-
-            foreach (var item in room.roomClientDic)
-            {
-                // 클라이언트에게 게임 시작을 알려주고 시작 위치 설정
-                SendMessage($"RoomStart#{item.Value.Location.X}#{item.Value.Location.Y}@", item.Key);
-
-                // 클라이언트들의 시작 위치를 알려줌
-                foreach (var item2 in room.roomClientDic)
-                {
-                    if (item.Key == item2.Key) continue;
-
-                    // 각 플레이어들의 위치를 전송
-                    else
-                        SendMessage($"Location#{item2.Key}#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
-                }
-            }
-
-
-            foreach (var item in room.roomClientDic)
-            {
-                item.Value.GameStart();
-            }
-        }
-        
+   
 
         // 메세지 전송
         public void SendMessage(string message, int recieverKey)
