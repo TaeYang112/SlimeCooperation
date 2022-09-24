@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace MultiGameServer
         public ConcurrentDictionary<int, ClientCharacter> roomClientDic { get; }
         public SortedSet<int> skinList;
 
+        public MapBase Map;
         public string RoomTitle { get; set; }
 
         public bool bGameStart { get; set; }
@@ -29,6 +31,8 @@ namespace MultiGameServer
             {
                 skinList.Add(i);
             }
+
+            Map = new Stage1();
         }
 
         // 방에 클라이언트를 추가함
@@ -111,5 +115,44 @@ namespace MultiGameServer
             return result;
         }
 
+        public void GameStart()
+        {
+            bGameStart = true;
+
+            // 프로그램 인스턴스
+            Program PInst = Program.GetInstance();
+
+            int X = 0;
+            foreach (var item in roomClientDic)
+            {
+                // 내부적으로 각 클라이언트 시작 위치 설정
+                item.Value.Location = new Point(X, 0);
+                X += 100;
+
+                // 클라이언트에게 게임 시작을 알려주고 시작 위치 설정
+                PInst.SendMessage($"RoomStart#{item.Value.Location.X}#{item.Value.Location.Y}@", item.Key);
+
+                // 클라이언트들의 시작 위치를 알려줌
+                foreach (var item2 in roomClientDic)
+                {
+                    if (item.Key == item2.Key) continue;
+
+                    // 각 플레이어들의 위치를 전송
+                    else
+                        PInst.SendMessage($"Location#{item2.Key}#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
+                }
+
+                // 맵에 있는 오브젝트들을 알려줌
+                foreach(var objectPair in Map.objectManager.ObjectDic)
+                {
+                    GameObject gameObject = objectPair.Value;
+                    PInst.SendMessage($"NewObject#{objectPair.Key}#" +
+                        $"{gameObject.Location.X}#{gameObject.Location.Y}#" +
+                        $"{gameObject.size.Width}#{gameObject.size.Height}@",item.Key);
+                }
+                item.Value.GameStart();
+            }
+
+        }
     }
 }

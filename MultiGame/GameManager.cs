@@ -23,6 +23,9 @@ namespace MultiGame
         // 다른 클라이언트들을 관리하는 객체
         public ClientManager clientManager { get; set; }
 
+        // 맵에 있는 오브젝트들을 관리하는 객체
+        public ObjectManager objectManager { get; set; }
+
         // 사용자의 캐릭터
         public UserClient userClient { get; set; }
 
@@ -57,6 +60,9 @@ namespace MultiGame
 
             // 다른 클라이언트들을 관리할 객체
             clientManager = new ClientManager();
+
+            // 맵에 있는 오브젝트들을 관리할 객체
+            objectManager = new ObjectManager();
 
             // 사용자 캐릭터
             userClient = new UserClient();
@@ -100,13 +106,12 @@ namespace MultiGame
                 MessageBox.Show("서버와 연결되어있지 않습니다.", $"에러코드 : {-1}", MessageBoxButtons.OK);
             }
         }
-
+        
         // 메세지를 해석 후 실행
         private void ParseMessage(string Message)
         {
             // 메세지는 '#'으로 각 매개인자를 구분함
             string[] SplitMessage = Message.Split('#');
-            Console.WriteLine(Message);
             switch (SplitMessage[0])
             {
                 // 클라이언트의 캐릭터 위치 수신
@@ -151,7 +156,7 @@ namespace MultiGame
                         client.SetLookDirection(bLookRight);
                     }
                     break;
-                // 서버에 의해 유저캐릭터가 움직여짐
+                // 서버에 의해 캐릭터가 움직여짐
                 case "Move":
                     {
                         // 좌표
@@ -161,6 +166,27 @@ namespace MultiGame
                         // 이동
                         Point oriLoc = userClient.Character.Location;
                         userClient.Character.Location = new Point(oriLoc.X + x, oriLoc.Y + y);
+                    }
+                    break;
+                // 오브젝트 생성
+                case "NewObject":
+                    {
+                        // 키
+                        int key = int.Parse(SplitMessage[1]);
+
+                        // 좌표
+                        int x = int.Parse(SplitMessage[2]);
+                        int y = int.Parse(SplitMessage[3]);
+
+                        // 사이즈
+                        int width = int.Parse(SplitMessage[4]);
+                        int height = int.Parse(SplitMessage[5]);
+
+                        GameObject newObject = new GameObject(key, new Point(x, y), new Size(width, height));
+                        objectManager.AddObject(newObject);
+
+                        form1.inGame_Screen.Paint += newObject.OnPaint;
+                        Console.WriteLine("오브젝트 생성");
                     }
                     break;
                 // 클라이언트 정보 업데이트
@@ -261,7 +287,7 @@ namespace MultiGame
                         ClientCharacter clientCharacter;
 
                         // 새로운 클라이언트 생성
-                        clientCharacter = clientManager.AddOrGetClient(key, new Point(0, 0), 1);
+                        clientCharacter = clientManager.AddClient(key, new Point(0, 0), 1);
                         clientCharacter.isReady = bReady;
                         clientCharacter.SetSkin(skinNum);
 

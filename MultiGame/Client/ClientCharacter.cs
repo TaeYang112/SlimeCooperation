@@ -11,39 +11,19 @@ namespace MultiGame
 {
 
     // Client 정보를 갖는 클래스
-    public class ClientCharacter
+    public class ClientCharacter : GameObject
     {
-        // 각 클라이언트를 구별하기 위한 킷값
-        public int key { get; set; }
-
-        // 좌표
-        public Point Location { get; set; }
-
-        // 크기
-        public Size size { get; set; }
-
-        // 캐릭터 이미지
-        private Image _image;
-        public Image image { get { return _image; } }
         public bool bLookRight { get; set; }
         private bool FlipImage;
 
         public bool isVisible { get; set; }
         public bool isReady { get; set; }
 
-        ~ClientCharacter()
-        {
-        }
-
         public ClientCharacter(int key, Point Location, int skinNum)
+            : base(key, Location, new Size(60,50))
         {
-            // 멤버변수 초기
-            this.key = key;
-
-            this.Location = Location;
-            size = new Size(60, 50);
-            isVisible = false;
             isReady = false;
+            CollisionEnable = true;
              
             // 이미지 관련
             bLookRight = true;
@@ -86,11 +66,9 @@ namespace MultiGame
         }
 
 
-        public void OnPaint(Object obj, PaintEventArgs pe)
+        override public void OnPaint(object obj, PaintEventArgs pe)
         {
-            if (isVisible == false) return;
-
-             var e = pe.Graphics;
+            var e = pe.Graphics;
             if(FlipImage)
             {
                 image.RotateFlip(RotateFlipType.RotateNoneFlipX);

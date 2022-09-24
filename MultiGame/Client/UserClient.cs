@@ -173,13 +173,28 @@ namespace MultiGame.Client
             // 해당 오브젝트의 충돌 박스
             Rectangle a = new Rectangle(newLocation, Character.size);
 
-            // 모든 오브젝트와 부딪히는지 체크함
+            // 모든 캐릭터와 부딪히는지 체크함
             foreach (var item in GameManager.GetInstance().clientManager.ClientDic)
             {
                 ClientCharacter otherClient = item.Value;
 
                 // 대상 오브젝트의 충돌 박스
                 Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return false;
+                }
+            }
+
+            // 맵의 모든 오브젝트와 부딪히는지 체크함
+            foreach (var item in GameManager.GetInstance().objectManager.ObjectDic)
+            {
+                GameObject gameObject = item.Value;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
 
                 // 만약 움직였을때 겹친다면 리턴
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
