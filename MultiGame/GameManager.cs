@@ -8,11 +8,10 @@ using System.Windows.Forms;
 using System.Windows;
 using System.Collections;
 using System.Threading;
+using MultiGame.Client;
 
 namespace MultiGame
 {
-
-
     public class GameManager
     {
         // 자신 싱글톤 객체
@@ -25,12 +24,16 @@ namespace MultiGame
         public ClientManager clientManager { get; set; }
 
         // 사용자의 캐릭터
-        public ClientCharacter userCharacter { get; set; }
+        public UserClient userClient { get; set; }
 
         // 게임 시작 여부
         public bool IsGameStart { get; set; }
 
         private Form1 form1;
+
+        // 디버그
+        private System.Threading.Timer Timer;
+        private int a = 0;
 
         public static GameManager GetInstance()
         {
@@ -56,8 +59,17 @@ namespace MultiGame
             clientManager = new ClientManager();
 
             // 사용자 캐릭터
-            userCharacter = new ClientCharacter(-1, new Point(364, 293), 0);
+            userClient = new UserClient();
 
+            TimerCallback tc = new TimerCallback(DebugTimer);                                    // 실행시킬 메소드
+            Timer = new System.Threading.Timer(tc, null, 0, 1000);
+            a = 0;
+        }
+
+        public void DebugTimer(object c)
+        {
+            Console.WriteLine(a + "번 수신됨.");
+            a = 0;
         }
 
         public void Start(Form1 form1)
@@ -84,8 +96,8 @@ namespace MultiGame
         {
             if (e.GetType().ToString() == "System.InvalidOperationException")
             {
-                MessageBox.Show("서버와 연결되어있지 않습니다.", $"에러코드 : {-1}", MessageBoxButtons.OK);
                 Application.Exit();
+                MessageBox.Show("서버와 연결되어있지 않습니다.", $"에러코드 : {-1}", MessageBoxButtons.OK);
             }
         }
 
@@ -94,7 +106,7 @@ namespace MultiGame
         {
             // 메세지는 '#'으로 각 매개인자를 구분함
             string[] SplitMessage = Message.Split('#');
-
+            Console.WriteLine(Message);
             switch (SplitMessage[0])
             {
                 // 클라이언트의 캐릭터 위치 수신
@@ -109,23 +121,46 @@ namespace MultiGame
 
                         ClientCharacter client;
 
-                        // key == -1 ( 유저 캐릭터 )
-                        if (key == -1)
-                            client = userCharacter;
-                        else
-                        {
-                            // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
-                            bool result = clientManager.ClientDic.TryGetValue(key, out client);
+                        // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
+                        bool result = clientManager.ClientDic.TryGetValue(key, out client);
 
-                            // 해당 클라이언트가 존재하지 않을경우 리턴
-                            if (result == false) return;
-                        }
-                        if (key == -1)
-                            Console.WriteLine($"동기화 :: X : {client.Location.X}  Y : {client.Location.Y}  ->  X : {x}  Y : {y}");
-                        else
-                            Console.WriteLine($"{client.key}번 클라이언트 동기화 :: X : {client.Location.X}  Y : {client.Location.Y}  ->  X : {x}  Y : {y}");
+                        // 해당 클라이언트가 존재하지 않을경우 리턴
+                        if (result == false) return;
 
+                        // 위치 설정
+                        Point velocity = new Point(x - client.Location.X, y - client.Location.Y);
                         client.Location = new Point(x, y);
+                        a++;
+                    }
+                    break;
+                // 플레이어가 쳐다보는 방향 ( true : 오른쪽 )
+                case "LookR":
+                    {
+                        // 플레이어 번호
+                        int key = int.Parse(SplitMessage[1]);
+
+                        bool bLookRight = bool.Parse(SplitMessage[2]);
+
+                        ClientCharacter client;
+
+                        // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
+                        bool result = clientManager.ClientDic.TryGetValue(key, out client);
+
+                        if (result == false) return;
+
+                        client.SetLookDirection(bLookRight);
+                    }
+                    break;
+                // 서버에 의해 유저캐릭터가 움직여짐
+                case "Move":
+                    {
+                        // 좌표
+                        int x = int.Parse(SplitMessage[1]);
+                        int y = int.Parse(SplitMessage[2]);
+
+                        // 이동
+                        Point oriLoc = userClient.Character.Location;
+                        userClient.Character.Location = new Point(oriLoc.X + x, oriLoc.Y + y);
                     }
                     break;
                 // 클라이언트 정보 업데이트
@@ -141,7 +176,7 @@ namespace MultiGame
 
                         // key == -1 ( 유저 캐릭터 )
                         if (key == -1)
-                            client = userCharacter;
+                            client = userClient.Character;
                         else
                         {
                             // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
@@ -185,42 +220,6 @@ namespace MultiGame
                         if (IsGameStart == false)
                         {
                             form1.UpdateLobby();
-                        }
-
-                    }
-                    break;
-                // 다른 클라이언트의 키보드 입력
-                case "KeyInputOther":
-                    {
-                        // 플레이어 번호
-                        int key = int.Parse(SplitMessage[1]);
-
-                        // 입력된 키
-                        char InpKey = char.Parse(SplitMessage[2]);
-
-                        // 눌렸으면 true / 아니면 false
-                        bool bKeyDown = bool.Parse(SplitMessage[3]);
-
-                        ClientCharacter client;
-
-                        // 키에 해당하는 캐릭터를 찾아 client변수에 대입
-                        bool result = clientManager.ClientDic.TryGetValue(key, out client);
-
-                        // 해당 클라이언트가 존재하지 않을경우 리턴
-                        if (result == false) return;
-
-                        switch (InpKey)
-                        {
-                            case 'L':
-                                client.bLeftDown = bKeyDown;
-                                break;
-                            case 'R':
-                                client.bRightDown = bKeyDown;
-                                break;
-                            case 'J':
-                                client.bJumpDown = bKeyDown;
-                                if(bKeyDown) client.Jump();
-                                break;
                         }
 
                     }
@@ -301,7 +300,14 @@ namespace MultiGame
                 // 게임이 시작함
                 case "RoomStart":
                     {
-                        // 플래그 변수 변경
+                        // 좌표
+                        int x = int.Parse(SplitMessage[1]);
+                        int y = int.Parse(SplitMessage[2]);
+
+                        // 좌표 설정
+                        userClient.Character.Location = new Point(x, y);
+
+                        // 시작 플래그 변수 변경
                         IsGameStart = true;
 
                         // 인게임 화면으로 변경
@@ -324,10 +330,9 @@ namespace MultiGame
                         }
 
                         // 유저 캐릭터
-                        form1.inGame_Screen.Paint += userCharacter.OnPaint;
-                        userCharacter.isReady = false;
-                        userCharacter.isVisible = true;
-                        userCharacter.GameStart();
+                        form1.inGame_Screen.Paint += userClient.Character.OnPaint;
+                        userClient.Character.isVisible = true;
+                        userClient.Start();
                     }
                     break;
                 // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
@@ -418,10 +423,9 @@ namespace MultiGame
         }
 
 
-        // 유저가 입력한 키를 서버로 보냄 ( 입력키, 누르면 true / 뗐으면 false )
-        public void SendInputedKey(char inputKey, bool bPressed)
+        // 서버로 메세지 전송
+        public void SendMessage(string message)
         {
-            string message = $"KeyInput#{inputKey}#{bPressed}#@";
             myClient.SendMessage(message);
         }
 
@@ -450,155 +454,7 @@ namespace MultiGame
         }
 
 
-        // 오브젝트 이동
-        public void MoveObject(ClientCharacter client, Point velocity)
-        {
-            Point resultLoc = client.Location;
-            Point tempLoc;
-
-            // X의 변화가 있다면 x의 변화에 대한 충돌판정
-            if (velocity.X != 0)
-            {
-                tempLoc = new Point(resultLoc.X + velocity.X , resultLoc.Y);
-
-                // 충돌하지 않았으면
-                if (CollisionCheck(client, tempLoc))
-                {
-                    // 움직이기 위해 좌표 저장
-                    resultLoc = tempLoc;
-
-                    // 머리위에 다른 캐릭터가 있는지 검사
-                    List<ClientCharacter> list = GetClientsOverTheHead(client);
-
-                    // 머리위 캐릭터들에게 자신이 움직이는 방향으로 같이 움직이게함
-                    foreach (var item in list)
-                    {
-                        item.MoveCharacter(new Point(velocity.X, 0));
-                    }
-                }
-
-            }
-
-
-            tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
-
-            // 위, 아래에 대한 충돌 판정
-            if (CollisionCheck(client, tempLoc))
-            {
-                resultLoc = tempLoc;
-                client.isGround = false;
-            }
-            else
-            {
-                // 만약 밑으로 가던중 충돌판정이 일어나면 
-                if(velocity.Y > 0)
-                {
-                    //땅위에 있다는 플래그변수 true
-                    client.isGround = true;
-
-                    // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
-                    if (client.bJumpDown == true)
-                        client.Jump();
-                }
-                
-            }
-
-
-            // 실제 좌표를 이동시킴
-            client.Location = resultLoc;
-        }
-
-        public bool CollisionCheck(ClientCharacter client, Point newLocation)
-        {
-            // 임시 바닥
-            if (newLocation.Y >= 400) return false;
-
-            // 해당 오브젝트의 충돌 박스
-            Rectangle a = new Rectangle(newLocation, client.size);
-
-            // 움직인 캐릭터가 자신(클라이언트 주인)과 부딪히는지 체크함
-            if (client != userCharacter)
-            {
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(userCharacter.Location, userCharacter.size);
-
-                // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    return false;
-                }
-            }
-
-            // 모든 오브젝트와 부딪히는지 체크함
-            foreach (var item in clientManager.ClientDic)
-            {
-                ClientCharacter otherClient = item.Value;
-
-                if (item.Value == client)
-                {
-                    continue;
-                }
-                
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    return false;
-                }
-            }
-            client.Location = newLocation;
-
-            return true;
-        }
-
-        // 대상 클라이언트 머리위에 있는 클라이언트 리스트 반환
-        public List<ClientCharacter> GetClientsOverTheHead(ClientCharacter client)
-        {
-            List<ClientCharacter> list = new List<ClientCharacter>();
-
-            // 대상의 머리위 충돌박스
-            Size size = new Size(client.size.Width, 10);
-            Point location = new Point(client.Location.X, client.Location.Y - 10);
-            Rectangle a = new Rectangle(location, size);
-
-
-            // 유저캐릭터(클라이언트 주인)와 비교
-            if (client != userCharacter)
-            {
-                // 대상 충돌판정
-                Rectangle b = new Rectangle(userCharacter.Location, userCharacter.size);
-
-                // 만약 움직였을때 겹친다면 리스트에 추가
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    list.Add(userCharacter);
-                }
-            }
-
-            // 모든 클라이언트와 비교
-            foreach (var item in clientManager.ClientDic)
-            {
-                ClientCharacter otherClient = item.Value;
-
-                if (item.Value == client)
-                {
-                    continue;
-                }
-
-                // 대상 충돌판정
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    list.Add(otherClient);
-                }
-            }
-
-            return list;
-        }
+        
 
     }
 }
