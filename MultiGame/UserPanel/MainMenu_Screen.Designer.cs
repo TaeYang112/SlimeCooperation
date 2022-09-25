@@ -53,6 +53,7 @@ namespace MultiGame.UserPanel
             this.makeRoom_btn.TabIndex = 1;
             this.makeRoom_btn.Text = "방 만들기";
             this.makeRoom_btn.UseVisualStyleBackColor = true;
+            this.makeRoom_btn.Click += new System.EventHandler(this.makeRoom_btn_Click);
             // 
             // findRoom_btn
             // 
@@ -62,6 +63,7 @@ namespace MultiGame.UserPanel
             this.findRoom_btn.TabIndex = 2;
             this.findRoom_btn.Text = "방 찾기";
             this.findRoom_btn.UseVisualStyleBackColor = true;
+            this.findRoom_btn.Click += new System.EventHandler(this.findRoom_btn_Click);
             // 
             // exitGame_btn
             // 
@@ -71,6 +73,7 @@ namespace MultiGame.UserPanel
             this.exitGame_btn.TabIndex = 2;
             this.exitGame_btn.Text = "게임 종료";
             this.exitGame_btn.UseVisualStyleBackColor = true;
+            this.exitGame_btn.Click += new System.EventHandler(this.exitGame_btn_Click);
             // 
             // MainMenu_Screen
             // 

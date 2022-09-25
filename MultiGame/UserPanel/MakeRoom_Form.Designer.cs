@@ -62,6 +62,7 @@ namespace MultiGame.UserPanel
             this.make_btn.TabIndex = 2;
             this.make_btn.Text = "만들기";
             this.make_btn.UseVisualStyleBackColor = true;
+            this.make_btn.Click += new System.EventHandler(this.make_btn_Click);
             // 
             // cancelMakeRoom_btn
             // 
@@ -71,6 +72,7 @@ namespace MultiGame.UserPanel
             this.cancelMakeRoom_btn.TabIndex = 3;
             this.cancelMakeRoom_btn.Text = "취소";
             this.cancelMakeRoom_btn.UseVisualStyleBackColor = true;
+            this.cancelMakeRoom_btn.Click += new System.EventHandler(this.cancelMakeRoom_btn_Click);
             // 
             // panel1
             // 

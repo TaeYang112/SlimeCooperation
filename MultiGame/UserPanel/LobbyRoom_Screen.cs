@@ -12,9 +12,45 @@ namespace MultiGame.UserPanel
 {
     public partial class LobbyRoom_Screen : UserControl
     {
-        public LobbyRoom_Screen()
+        private Form1 form;
+        public LobbyRoom_Screen(Form1 form)
         {
             InitializeComponent();
+            this.form = form;
+        }
+
+        private void ready_btn_Click(object sender, EventArgs e)
+        {
+            ClientCharacter userCharacter = GameManager.GetInstance().userClient.Character;
+            // 유저가 준비상태에서 버튼 누름
+            if (userCharacter.isReady == true)
+            {
+                // 준비 취소 시킴
+                GameManager.GetInstance().RequestReady(false);
+                userCharacter.isReady = false;
+            }
+            else
+            {
+                // 준비 상태로 만듬
+                GameManager.GetInstance().RequestReady(true);
+                userCharacter.isReady = true;
+            }
+            form.UpdateLobby();
+        }
+
+        private void lobbyToFind_btn_Click(object sender, EventArgs e)
+        {
+            // 서버로 방을 나갔다고 알림
+            GameManager.GetInstance().myClient.SendMessage($"ExitLobby#d@");
+
+            // 다른 클라이언트들 목록에서 제거
+            GameManager.GetInstance().clientManager.ClientDic.Clear();
+
+            // 레디 해제
+            GameManager.GetInstance().userClient.Character.isReady = false;
+
+            // 메인화면으로 돌아감
+            form.ChangeScreen(new MainMenu_Screen(form));
         }
     }
 }

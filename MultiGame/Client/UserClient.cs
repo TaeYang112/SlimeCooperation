@@ -128,7 +128,7 @@ namespace MultiGame.Client
                 tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
 
                 // 충돌하지 않았으면
-                if (CollisionCheck(tempLoc))
+                if (CollisionCheck(tempLoc) == false)
                 {
                     // 움직이기 위해 좌표 저장
                     resultLoc = tempLoc;
@@ -138,8 +138,10 @@ namespace MultiGame.Client
             tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
 
             // y에 대한 충돌 판정
-            if (CollisionCheck(tempLoc))
+            // 겹치지 않았을 경우
+            if (CollisionCheck(tempLoc) == false)
             {
+                // 이동
                 resultLoc = tempLoc;
                 isGround = false;
             }
@@ -155,6 +157,12 @@ namespace MultiGame.Client
                     if (JumpDown == true)
                         Jump();
                 }
+                // 만약 위로 가던중 충돌판정이 일어나면
+                else
+                {
+                    JumpStop(this);
+                    JumpTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                }
 
             }
 
@@ -165,10 +173,11 @@ namespace MultiGame.Client
             GameManager.GetInstance().SendMessage($"Location#{resultLoc.X}#{resultLoc.Y}#@");
         }
 
+        // 겹치면 true 반환
         public bool CollisionCheck(Point newLocation)
         {
             // 임시 바닥
-            if (newLocation.Y >= 400) return false;
+            if (newLocation.Y >= 400) return true;
 
             // 해당 오브젝트의 충돌 박스
             Rectangle a = new Rectangle(newLocation, Character.size);
@@ -184,7 +193,7 @@ namespace MultiGame.Client
                 // 만약 움직였을때 겹친다면 리턴
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
-                    return false;
+                    return true;
                 }
             }
 
@@ -199,12 +208,12 @@ namespace MultiGame.Client
                 // 만약 움직였을때 겹친다면 리턴
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
-                    return false;
+                    return true;
                 }
             }
             Character.Location = newLocation;
 
-            return true;
+            return false;
         }
 
         

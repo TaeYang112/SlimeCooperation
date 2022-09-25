@@ -16,9 +16,12 @@ namespace MultiGame.UserPanel
 
         // 화면 업데이트( 60프레임 ) 타이머
         private System.Threading.Timer UpdateTimer;
-        public InGame_Screen()
+
+        private Form1 form;
+        public InGame_Screen(Form1 form)
         {
             InitializeComponent();
+            this.form = form;
 
             // 60프레임 화면 업데이트
             TimerCallback tc = new TimerCallback(Update);
@@ -36,7 +39,7 @@ namespace MultiGame.UserPanel
         {
             if(bStart == true)
             {
-                UpdateTimer.Change(0,5);
+                UpdateTimer.Change(0,13);
             }
             else
             {
@@ -55,5 +58,26 @@ namespace MultiGame.UserPanel
             UpdateTimer.Dispose();
         }
 
+        private void InGame_Screen_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void InGame_Screen_Paint(object sender, PaintEventArgs e)
+        {
+            GameManager GInst = GameManager.GetInstance();
+
+            foreach(var item in GInst.clientManager.ClientDic)
+            {
+                item.Value.OnPaint(sender, e);
+            }
+
+            foreach (var item in GInst.objectManager.ObjectDic)
+            {
+                item.Value.OnPaint(sender, e);
+            }
+
+            GInst.userClient.Character.OnPaint(sender,e);
+        }
     }
 }
