@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameServer.Object;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,9 +13,17 @@ namespace MultiGameServer
         public Stage1()
         {
             int tempKey = objectManager.NextKey();
-            GameObject Block1 = new GameObject(tempKey, new Point(300, 350), new Size(50, 50));
+            Floor Floor1 = new Floor(tempKey, new Point(0, 390), new Size(800, 60));
+            Floor1.SkinNum = 0;
 
-            objectManager.AddObject(Block1);
+            objectManager.AddObject(Floor1);
+
+
+            tempKey = objectManager.NextKey();
+            Floor Floor2 = new Floor(tempKey, new Point(200, 290), new Size(100, 100));
+            Floor1.SkinNum = 0;
+
+            objectManager.AddObject(Floor2);
         }
 
     }

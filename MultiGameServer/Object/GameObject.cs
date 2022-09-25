@@ -12,6 +12,13 @@ namespace MultiGameServer
         // 오브젝트를 구분하는 키
         public int key { get; set; }
 
+        // 타입
+        protected string _type;
+        public string Type { get { return _type; } }
+
+        // 스킨 번호
+        public int SkinNum { get; set; }
+
         // 위치
         public Point Location { get; set; }
 
@@ -27,6 +34,8 @@ namespace MultiGameServer
             this.Location = Location;
             this.size = size;
             this.CollisionEnable = false;
+            this._type = "object";
+            SkinNum = 0;
         }
 
         // 플레이어와 겹쳤을 때 호출됨
