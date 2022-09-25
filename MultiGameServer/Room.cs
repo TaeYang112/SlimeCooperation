@@ -146,9 +146,12 @@ namespace MultiGameServer
                 foreach(var objectPair in Map.objectManager.ObjectDic)
                 {
                     GameObject gameObject = objectPair.Value;
-                    PInst.SendMessage($"NewObject#{objectPair.Key}#" +
+                    PInst.SendMessage($"NewObject#" +
+                        $"{objectPair.Key}#{gameObject.Type}#" +
                         $"{gameObject.Location.X}#{gameObject.Location.Y}#" +
-                        $"{gameObject.size.Width}#{gameObject.size.Height}@",item.Key);
+                        $"{gameObject.size.Width}#{gameObject.size.Height}#" +
+                        $"{gameObject.SkinNum}@",item.Key);
+                   
                 }
                 item.Value.GameStart();
             }

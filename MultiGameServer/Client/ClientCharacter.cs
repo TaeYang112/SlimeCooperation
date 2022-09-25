@@ -17,9 +17,6 @@ namespace MultiGameServer
         // TcpClient 객체
         public ClientData clientData { get; set; }
 
-        // 캐릭터 스킨 번호
-        public int SkinNum { get; set; }                                   
-
 
         // 현재 클라이언트가 속해 있는 방 키
         public int RoomKey { get; set; }                                                    

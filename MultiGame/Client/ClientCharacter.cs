@@ -23,7 +23,7 @@ namespace MultiGame
             : base(key, Location, new Size(60,50))
         {
             isReady = false;
-            CollisionEnable = true;
+            Collision = true;
              
             // 이미지 관련
             bLookRight = true;
@@ -31,33 +31,33 @@ namespace MultiGame
             SetSkin(skinNum);
         }
 
-        public void SetSkin(int skinNum)
+        override public void SetSkin(int skinNum)
         {
             switch (skinNum % 8)
             {
                 case 0:
-                    _image = MultiGame.Properties.Resources.red.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Red.Clone() as Image;
                     break;
                 case 1:
-                    _image = MultiGame.Properties.Resources.orange.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Orange.Clone() as Image;
                     break;
                 case 2:
-                    _image = MultiGame.Properties.Resources.yellow.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Yellow.Clone() as Image;
                     break;
                 case 3:
-                    _image = MultiGame.Properties.Resources.green.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Green.Clone() as Image;
                     break;
                 case 4:
-                    _image = MultiGame.Properties.Resources.blue.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Blue.Clone() as Image;
                     break;
                 case 5:
-                    _image = MultiGame.Properties.Resources.purple.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Purple.Clone() as Image;
                     break;
                 case 6:
-                    _image = MultiGame.Properties.Resources.pink.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Pink.Clone() as Image;
                     break;
                 case 7:
-                    _image = MultiGame.Properties.Resources.gray.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Gray.Clone() as Image;
                     break;
             }
         }

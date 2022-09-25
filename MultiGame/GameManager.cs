@@ -10,6 +10,7 @@ using System.Collections;
 using System.Threading;
 using MultiGame.Client;
 using MultiGame.UserPanel;
+using MultiGame.Object;
 
 namespace MultiGame
 {
@@ -34,10 +35,6 @@ namespace MultiGame
         public bool IsGameStart { get; set; }
 
         private Form1 form1;
-
-        // 디버그
-        private System.Threading.Timer Timer;
-        private int a = 0;
 
         public static GameManager GetInstance()
         {
@@ -68,16 +65,8 @@ namespace MultiGame
             // 사용자 캐릭터
             userClient = new UserClient();
 
-            TimerCallback tc = new TimerCallback(DebugTimer);                                    // 실행시킬 메소드
-            Timer = new System.Threading.Timer(tc, null, 0, 1000);
-            a = 0;
         }
 
-        public void DebugTimer(object c)
-        {
-            Console.WriteLine(a + "번 수신됨.");
-            a = 0;
-        }
 
         public void Start(Form1 form1)
         {
@@ -136,7 +125,6 @@ namespace MultiGame
                         // 위치 설정
                         Point velocity = new Point(x - client.Location.X, y - client.Location.Y);
                         client.Location = new Point(x, y);
-                        a++;
                     }
                     break;
                 // 플레이어가 쳐다보는 방향 ( true : 오른쪽 )
@@ -175,16 +163,33 @@ namespace MultiGame
                         // 키
                         int key = int.Parse(SplitMessage[1]);
 
+                        // 타입
+                        string type = SplitMessage[2];
                         // 좌표
-                        int x = int.Parse(SplitMessage[2]);
-                        int y = int.Parse(SplitMessage[3]);
+                        int x = int.Parse(SplitMessage[3]);
+                        int y = int.Parse(SplitMessage[4]);
 
                         // 사이즈
-                        int width = int.Parse(SplitMessage[4]);
-                        int height = int.Parse(SplitMessage[5]);
+                        int width = int.Parse(SplitMessage[5]);
+                        int height = int.Parse(SplitMessage[6]);
 
-                        GameObject newObject = new GameObject(key, new Point(x, y), new Size(width, height));
-                        objectManager.AddObject(newObject);
+                        // 스킨 번호
+                        int skinNum = int.Parse(SplitMessage[7]);
+                        switch (type)
+                        {
+                            case "Floor":
+                                {
+                                    GameObject newObject = new Floor(key, new Point(x, y), new Size(width, height));
+                                    newObject.SetSkin(skinNum);
+                                    objectManager.AddObject(newObject);
+                                }
+                                break;
+                            default:
+                                Console.WriteLine("에러 : " + type);
+                                break;
+                        }
+                        
+                       
                     }
                     break;
                 // 클라이언트 정보 업데이트

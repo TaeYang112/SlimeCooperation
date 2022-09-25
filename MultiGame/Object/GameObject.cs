@@ -20,7 +20,7 @@ namespace MultiGame
         public Size size { get; set; }
 
         // 충돌 검사 여부
-        public bool CollisionEnable { get; set; }
+        public bool Collision { get; set; }
 
         // 이미지
         protected Image _image;
@@ -31,8 +31,7 @@ namespace MultiGame
             this.key = key;
             this.Location = Location;
             this.size = size;
-            this.CollisionEnable = false;
-            _image = _image = MultiGame.Properties.Resources.ReadyCheck.Clone() as Image;
+            this.Collision = false;
         }
 
         // 플레이어와 겹쳤을 때 호출됨
@@ -46,6 +45,10 @@ namespace MultiGame
             var e = pe.Graphics;
             e.DrawImage(image, new Rectangle(Location, size));
 
+        }
+
+        virtual public void SetSkin(int skinNum)
+        {
         }
     }
 }
