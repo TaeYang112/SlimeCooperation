@@ -97,6 +97,7 @@ namespace MultiGame.UserPanel
             this.ready_btn.TabIndex = 4;
             this.ready_btn.Text = "준비";
             this.ready_btn.UseVisualStyleBackColor = true;
+            this.ready_btn.Click += new System.EventHandler(this.ready_btn_Click);
             // 
             // lobbyToFind_btn
             // 
@@ -106,6 +107,7 @@ namespace MultiGame.UserPanel
             this.lobbyToFind_btn.TabIndex = 5;
             this.lobbyToFind_btn.Text = "나가기";
             this.lobbyToFind_btn.UseVisualStyleBackColor = true;
+            this.lobbyToFind_btn.Click += new System.EventHandler(this.lobbyToFind_btn_Click);
             // 
             // leftCheckPicBox
             // 

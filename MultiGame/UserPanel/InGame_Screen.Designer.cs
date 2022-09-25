@@ -38,6 +38,8 @@ namespace MultiGame.UserPanel
             this.DoubleBuffered = true;
             this.Name = "InGame_Screen";
             this.Size = new System.Drawing.Size(800, 450);
+            this.Load += new System.EventHandler(this.InGame_Screen_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.InGame_Screen_Paint);
             this.ResumeLayout(false);
 
         }

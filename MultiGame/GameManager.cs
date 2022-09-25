@@ -9,6 +9,7 @@ using System.Windows;
 using System.Collections;
 using System.Threading;
 using MultiGame.Client;
+using MultiGame.UserPanel;
 
 namespace MultiGame
 {
@@ -184,9 +185,6 @@ namespace MultiGame
 
                         GameObject newObject = new GameObject(key, new Point(x, y), new Size(width, height));
                         objectManager.AddObject(newObject);
-
-                        form1.inGame_Screen.Paint += newObject.OnPaint;
-                        Console.WriteLine("오브젝트 생성");
                     }
                     break;
                 // 클라이언트 정보 업데이트
@@ -239,7 +237,6 @@ namespace MultiGame
 
                         //클라이언트 배열에서 제거
                         clientManager.RemoveClient(clientChar);
-                        form1.inGame_Screen.Paint -= clientChar.OnPaint;
 
 
                         // 게임이 시작하지 않았다면 로비 업데이트 
@@ -264,10 +261,18 @@ namespace MultiGame
 
                         form1.Invoke(new MethodInvoker(delegate ()
                         {
-                            form1.lobbyRoom_Screen.roomTitle_lbl.Text = $"{roomCode}번방 {roomTItle}";
-                            form1.Controls.Clear();
-                            form1.Controls.Add(form1.lobbyRoom_Screen);
+                            LobbyRoom_Screen lobbyRoom = new LobbyRoom_Screen(form1);
+
+                            // 방 제목
+                            lobbyRoom.roomTitle_lbl.Text = $"{roomCode}번방 {roomTItle}";
+
+                            // 화면 전환
+                            form1.ChangeScreen(new LobbyRoom_Screen(form1));
+
+                            // 게임 목록 정보 수신 거부
                             RequestLobbyInfo(false);
+
+                            // 로비 화면 갱신
                             form1.UpdateLobby();
                         }));
                     }
@@ -339,16 +344,16 @@ namespace MultiGame
                         // 인게임 화면으로 변경
                         form1.Invoke(new MethodInvoker(delegate ()
                         {
-                            form1.Controls.Clear();
-                            form1.Controls.Add(form1.inGame_Screen);
-                            form1.inGame_Screen.StartUpdateScreen(true);
+                            InGame_Screen inGame_Screen = new InGame_Screen(form1);
+                            inGame_Screen.StartUpdateScreen(true);
+
+                            form1.ChangeScreen(inGame_Screen);
                         }));
 
                         // 각 캐릭터들 설정
                         foreach (var item in clientManager.ClientDic)
                         {
                             // 화면에 출력
-                            form1.inGame_Screen.Paint += item.Value.OnPaint;
                             item.Value.isVisible = true;
 
                             // 움직임 시작
@@ -356,7 +361,6 @@ namespace MultiGame
                         }
 
                         // 유저 캐릭터
-                        form1.inGame_Screen.Paint += userClient.Character.OnPaint;
                         userClient.Character.isVisible = true;
                         userClient.Start();
                     }
@@ -370,19 +374,25 @@ namespace MultiGame
                 // 방찾기 화면에서 방 목록관련 정보 수신
                 case "RoomList":
                     {
+                        // 형변환
+                        FindRoom_Screen findRoom_Screen = form1.Controls[0] as FindRoom_Screen;
+
+                        // 방찾기 화면이 아닌경우 리턴
+                        if (findRoom_Screen == null) return;
+
                         switch (SplitMessage[1])
                         {
                             // 방 정보 추가 ( 방찾기 화면 입장 or 방이 새로 생김 )
                             case "Add":
                                 form1.Invoke(new MethodInvoker(delegate ()
                                 {
-                                    form1.findRoom_Screen.roomList_GridView.Rows.Add(SplitMessage[2], SplitMessage[3], SplitMessage[4] + "/3");
+                                    findRoom_Screen.roomList_GridView.Rows.Add(SplitMessage[2], SplitMessage[3], SplitMessage[4] + "/3");
                                 }));
                                 break;
                             // 방 정보 삭제 ( 방이 사라짐 or 해당 방 게임이 시작함 )
                             case "Del":
                                 {
-                                    foreach (DataGridViewRow item in form1.findRoom_Screen.roomList_GridView.Rows)
+                                    foreach (DataGridViewRow item in findRoom_Screen.roomList_GridView.Rows)
                                     {
                                         // 방 배열을 돌면서 방번호와 같은 방을 찾음
                                         if (item.Cells[0].Value.ToString() == SplitMessage[2])
@@ -390,7 +400,7 @@ namespace MultiGame
                                             form1.Invoke(new MethodInvoker(delegate ()
                                             {
                                                 // 방 제거
-                                                form1.findRoom_Screen.roomList_GridView.Rows.Remove(item);
+                                                findRoom_Screen.roomList_GridView.Rows.Remove(item);
                                             }));
                                         }
                                     }
@@ -400,7 +410,7 @@ namespace MultiGame
                             // 방 정보 수정 ( 방의 인원수가 변경됨 )
                             case "Update":
                                 {
-                                    foreach (DataGridViewRow item in form1.findRoom_Screen.roomList_GridView.Rows)
+                                    foreach (DataGridViewRow item in findRoom_Screen.roomList_GridView.Rows)
                                     {
                                         // 방 배열을 돌면서 방번호와 같은 방을 찾음
                                         if (item.Cells[0].Value.ToString() == SplitMessage[2])
