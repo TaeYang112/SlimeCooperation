@@ -128,7 +128,7 @@ namespace MultiGameServer
             foreach (var item in roomClientDic)
             {
                 // 내부적으로 각 클라이언트 시작 위치 설정
-                item.Value.Location = new Point(X, 0);
+                item.Value.Location = new Point(X, 330);
                 X += 100;
 
                 // 클라이언트에게 게임 시작을 알려주고 시작 위치 설정
