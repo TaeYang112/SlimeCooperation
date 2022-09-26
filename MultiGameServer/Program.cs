@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameServer.Object;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -432,9 +433,89 @@ namespace MultiGameServer
                             SendMessageToAll_InRoom($"LookR#{clientChar.key}#{bLookRight}@",clientChar.RoomKey,clientChar.key);
                         }
                         break;
+                    // 클라이언트가 오브젝트와 상호작용함
+                    case "ObjEvent":
+                        {
+                            int key = int.Parse(SplitMessage[1]);
+                            string type = SplitMessage[2];
+
+                            // 클라이언트가 속한 방을 찾음
+                            Room room;
+                            bool roomResult = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+
+                            if (roomResult == false) continue;
+
+                            // 해당 오브젝트를 찾음
+                            GameObject gameObject;
+                            bool objResult = room.Map.objectManager.ObjectDic.TryGetValue(key, out gameObject);
+
+                            if (objResult == false) continue;
+
+                            switch(type)
+                            {
+                                case "KeyObject":
+                                    {
+                                        KeyObject keyObj = gameObject as KeyObject;
+
+                                        if (keyObj == null) continue;
+
+                                        // 소유자가 있으면 무시
+                                        if (keyObj.ownerKey != -1) continue;
+                                        else
+                                        {
+                                            keyObj.ownerKey = clientChar.key;
+
+                                            SendMessageToAll_InRoom($"ObjEvent#{key}#KeyObject#{clientChar.key}@", clientChar.RoomKey,clientChar.key);
+                                            SendMessage($"ObjEvent#{key}#KeyObject#{-1}@",clientChar.key);
+                                        }
+                                    }
+                                    break;
+                                case "Door":
+                                    {
+                                        Door door = gameObject as Door;
+
+                                        if (door == null) continue;
+
+                                        // 문이 이미 열렸을 경우
+                                        if (door.isOpen)
+                                        {
+                                            SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Enter@", clientChar.RoomKey,clientChar.key);
+                                            SendMessage($"ObjEvent#{key}#Door#{-1}#Enter@", clientChar.key);
+                                            clientChar.Collision = false;
+                                        }
+                                        // 문이 닫혀있을 경우
+                                        {
+                                            // 맵에서 키를 검색함
+                                            KeyObject keyObject = null;
+                                            foreach( var item in room.Map.objectManager.ObjectDic)
+                                            {
+                                                keyObject = item.Value as KeyObject;
+
+                                                if (keyObject != null) break;
+                                            }
+                                            if (keyObject == null) continue;
+
+                                            // 클라이언트가 열쇠를 가지고 있다면
+                                            if(clientChar.key == keyObject.ownerKey)
+                                            {
+                                                SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Open@", clientChar.RoomKey, clientChar.key);
+                                                SendMessage($"ObjEvent#{key}#Door#{-1}#Open@", clientChar.key);
+                                                door.isOpen = true;
+                                            }
+                                            
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    Console.WriteLine("디폴트 " + Messages[i]);
+                                    break;
+                            }
+                        }
+                        break;
                     default:
                         Console.WriteLine("디폴트 : {0}", Messages[i]);
                         break;
+                    
                 }
             }
         }
@@ -547,7 +628,7 @@ namespace MultiGameServer
             {
                 ClientCharacter otherClient = item.Value;
 
-                if (item.Value == client)
+                if (otherClient == client || otherClient.Collision == false)
                 {
                     continue;
                 }

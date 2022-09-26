@@ -92,7 +92,6 @@ namespace MultiGameServer
             catch
             {
                 ClientLeave(receiver);
-                Console.WriteLine("에러메세지 : " + message);
             }
         }
 

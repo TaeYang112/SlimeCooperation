@@ -176,6 +176,12 @@ namespace MultiGame
                 userClient.JumpDown = true;
                 return true;
             }
+
+            if(keyData == Keys.Up)
+            {
+                gameManager.TryOpenDoor();
+            }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
