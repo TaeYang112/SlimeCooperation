@@ -17,6 +17,8 @@ namespace MultiGame.UserPanel
         {
             InitializeComponent();
             this.form = form;
+
+            makeRoom_btn.Parent = this;
         }
 
         private void makeRoom_btn_Click(object sender, EventArgs e)
@@ -45,5 +47,6 @@ namespace MultiGame.UserPanel
             MessageBox.Show("종료", "게임을 종료합니다.", MessageBoxButtons.OK);
             Application.Exit();
         }
+
     }
 }

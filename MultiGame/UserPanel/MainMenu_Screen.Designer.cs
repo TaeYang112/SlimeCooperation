@@ -29,72 +29,57 @@ namespace MultiGame.UserPanel
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.makeRoom_btn = new System.Windows.Forms.Button();
-            this.findRoom_btn = new System.Windows.Forms.Button();
-            this.exitGame_btn = new System.Windows.Forms.Button();
+            this.makeRoom_btn = new System.Windows.Forms.Label();
+            this.findRoom_btn = new System.Windows.Forms.Label();
+            this.exitGame_btn = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("맑은 고딕", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(302, 98);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(159, 45);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "게임 이름";
             // 
             // makeRoom_btn
             // 
-            this.makeRoom_btn.Location = new System.Drawing.Point(253, 195);
+            this.makeRoom_btn.BackColor = System.Drawing.Color.Transparent;
+            this.makeRoom_btn.Location = new System.Drawing.Point(265, 203);
             this.makeRoom_btn.Name = "makeRoom_btn";
             this.makeRoom_btn.Size = new System.Drawing.Size(253, 51);
-            this.makeRoom_btn.TabIndex = 1;
-            this.makeRoom_btn.Text = "방 만들기";
-            this.makeRoom_btn.UseVisualStyleBackColor = true;
+            this.makeRoom_btn.TabIndex = 3;
             this.makeRoom_btn.Click += new System.EventHandler(this.makeRoom_btn_Click);
             // 
             // findRoom_btn
             // 
-            this.findRoom_btn.Location = new System.Drawing.Point(253, 252);
+            this.findRoom_btn.BackColor = System.Drawing.Color.Transparent;
+            this.findRoom_btn.Location = new System.Drawing.Point(265, 265);
             this.findRoom_btn.Name = "findRoom_btn";
             this.findRoom_btn.Size = new System.Drawing.Size(253, 51);
-            this.findRoom_btn.TabIndex = 2;
-            this.findRoom_btn.Text = "방 찾기";
-            this.findRoom_btn.UseVisualStyleBackColor = true;
+            this.findRoom_btn.TabIndex = 4;
             this.findRoom_btn.Click += new System.EventHandler(this.findRoom_btn_Click);
             // 
             // exitGame_btn
             // 
-            this.exitGame_btn.Location = new System.Drawing.Point(253, 309);
+            this.exitGame_btn.BackColor = System.Drawing.Color.Transparent;
+            this.exitGame_btn.Location = new System.Drawing.Point(265, 321);
             this.exitGame_btn.Name = "exitGame_btn";
             this.exitGame_btn.Size = new System.Drawing.Size(253, 51);
-            this.exitGame_btn.TabIndex = 2;
-            this.exitGame_btn.Text = "게임 종료";
-            this.exitGame_btn.UseVisualStyleBackColor = true;
+            this.exitGame_btn.TabIndex = 5;
             this.exitGame_btn.Click += new System.EventHandler(this.exitGame_btn_Click);
             // 
             // MainMenu_Screen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::MultiGame.Properties.Resources.MainMenu;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.Controls.Add(this.exitGame_btn);
             this.Controls.Add(this.findRoom_btn);
             this.Controls.Add(this.makeRoom_btn);
-            this.Controls.Add(this.label1);
+            this.DoubleBuffered = true;
             this.Name = "MainMenu_Screen";
             this.Size = new System.Drawing.Size(800, 450);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.Button makeRoom_btn;
-        public System.Windows.Forms.Button findRoom_btn;
-        public System.Windows.Forms.Button exitGame_btn;
+        private System.Windows.Forms.Label makeRoom_btn;
+        private System.Windows.Forms.Label findRoom_btn;
+        private System.Windows.Forms.Label exitGame_btn;
     }
 }
