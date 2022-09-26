@@ -179,13 +179,16 @@ namespace MultiGame.Client
             // 임시 바닥
             if (newLocation.Y >= 400) return true;
 
-            // 해당 오브젝트의 충돌 박스
+            // 캐릭터의 충돌 박스
             Rectangle a = new Rectangle(newLocation, Character.size);
 
             // 모든 캐릭터와 부딪히는지 체크함
             foreach (var item in GameManager.GetInstance().clientManager.ClientDic)
             {
                 ClientCharacter otherClient = item.Value;
+
+                // 충돌이 꺼져있으면 무시
+                if (otherClient.Collision == false) continue;
 
                 // 대상 오브젝트의 충돌 박스
                 Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
@@ -202,13 +205,19 @@ namespace MultiGame.Client
             {
                 GameObject gameObject = item.Value;
 
+                if (gameObject.Collision == false) continue;
+
                 // 대상 오브젝트의 충돌 박스
                 Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
 
-                // 만약 움직였을때 겹친다면 리턴
+                // 만약 움직였을때 겹친다면 충돌 발생
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
-                    return true;
+                    gameObject.OnHit();
+
+                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
+                    if (gameObject.Blockable == true) return true;
+                    else continue;
                 }
             }
             Character.Location = newLocation;

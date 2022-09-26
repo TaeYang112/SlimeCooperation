@@ -91,6 +91,12 @@ namespace MultiGame.UserPanel
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(800,500)));
 
+            // 오브젝트
+            foreach (var item in GInst.objectManager.ObjectDic)
+            {
+                item.Value.OnPaint(sender, e);
+            }
+
             // 캐릭터
             foreach (var item in GInst.clientManager.ClientDic)
             {
@@ -100,11 +106,7 @@ namespace MultiGame.UserPanel
             // 유저 캐릭터
             GInst.userClient.Character.OnPaint(sender,e);
 
-            // 오브젝트
-            foreach (var item in GInst.objectManager.ObjectDic)
-            {
-                item.Value.OnPaint(sender, e);
-            }
+            
             FPS++;
             
         }

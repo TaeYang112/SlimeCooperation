@@ -28,6 +28,9 @@ namespace MultiGameServer
         // 방을 찾고있는지 여부
         public bool bFindingRoom { get; set; }
 
+        // 충돌검사 여부
+        public bool Collision { get; set; }
+
         public ClientCharacter(int key, ClientData clientData)
             :base(key,new Point(0,0), new Size(60,50))
         {
@@ -35,6 +38,7 @@ namespace MultiGameServer
             clientData.key = key;
             bReady = false;
             bFindingRoom = false;
+            Collision = true;
         }
 
         public void GameStart()

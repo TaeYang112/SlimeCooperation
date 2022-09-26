@@ -52,5 +52,11 @@ namespace MultiGame.UserPanel
             // 메인화면으로 돌아감
             form.ChangeScreen(new MainMenu_Screen(form));
         }
+
+        public void SetRoomTitle(string RoomCode, string title)
+        {
+            roomTitle_lbl.Text = $"{RoomCode}번방 {title}";
+            Console.WriteLine(roomTitle_lbl.Text);
+        }
     }
 }

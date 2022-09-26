@@ -13,6 +13,8 @@ namespace MultiGame.Object
             base(key,Location,size)
         {
             SetSkin(0);
+            Collision = true;
+            Blockable = true;
         }
 
         override public void SetSkin(int num)

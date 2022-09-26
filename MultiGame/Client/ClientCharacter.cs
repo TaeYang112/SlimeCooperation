@@ -16,7 +16,6 @@ namespace MultiGame
         public bool bLookRight { get; set; }
         private bool FlipImage;
 
-        public bool isVisible { get; set; }
         public bool isReady { get; set; }
 
         public ClientCharacter(int key, Point Location, int skinNum)
@@ -24,7 +23,8 @@ namespace MultiGame
         {
             isReady = false;
             Collision = true;
-             
+            Blockable = true; 
+
             // 이미지 관련
             bLookRight = true;
             FlipImage = false;
@@ -74,6 +74,8 @@ namespace MultiGame
                 image.RotateFlip(RotateFlipType.RotateNoneFlipX);
                 FlipImage = false;
             }
+
+            if (isVisible == false) return;
             e.DrawImage(image,new Rectangle(Location, size ));
             
         }

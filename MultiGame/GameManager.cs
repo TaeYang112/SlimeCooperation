@@ -36,6 +36,12 @@ namespace MultiGame
 
         private Form1 form1;
 
+        // 게임 내의 열쇠 객체
+        private KeyObject keyObject;
+
+        // 게임 내의 문 객체
+        private Door door;
+
         public static GameManager GetInstance()
         {
             if (gameManager == null)
@@ -153,8 +159,10 @@ namespace MultiGame
                         int y = int.Parse(SplitMessage[2]);
 
                         // 이동
-                        Point oriLoc = userClient.Character.Location;
-                        userClient.Character.Location = new Point(oriLoc.X + x, oriLoc.Y + y);
+
+                        userClient.Move(new Point(x, y));
+                        //Point oriLoc = userClient.Character.Location;
+                        //userClient.Character.Location = new Point(oriLoc.X + x, oriLoc.Y + y);
                     }
                     break;
                 // 오브젝트 생성
@@ -175,21 +183,94 @@ namespace MultiGame
 
                         // 스킨 번호
                         int skinNum = int.Parse(SplitMessage[7]);
+
+                        GameObject newObject = null;
                         switch (type)
                         {
                             case "Floor":
                                 {
-                                    GameObject newObject = new Floor(key, new Point(x, y), new Size(width, height));
-                                    newObject.SetSkin(skinNum);
-                                    objectManager.AddObject(newObject);
+                                    newObject = new Floor(key, new Point(x, y), new Size(width, height));
+                                }
+                                break;
+                            case "Key":
+                                {
+                                    keyObject = new KeyObject(key, new Point(x, y), new Size(width, height));
+                                    newObject = keyObject;
+                                }
+                                break;
+                            case "Door":
+                                {
+                                    door = new Door(key, new Point(x, y), new Size(width, height));
+                                    newObject = door;
                                 }
                                 break;
                             default:
-                                Console.WriteLine("에러 : " + type);
                                 break;
                         }
-                        
-                       
+
+                        if(newObject != null)
+                        {
+                            newObject.SetSkin(skinNum);
+                            objectManager.AddObject(newObject);
+                        }
+                    }
+                    break;
+                // 서버로부터 오브젝트 이벤트 수신
+                case "ObjEvent":
+                    {
+                        int key = int.Parse(SplitMessage[1]);
+                        string type = SplitMessage[2];
+                        int clientKey = int.Parse(SplitMessage[3]);
+
+                        // 해당 오브젝트를 찾음
+                        GameObject gameObject;
+                        bool objResult = objectManager.ObjectDic.TryGetValue(key, out gameObject);
+
+                        if (objResult == false) return;
+
+                        // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
+                        ClientCharacter client;
+                        if (clientKey == -1) client = userClient.Character;
+                        else
+                        {
+                            bool result = clientManager.ClientDic.TryGetValue(clientKey, out client);
+                            if (result == false)
+                                return;
+                        }
+
+
+                        switch (type)
+                        {
+                            case "KeyObject":
+                                {
+                                    KeyObject keyObj = gameObject as KeyObject;
+                                    if (keyObj == null) return;
+
+                                    keyObj.isVisible = false;
+                                    keyObj.Collision = false;
+                                }
+                                break;
+                            case "Door":
+                                {
+                                    Door door = gameObject as Door;
+                                    if (door == null) return;
+
+                                    string context = SplitMessage[4];
+
+                                    // 문이 열림
+                                    if(context == "Open")
+                                    {
+                                        door.Open(true);
+                                    }
+                                    // 누군가 입장
+                                    else
+                                    {
+                                        client.isVisible = false;
+                                        client.Collision = false;
+                                    }
+                                }
+                                break;
+                        }
                     }
                     break;
                 // 클라이언트 정보 업데이트
@@ -269,10 +350,10 @@ namespace MultiGame
                             LobbyRoom_Screen lobbyRoom = new LobbyRoom_Screen(form1);
 
                             // 방 제목
-                            lobbyRoom.roomTitle_lbl.Text = $"{roomCode}번방 {roomTItle}";
+                            lobbyRoom.SetRoomTitle(roomCode, roomTItle);
 
                             // 화면 전환
-                            form1.ChangeScreen(new LobbyRoom_Screen(form1));
+                            form1.ChangeScreen(lobbyRoom);
 
                             // 게임 목록 정보 수신 거부
                             RequestLobbyInfo(false);
@@ -495,7 +576,23 @@ namespace MultiGame
         }
 
 
-        
+        public void TryOpenDoor()
+        {
+            ClientCharacter character = userClient.Character;
+
+            // 캐릭터의 충돌 박스
+            Rectangle a = new Rectangle(character.Location, character.size);
+
+            // 문의 충돌 박스
+            Rectangle b = new Rectangle(door.Location, door.size);
+
+            // 충돌 검사 ( 겹치면 false )
+            bool result = Rectangle.Intersect(a, b).IsEmpty;
+            if(result == false)
+            {
+                SendMessage($"ObjEvent#{door.key}#Door@");
+            }
+        }
 
     }
 }

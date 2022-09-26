@@ -14,7 +14,9 @@ namespace MultiGameServer
         public ConcurrentDictionary<int, ClientCharacter> roomClientDic { get; }
         public SortedSet<int> skinList;
 
-        public MapBase Map;
+        private MapBase _Map;
+        public MapBase Map { get { return _Map; } }
+
         public string RoomTitle { get; set; }
 
         public bool bGameStart { get; set; }
@@ -32,7 +34,7 @@ namespace MultiGameServer
                 skinList.Add(i);
             }
 
-            Map = new Stage1();
+            _Map = new Stage1();
         }
 
         // 방에 클라이언트를 추가함
