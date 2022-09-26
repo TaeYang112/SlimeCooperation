@@ -24,17 +24,19 @@ namespace MultiGameServer
             Floor2.SkinNum = 0;
             objectManager.AddObject(Floor2);
 
+            // 문
+            tempKey = objectManager.NextKey();
+            Door door = new Door(tempKey, new Point(550, 300), new Size(70, 90));
+            door.SkinNum = 0;
+            objectManager.AddObject(door);
+
             // 열쇠
             tempKey = objectManager.NextKey();
             KeyObject KeyObject = new KeyObject(tempKey, new Point(720, 190), new Size(35, 50));
             KeyObject.SkinNum = 0;
             objectManager.AddObject(KeyObject);
 
-            // 문
-            tempKey = objectManager.NextKey();
-            Door door = new Door(tempKey, new Point(550, 300), new Size(70, 90));
-            door.SkinNum = 0;
-            objectManager.AddObject(door);
+            
         }
 
     }

@@ -246,8 +246,10 @@ namespace MultiGame
                                     KeyObject keyObj = gameObject as KeyObject;
                                     if (keyObj == null) return;
 
-                                    keyObj.isVisible = false;
+                                    // keyObj.isVisible = false;
                                     keyObj.Collision = false;
+                                    keyObj.SetOwner(client);
+                                    
                                 }
                                 break;
                             case "Door":
@@ -261,6 +263,7 @@ namespace MultiGame
                                     if(context == "Open")
                                     {
                                         door.Open(true);
+                                        keyObject.isVisible = false;
                                     }
                                     // 누군가 입장
                                     else
