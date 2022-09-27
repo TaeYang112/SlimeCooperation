@@ -220,7 +220,6 @@ namespace MultiGame.Client
                     else continue;
                 }
             }
-            Character.Location = newLocation;
 
             return false;
         }

@@ -15,6 +15,8 @@ namespace MultiGameServer.Object
             : base(key, Location, size)
         {
             _type = "Door";
+            Collision = true;
+            Blockable = false;
         }
     }
 }
