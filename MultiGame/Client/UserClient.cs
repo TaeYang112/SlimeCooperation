@@ -176,8 +176,8 @@ namespace MultiGame.Client
         // 겹치면 true 반환
         public bool CollisionCheck(Point newLocation)
         {
-            // 임시 바닥
-            if (newLocation.Y >= 400) return true;
+            // 임시 벽
+            if (newLocation.X < 0 || newLocation.X > 800 - Character.size.Width - 15) return true;
 
             // 캐릭터의 충돌 박스
             Rectangle a = new Rectangle(newLocation, Character.size);
