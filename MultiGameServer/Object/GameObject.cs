@@ -26,14 +26,18 @@ namespace MultiGameServer
         public Size size { get; set; }
 
         // 충돌 검사 여부
-        public bool CollisionEnable { get; set; }
+        public bool Collision { get; set; }
+
+        // 충돌이 발생했을 때 false이면 통과함
+        public bool Blockable { get; set; }
 
         public GameObject(int key, Point Location, Size size)
         {
             this.key = key;
             this.Location = Location;
             this.size = size;
-            this.CollisionEnable = false;
+            this.Collision = false;
+            this.Blockable = false;
             this._type = "object";
             SkinNum = 0;
         }

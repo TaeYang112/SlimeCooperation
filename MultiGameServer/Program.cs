@@ -406,14 +406,35 @@ namespace MultiGameServer
                             int x = int.Parse(SplitMessage[1]);
                             int y = int.Parse(SplitMessage[2]);
 
+                            // 클라이언트가 속해있는 방을 가져옴
+                            Room room;
+                            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+
+                            // 다른 클라이언트와 겹치는지 체크
+                            bool CollisionResult = room.CollisionCheck(clientChar, new Point(x, y));
+
+                            // 만약 겹친다면 다시 돌아가라고 명령
+                            if(CollisionResult)
+                            {
+                                Console.WriteLine("겹침");
+                                //SendMessage($"Move#{clientChar.Location.X - x}#{clientChar.Location.Y - y}@",clientChar.key);
+                                continue;
+                            }
+
+                            // 겹치지 않다면 계속 진행함
                             int velocity_x = x - clientChar.Location.X;
                             clientChar.Location = new Point(x, y);
 
                             // 전체 클라이언트에게 전송
                             SendMessageToAll_InRoom($"Location#{clientChar.key}#{x}#{y}@",clientChar.RoomKey,clientChar.key);
-                           
+
+                            // 방이 존재하지 않으면 종료
+                            if (result == false) continue;
+
+                            
+
                             // 움직인 클라이언트 위에 다른 클라이언트가 있는지 확인
-                            List<ClientCharacter> list = GetClientsOverTheHead(clientChar);
+                            List<ClientCharacter> list = room.GetClientsOverTheHead(clientChar);
 
                             if(velocity_x != 0)
                             {
@@ -613,38 +634,7 @@ namespace MultiGameServer
         }
 
 
-        // 대상 클라이언트 머리위에 있는 클라이언트 리스트 반환
-        public List<ClientCharacter> GetClientsOverTheHead(ClientCharacter client)
-        {
-            List<ClientCharacter> list = new List<ClientCharacter>();
-
-            // 대상의 머리위 충돌박스
-            Size size = new Size(client.size.Width, 10);
-            Point location = new Point(client.Location.X, client.Location.Y - 10);
-            Rectangle a = new Rectangle(location, size);
-
-            // 모든 클라이언트와 비교
-            foreach (var item in clientManager.ClientDic)
-            {
-                ClientCharacter otherClient = item.Value;
-
-                if (otherClient == client || otherClient.Collision == false)
-                {
-                    continue;
-                }
-
-                // 대상 충돌판정
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    list.Add(otherClient);
-                }
-            }
-
-            return list;
-        }
+       
 
     }
 

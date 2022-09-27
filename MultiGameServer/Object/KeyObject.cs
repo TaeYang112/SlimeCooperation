@@ -17,6 +17,8 @@ namespace MultiGameServer.Object
         {
             _type = "Key";
             ownerKey = -1;
+            Collision = true;
+            Blockable = false;
         }
 
     }

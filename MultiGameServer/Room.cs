@@ -117,6 +117,92 @@ namespace MultiGameServer
             return result;
         }
 
+        // 대상 클라이언트 머리위에 있는 클라이언트 리스트 반환
+        public List<ClientCharacter> GetClientsOverTheHead(ClientCharacter client)
+        {
+            List<ClientCharacter> list = new List<ClientCharacter>();
+
+            // 대상의 머리위 충돌박스
+            Size size = new Size(client.size.Width, 10);
+            Point location = new Point(client.Location.X, client.Location.Y - 10);
+            Rectangle a = new Rectangle(location, size);
+
+            // 모든 클라이언트와 비교
+            foreach (var item in roomClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient == client || otherClient.Collision == false)
+                {
+                    continue;
+                }
+
+                // 대상 충돌판정
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    list.Add(otherClient);
+                }
+            }
+
+            return list;
+        }
+
+        // 겹치면 true 반환
+        public bool CollisionCheck(ClientCharacter character, Point newLocation)
+        {
+            // 임시 바닥
+            if (newLocation.Y >= 400) return true;
+
+            // 캐릭터의 충돌 박스
+            Rectangle a = new Rectangle(newLocation, character.size);
+
+            // 모든 캐릭터와 부딪히는지 체크함
+            foreach (var item in roomClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient == character) continue;
+
+                // 충돌이 꺼져있으면 무시
+                if (otherClient.Collision == false) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return true;
+                }
+            }
+
+            // 맵의 모든 오브젝트와 부딪히는지 체크함
+            foreach (var item in Map.objectManager.ObjectDic)
+            {
+                GameObject gameObject = item.Value;
+
+                if (gameObject.Collision == false) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
+
+                // 만약 움직였을때 겹친다면 충돌 발생
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    gameObject.OnHit();
+
+                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
+                    if (gameObject.Blockable == true) return true;
+                    else continue;
+                }
+            }
+
+            return false;
+        }
+
         public void GameStart()
         {
             bGameStart = true;
