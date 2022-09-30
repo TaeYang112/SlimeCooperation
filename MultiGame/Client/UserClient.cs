@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Drawing;
+
 
 namespace MultiGame.Client
 {
@@ -16,9 +11,6 @@ namespace MultiGame.Client
         public bool LeftDown { get; set; }
         public bool RightDown { get; set; }
         public bool JumpDown { get; set; }
-
-        // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
-        private System.Threading.Timer MoveTimer;
 
         // 땅인지
         public bool isGround { get; set; }
@@ -48,21 +40,16 @@ namespace MultiGame.Client
 
             Character = new ClientCharacter(-1, new Point(0, 0), 0);
 
-            // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 60fps )
-            TimerCallback tc = new TimerCallback(MoveWithKeyDown);
-            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
-
         }
 
 
         public void Start()
         {
-            MoveTimer.Change(0, 13);
             Character.GameStart();
         }
 
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
-        public void MoveWithKeyDown(object stateInfo)
+        public void MoveWithKeyDown()
         {
             Point velocity = new Point(0, 0);
 
@@ -159,49 +146,66 @@ namespace MultiGame.Client
         // 캐릭터 충돌검사 후 이동
         public void Move(Point velocity)
         {
-            GameObject CollidedObj;
             Point resultLoc = Character.Location;
             Point tempLoc;
+            int dxy = 0;
 
             // x의 대한 충돌판정
             if (velocity.X != 0)
             {
                 tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
 
-                // 충돌하지 않았으면
-                CollidedObj = CollisionCheck(tempLoc);
-                if (CollidedObj == null)
+                if (velocity.X < 0) dxy = 1;
+                else dxy = -1;
+
+                // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
+                while(tempLoc.X != Character.Location.X)
                 {
-                    // 움직이기 위해 좌표 저장
-                    resultLoc = tempLoc;
-                }
-                // 충돌했으면 최대한 옆으로 이동함
-                else
-                {
-                    if(velocity.X < 0)
+                    // 충돌하지 않았으면
+                    if (CollisionCheck(tempLoc) == false)
                     {
-                        resultLoc = new Point( CollidedObj.Location.X + CollidedObj.size.Width + 1, tempLoc.Y);
+                        // 움직이기 위해 좌표 저장
+                        resultLoc = tempLoc;
+                        break;
                     }
+                    // 충돌했으면
                     else
                     {
-                        resultLoc = new Point(CollidedObj.Location.X - Character.size.Width - 1, tempLoc.Y);
+                        // 좌표 1칸 옮겨봄
+                        tempLoc.X += dxy;
                     }
                 }
             }
 
+            // y에 대한 충돌 판정
             tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
 
-            // y에 대한 충돌 판정
-            // 겹치지 않았을 경우
-            CollidedObj = CollisionCheck(tempLoc);
-            if (CollidedObj == null)
+            if (velocity.Y < 0) dxy = 1;
+            else dxy = -1;
+
+
+            // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
+            while (tempLoc.Y != Character.Location.Y)
             {
-                // 이동
-                resultLoc = tempLoc;
-                isGround = false;
-                if(isJump == false ) GravityStart(true);
+                // 충돌하지 않았으면
+                if (CollisionCheck(tempLoc) == false)
+                {
+                    // 이동
+                    resultLoc = tempLoc;
+                    isGround = false;
+                    if (isJump == false) GravityStart(true);
+                    break;
+                }
+                // 충돌했으면
+                else
+                {
+                    // 좌표 1칸 옮겨봄
+                    tempLoc.Y += dxy;
+                }
             }
-            else
+
+            // 이동할 곳이 없으면 ( 반복문이 while 조건에 의해 종료 )
+            if (tempLoc.Y == Character.Location.Y)
             {
                 // 만약 밑으로 가던중 충돌판정이 일어나면 
                 if (velocity.Y > 0)
@@ -210,20 +214,15 @@ namespace MultiGame.Client
                     isGround = true;
                     GravityStart(false);
 
-                    // 최대한 이동
-                    resultLoc = new Point(tempLoc.X, CollidedObj.Location.Y - Character.size.Height - 1);
-                    Console.WriteLine(resultLoc.Y);
                     // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
                     if (JumpDown == true)
                         Jump();
                 }
                 // 만약 위로 가던중 충돌판정이 일어나면
-                else
+                else if(velocity.Y < 0)
                 {
                     isJump = false;
-                    resultLoc = new Point(tempLoc.X, CollidedObj.Location.Y + CollidedObj.size.Height + 1);
                 }
-
             }
 
             // 실제 좌표를 이동시킴
@@ -233,8 +232,8 @@ namespace MultiGame.Client
             GameManager.GetInstance().SendMessage($"Location#{resultLoc.X}#{resultLoc.Y}#@");
         }
 
-        // 겹치면 겹친 GameObject 반환
-        public GameObject CollisionCheck(Point newLocation)
+        // 겹치면 true 반환
+        public bool CollisionCheck(Point newLocation)
         {
             // 캐릭터의 충돌 박스
             Rectangle a = new Rectangle(newLocation, Character.size);
@@ -253,7 +252,7 @@ namespace MultiGame.Client
                 // 만약 움직였을때 겹친다면 리턴
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
-                    return otherClient;
+                    return true;
                 }
             }
 
@@ -273,12 +272,12 @@ namespace MultiGame.Client
                     gameObject.OnHit();
 
                     // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
-                    if (gameObject.Blockable == true) return gameObject;
+                    if (gameObject.Blockable == true) return true;
                     else continue;
                 }
             }
 
-            return null;
+            return false;
         }
 
 

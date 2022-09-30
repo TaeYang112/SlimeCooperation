@@ -51,8 +51,8 @@ namespace MultiGame.UserPanel
 
     public void DebugTimer(object c)
     {
-        //Console.WriteLine(FPS + "FPS.");
-        //FPS = 0;
+        Console.WriteLine(FPS + "FPS.");
+        FPS = 0;
     }
 
     public void StartUpdateScreen(bool bStart)
@@ -70,6 +70,11 @@ namespace MultiGame.UserPanel
         // 화면 다시그리기
         public void Update(object temp)
         {
+            GameManager GInst = GameManager.GetInstance();
+
+            // 유저 캐릭터 움직임
+            GInst.userClient.MoveWithKeyDown();
+
             Invalidate();
         }
 
@@ -105,6 +110,7 @@ namespace MultiGame.UserPanel
 
             // 유저 캐릭터
             GInst.userClient.Character.OnPaint(sender,e);
+            
 
             
             FPS++;
