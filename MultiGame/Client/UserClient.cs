@@ -17,14 +17,20 @@ namespace MultiGame.Client
         public bool RightDown { get; set; }
         public bool JumpDown { get; set; }
 
-        // 점프중인지
-        public bool isJump { get; set; }
-        public bool isGround { get; set; }
-
         // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머
         private System.Threading.Timer MoveTimer;
 
-        private System.Threading.Timer JumpTimer;
+        // 땅인지
+        public bool isGround { get; set; }
+
+        // 점프 및 중력관련
+        public bool isJump { get; set; }            // 점프중인지 체크하는 속성
+        private float JumpTime;                     // 중력(점프) 계산에 필요한 변수 ( 2차 함수 그래프의 x에 해당 )
+        private float JumpPower;                    // 점프의 높이
+        private float dy;                           // 바로전에 얼만큼 뛰었는지
+        private bool GravityStarted;                // 떨어지기 시작할 때 초기화를 하기 위한 플래그 변수
+        private bool isGravity;                     // 중력의 ON / OFF
+
 
         public UserClient()
         {
@@ -34,19 +40,21 @@ namespace MultiGame.Client
 
             isJump = false;
             isGround = false;
+            JumpTime = 0.0f;
+            JumpPower = 50.0f;
+            dy = 0;
+            GravityStarted = false;
+            isGravity = false;
 
             Character = new ClientCharacter(-1, new Point(0, 0), 0);
 
-            // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
-            TimerCallback tc = new TimerCallback(MoveWithKeyDown);                                    // 실행시킬 메소드
-            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);   // TimerCallback , null, 타이머 시작 전 대기시간, 타이머 호출 주기
-
-            // 점프를 종료시키는 타이머
-            TimerCallback tc3 = new TimerCallback(JumpStop);
-            JumpTimer = new System.Threading.Timer(tc3, null, Timeout.Infinite, Timeout.Infinite);
-
+            // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 60fps )
+            TimerCallback tc = new TimerCallback(MoveWithKeyDown);
+            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
 
         }
+
+
         public void Start()
         {
             MoveTimer.Change(0, 13);
@@ -63,62 +71,95 @@ namespace MultiGame.Client
             // 왼쪽 방향키가 눌려있는 상태라면 왼쪽으로 움직임
             if (LeftDown == true)
             {
-                velocity.X -= 2;
+                velocity.X -= 3;
                 bLookRight = false;
             }
 
             // 오른쪽 방향키가 눌려있는 상태라면 오른쪽으로 움직임
             if (RightDown == true)
             {
-                velocity.X += 2;
+                velocity.X += 3;
                 bLookRight = true;
             }
-            
-            if(LeftDown ^ RightDown && Character.bLookRight != bLookRight)
+
+            if (LeftDown ^ RightDown && Character.bLookRight != bLookRight)
             {
                 GameManager.GetInstance().SendMessage($"LookR#{bLookRight}@");
                 Character.SetLookDirection(bLookRight);
             }
-            
-            // 중력
+
+            // 이차 함수를 이용한 점프
             if (isJump)
             {
-                velocity.Y -= 3;
+                float JumpHeight = (JumpTime * JumpTime - JumpPower * JumpTime) / 10.0f;      // y = x^2 - ax 그래프
+                JumpTime += 1.2f;
+
+                // 이차 함수의 맨 위에 도달
+                if (JumpTime > JumpPower/2)
+                {
+                    JumpTime = 0;
+                    dy = 0;
+                    isJump = false;
+                }
+                else
+                {
+                    velocity.Y -= (int)(dy - JumpHeight);
+                    dy = JumpHeight;
+                }
+            }
+            // 중력
+            else
+            {
+                if (isGravity)
+                {
+                    float JumpHeight = (JumpTime * JumpTime  - JumpPower * JumpTime) / 10.0f;
+                    JumpTime -= 1.2f;
+
+                    velocity.Y -= (int)(dy - JumpHeight);
+                    dy = JumpHeight;
+                    
+                }
+                else
+                    velocity.Y = 1;
+
+            }
+            // 이동
+            Move(velocity);
+        }
+        
+        // 중력을 시작하는 함수
+        public void GravityStart(bool bStart)
+        {
+            if(bStart == true)
+            {
+                if (GravityStarted == true) return;
+
+                GravityStarted = true;
+                isGravity = true;
+                JumpTime = JumpPower / 2;
+                dy = (JumpTime * JumpTime - JumpPower * JumpTime) / 10.0f;
             }
             else
             {
-                velocity.Y += 3;
+                GravityStarted = false;
+                isGravity = false;
             }
-
-            // 이동
-            Move(velocity);
         }
-
-        // 매개변수 velocity를 이용하여 움직임
-        public void MoveWithVelocity(Point velocity)
-        {
-            // 이동
-            Move(velocity);
-        }
-
         // 점프
         public void Jump()
         {
             if (isJump == true || isGround == false) return;
-
+            GravityStart(false);
+            JumpTime = 0;
+            dy = 0;
             isJump = true;
-            JumpTimer.Change(300, Timeout.Infinite);
         }
 
-        // 점프 종료
-        public void JumpStop(object stateInfo)
-        {
-            isJump = false;
-        }
 
         // 캐릭터 충돌검사 후 이동
         public void Move(Point velocity)
         {
+            GameObject CollidedObj;
             Point resultLoc = Character.Location;
             Point tempLoc;
 
@@ -128,10 +169,23 @@ namespace MultiGame.Client
                 tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
 
                 // 충돌하지 않았으면
-                if (CollisionCheck(tempLoc) == false)
+                CollidedObj = CollisionCheck(tempLoc);
+                if (CollidedObj == null)
                 {
                     // 움직이기 위해 좌표 저장
                     resultLoc = tempLoc;
+                }
+                // 충돌했으면 최대한 옆으로 이동함
+                else
+                {
+                    if(velocity.X < 0)
+                    {
+                        resultLoc = new Point( CollidedObj.Location.X + CollidedObj.size.Width + 1, tempLoc.Y);
+                    }
+                    else
+                    {
+                        resultLoc = new Point(CollidedObj.Location.X - Character.size.Width - 1, tempLoc.Y);
+                    }
                 }
             }
 
@@ -139,11 +193,13 @@ namespace MultiGame.Client
 
             // y에 대한 충돌 판정
             // 겹치지 않았을 경우
-            if (CollisionCheck(tempLoc) == false)
+            CollidedObj = CollisionCheck(tempLoc);
+            if (CollidedObj == null)
             {
                 // 이동
                 resultLoc = tempLoc;
                 isGround = false;
+                if(isJump == false ) GravityStart(true);
             }
             else
             {
@@ -152,7 +208,11 @@ namespace MultiGame.Client
                 {
                     //땅위에 있다는 플래그변수 true
                     isGround = true;
+                    GravityStart(false);
 
+                    // 최대한 이동
+                    resultLoc = new Point(tempLoc.X, CollidedObj.Location.Y - Character.size.Height - 1);
+                    Console.WriteLine(resultLoc.Y);
                     // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
                     if (JumpDown == true)
                         Jump();
@@ -160,8 +220,8 @@ namespace MultiGame.Client
                 // 만약 위로 가던중 충돌판정이 일어나면
                 else
                 {
-                    JumpStop(this);
-                    JumpTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    isJump = false;
+                    resultLoc = new Point(tempLoc.X, CollidedObj.Location.Y + CollidedObj.size.Height + 1);
                 }
 
             }
@@ -173,12 +233,9 @@ namespace MultiGame.Client
             GameManager.GetInstance().SendMessage($"Location#{resultLoc.X}#{resultLoc.Y}#@");
         }
 
-        // 겹치면 true 반환
-        public bool CollisionCheck(Point newLocation)
+        // 겹치면 겹친 GameObject 반환
+        public GameObject CollisionCheck(Point newLocation)
         {
-            // 임시 벽
-            if (newLocation.X < 0 || newLocation.X > 800 - Character.size.Width - 15) return true;
-
             // 캐릭터의 충돌 박스
             Rectangle a = new Rectangle(newLocation, Character.size);
 
@@ -196,7 +253,7 @@ namespace MultiGame.Client
                 // 만약 움직였을때 겹친다면 리턴
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
-                    return true;
+                    return otherClient;
                 }
             }
 
@@ -216,14 +273,14 @@ namespace MultiGame.Client
                     gameObject.OnHit();
 
                     // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
-                    if (gameObject.Blockable == true) return true;
+                    if (gameObject.Blockable == true) return gameObject;
                     else continue;
                 }
             }
 
-            return false;
+            return null;
         }
 
-        
+
     }
 }

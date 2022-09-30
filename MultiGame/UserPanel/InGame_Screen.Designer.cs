@@ -40,6 +40,7 @@ namespace MultiGame.UserPanel
             this.Size = new System.Drawing.Size(800, 450);
             this.Load += new System.EventHandler(this.InGame_Screen_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.InGame_Screen_Paint);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.InGame_Screen_MouseDown);
             this.ResumeLayout(false);
 
         }

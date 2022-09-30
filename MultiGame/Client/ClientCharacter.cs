@@ -76,7 +76,9 @@ namespace MultiGame
             }
 
             if (isVisible == false) return;
-            e.DrawImage(image,new Rectangle(Location, size ));
+
+            Size siz = new Size(size.Width+1, size.Height+1);
+            e.DrawImage(image,new Rectangle(Location, siz ));
             
         }
 
