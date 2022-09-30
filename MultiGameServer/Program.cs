@@ -413,19 +413,21 @@ namespace MultiGameServer
                             // 다른 클라이언트와 겹치는지 체크
                             bool CollisionResult = room.CollisionCheck(clientChar, new Point(x, y));
 
+                            
                             // 만약 겹친다면 다시 돌아가라고 명령
                             if(CollisionResult)
                             {
+                                Console.WriteLine("X : "  + x + "  Y : " + y);
                                 Console.WriteLine("겹침");
-                                //SendMessage($"Move#{clientChar.Location.X - x}#{clientChar.Location.Y - y}@",clientChar.key);
+                                SendMessage($"Move#{clientChar.Location.X - x}#{clientChar.Location.Y - y}@",clientChar.key);
                                 continue;
                             }
-
+                            
                             // 겹치지 않다면 계속 진행함
                             int velocity_x = x - clientChar.Location.X;
                             clientChar.Location = new Point(x, y);
 
-                            // 전체 클라이언트에게 전송
+                            // 전체 클라이언트에게 이동한 좌표 전송
                             SendMessageToAll_InRoom($"Location#{clientChar.key}#{x}#{y}@",clientChar.RoomKey,clientChar.key);
 
                             // 방이 존재하지 않으면 종료

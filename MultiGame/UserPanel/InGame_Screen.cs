@@ -51,8 +51,8 @@ namespace MultiGame.UserPanel
 
     public void DebugTimer(object c)
     {
-        Console.WriteLine(FPS + "FPS.");
-        FPS = 0;
+        //Console.WriteLine(FPS + "FPS.");
+        //FPS = 0;
     }
 
     public void StartUpdateScreen(bool bStart)
@@ -109,6 +109,11 @@ namespace MultiGame.UserPanel
             
             FPS++;
             
+        }
+
+        private void InGame_Screen_MouseDown(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine("좌표 / X : " + e.X + "    Y : " + e.Y);
         }
     }
 }

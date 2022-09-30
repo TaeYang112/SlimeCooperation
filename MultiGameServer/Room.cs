@@ -153,9 +153,6 @@ namespace MultiGameServer
         // 겹치면 true 반환
         public bool CollisionCheck(ClientCharacter character, Point newLocation)
         {
-            // 임시 바닥
-            if (newLocation.Y >= 400) return true;
-
             // 캐릭터의 충돌 박스
             Rectangle a = new Rectangle(newLocation, character.size);
 
@@ -188,12 +185,9 @@ namespace MultiGameServer
 
                 // 대상 오브젝트의 충돌 박스
                 Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
-
                 // 만약 움직였을때 겹친다면 충돌 발생
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
-                    gameObject.OnHit();
-
                     // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
                     if (gameObject.Blockable == true) return true;
                     else continue;
