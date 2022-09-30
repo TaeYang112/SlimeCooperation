@@ -19,6 +19,9 @@ namespace MultiGame
         // 자신 싱글톤 객체
         static GameManager gameManager = null;
 
+        // 에러로 인한 서버 종료 플래그 변수
+        private bool bExitReady = false;
+
         // 서버와 TCP통신을 담당하는 객체
         public MyClient myClient { get; set; }
 
@@ -98,8 +101,12 @@ namespace MultiGame
         {
             if (e.GetType().ToString() == "System.InvalidOperationException")
             {
-                Application.Exit();
+                if (bExitReady) return;
+
+                bExitReady = true;
                 MessageBox.Show("서버와 연결되어있지 않습니다.", $"에러코드 : {-1}", MessageBoxButtons.OK);
+                Application.Exit();
+                
             }
         }
         
@@ -434,6 +441,7 @@ namespace MultiGame
                         form1.Invoke(new MethodInvoker(delegate ()
                         {
                             InGame_Screen inGame_Screen = new InGame_Screen(form1);
+                            form1.ActiveControl = null;
                             inGame_Screen.StartUpdateScreen(true);
 
                             form1.ChangeScreen(inGame_Screen);

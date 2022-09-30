@@ -417,7 +417,6 @@ namespace MultiGameServer
                             // 만약 겹친다면 다시 돌아가라고 명령
                             if(CollisionResult)
                             {
-                                Console.WriteLine("X : "  + x + "  Y : " + y);
                                 Console.WriteLine("겹침");
                                 SendMessage($"Move#{clientChar.Location.X - x}#{clientChar.Location.Y - y}@",clientChar.key);
                                 continue;
