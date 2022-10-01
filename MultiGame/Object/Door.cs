@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace MultiGame.Object
 {
-    class Door : GameObject
+    public class Door : GameObject
     {
         private bool _open;
         public bool isOpen { get { return _open; } }
@@ -21,6 +21,7 @@ namespace MultiGame.Object
             Blockable = false;
             _image = MultiGame.Properties.Resources.Door.Clone() as Image;
             _open = false;
+            _type = "Door";
         }
 
         public override void SetSkin(int skinNum)

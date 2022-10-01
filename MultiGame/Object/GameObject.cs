@@ -28,6 +28,9 @@ namespace MultiGame
         // 충돌이 발생했을 때 false이면 통과함
         public bool Blockable { get; set; }
 
+        protected string _type;
+        public string type { get; }
+
         // 이미지
         protected Image _image;
         public Image image { get { return _image; } }
@@ -40,6 +43,7 @@ namespace MultiGame
             this.Collision = false;
             this.Blockable = false;
             this.isVisible = true;
+            this._type = "object";
         }
 
         // 플레이어와 겹쳤을 때 호출됨

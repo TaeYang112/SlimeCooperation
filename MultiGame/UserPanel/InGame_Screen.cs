@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGame.Object;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -93,12 +94,15 @@ namespace MultiGame.UserPanel
             GameManager GInst = GameManager.GetInstance();
             var g = e.Graphics;
 
+            KeyObject keyObject = GInst.objectManager.keyObject;
+            
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(800,500)));
 
             // 오브젝트
             foreach (var item in GInst.objectManager.ObjectDic)
             {
+                if (item.Value is KeyObject) continue;
                 item.Value.OnPaint(sender, e);
             }
 
@@ -110,7 +114,10 @@ namespace MultiGame.UserPanel
 
             // 유저 캐릭터
             GInst.userClient.Character.OnPaint(sender,e);
-            
+
+            // 열쇠
+            if(keyObject != null)
+                GInst.objectManager.keyObject.OnPaint(sender, e);
 
             FPS++;
             

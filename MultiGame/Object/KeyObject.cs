@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MultiGame.Object
 {
-    class KeyObject : GameObject
+    public class KeyObject : GameObject
     {
         // 열쇠 소유자 
         private ClientCharacter _owner;
@@ -24,6 +24,7 @@ namespace MultiGame.Object
             Blockable = false;
             _image = MultiGame.Properties.Resources.Key.Clone() as Image;
             _owner = null;
+            _type = "KeyObject";
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveToTargetTimer);                                    // 실행시킬 메소드

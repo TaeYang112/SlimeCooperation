@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGame.Object;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +13,11 @@ namespace MultiGame
     {
         public ConcurrentDictionary<int, GameObject> ObjectDic { get; set; }
 
+        // 게임 내의 열쇠 객체
+        public KeyObject keyObject { get; set; }
+
+        // 게임 내의 문 객체
+        public Door door { get; set; }
 
         public ObjectManager()
         {
@@ -29,6 +35,7 @@ namespace MultiGame
                 // 이미 존재하는 오브젝트 반환
                 ObjectDic.TryGetValue(gameObject.key, out gameObject);
             }
+
             return gameObject;
         }
 
