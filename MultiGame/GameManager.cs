@@ -19,7 +19,7 @@ namespace MultiGame
         // 자신 싱글톤 객체
         static GameManager gameManager = null;
 
-        // 에러로 인한 서버 종료 플래그 변수
+        // 에러로 인한 프로그램 종료 플래그 변수
         private bool bExitReady = false;
 
         // 서버와 TCP통신을 담당하는 객체
@@ -166,10 +166,8 @@ namespace MultiGame
                         int y = int.Parse(SplitMessage[2]);
 
                         // 이동
-
                         userClient.Move(new Point(x, y));
-                        //Point oriLoc = userClient.Character.Location;
-                        //userClient.Character.Location = new Point(oriLoc.X + x, oriLoc.Y + y);
+
                     }
                     break;
                 // 오브젝트 생성

@@ -112,7 +112,6 @@ namespace MultiGame.UserPanel
             GInst.userClient.Character.OnPaint(sender,e);
             
 
-            
             FPS++;
             
         }

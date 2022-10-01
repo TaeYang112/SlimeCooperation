@@ -123,8 +123,8 @@ namespace MultiGameServer
             List<ClientCharacter> list = new List<ClientCharacter>();
 
             // 대상의 머리위 충돌박스
-            Size size = new Size(client.size.Width, 10);
-            Point location = new Point(client.Location.X, client.Location.Y - 10);
+            Size size = new Size(client.size.Width-4, 2);
+            Point location = new Point(client.Location.X+2, client.Location.Y - 2);
             Rectangle a = new Rectangle(location, size);
 
             // 모든 클라이언트와 비교

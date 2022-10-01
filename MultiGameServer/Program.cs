@@ -19,6 +19,8 @@ namespace MultiGameServer
         // TCP 서버를 관리하고 클라이언트와 통신하는 객체
         private MyServer server;
 
+        private Thread messageProcess_thread;
+
         // 방을 관리하는 객체
         public RoomManager roomManager { get; set; }
 
@@ -30,6 +32,9 @@ namespace MultiGameServer
 
         // 하나의 클라이언트가 여러번 나가는거를 막기위한 세마포
         public Semaphore sema_ClientLeave;
+
+        // 수신받은 패킷을 보관하는 큐
+        ConcurrentQueue<KeyValuePair<ClientCharacter,string>> messageQueue;
 
         static void Main(string[] args)
         {
@@ -96,17 +101,23 @@ namespace MultiGameServer
         private Program()
         {
             server = new MyServer();
-            server.ClientJoin += new ClientJoinEventHandler(OnClientJoin);
-            server.ClientLeave += new ClientLeaveEventHandler(OnClientLeave);
+            server.onClientJoin += new ClientJoinEventHandler(OnClientJoin);
+            server.onClientLeave += new ClientLeaveEventHandler(OnClientLeave);
+            server.onDataRecieve += new DataRecieveEventHandler(onDataRecieve);
 
             clientManager = new ClientManager();
             roomManager = new RoomManager();
 
             sema_ClientLeave = new Semaphore(1, 1);
 
+            messageQueue = new ConcurrentQueue<KeyValuePair<ClientCharacter, string>>();
+            messageProcess_thread = new Thread(MessageProcess);
+
             // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메세지를 보내는 타이머
             TimerCallback tc = new TimerCallback(HeartBeat);
             HeartBeatTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
+
+            
         }
 
         ~Program()
@@ -117,6 +128,7 @@ namespace MultiGameServer
         {
             server.Start();
             HeartBeatTimer.Change(0, 1000);
+            messageProcess_thread.Start();
         }
 
 
@@ -128,8 +140,9 @@ namespace MultiGameServer
             Console.WriteLine("[INFO] "+ newClient.key + "번 클라이언트가 접속하였습니다.");
 
 
-            // client의 메세지가 발생하면 DataRecieved 메소드가 호출되도록 예약
-            newClient.clientData.client.GetStream().BeginRead(newClient.clientData.byteData, 0, newClient.clientData.byteData.Length, new AsyncCallback(DataRecieved), newClient);
+            // client의 메세지 감시
+            MyServer.AsyncResultParam param = new MyServer.AsyncResultParam(newClientData, newClient);
+            server.DetectDataRecieve(param);
         }
 
 
@@ -206,39 +219,38 @@ namespace MultiGameServer
             sema_ClientLeave.Release();
         }
 
-
-        // 클라이언트로부터 메세지 수신
-        private void DataRecieved(IAsyncResult ar)
-        {
-            ClientCharacter clientChar = ar.AsyncState as ClientCharacter; ;
-            ClientData clientData = clientChar.clientData;
-            try
-            {
-                // 전달받은 byte를 string으로 바꿈
-                int bytesRead = clientData.client.GetStream().EndRead(ar);
-                string stringData = Encoding.Default.GetString(clientData.byteData, 0, bytesRead);
-                
-
-                // 메세지를 해석함
-                ParseMessage(clientChar, stringData);
-
-
-                // client의 메세지가 발생하면 DataRecieved 메소드가 호출되도록 예약
-                clientData.client.GetStream().BeginRead(clientData.byteData, 0, clientData.byteData.Length, new AsyncCallback(DataRecieved), clientChar);
-            }
-            catch
-            {
-            }
-
-        }
-
         // 서버와 클라이언트가 계속 연결되어있는지 확인하기 위해 일정시간마다 가짜 메세지를 보냄
         private void HeartBeat(object t)
         {
             SendMessageToAll("Ping@");
         }
 
+        //  클라이언트로 부터 메세지 수신
+        private void onDataRecieve(MyServer.AsyncResultParam param, string message)
+        {
+            ClientCharacter clientCharacter = param.returnObj as ClientCharacter;
 
+            // 메세지 처리를 위해 큐에 넣음
+            messageQueue.Enqueue(new KeyValuePair<ClientCharacter, string>(clientCharacter, message));
+        }
+
+        private void MessageProcess()
+        {
+            while(true)
+            {
+                if(messageQueue.IsEmpty == false)
+                {
+                    KeyValuePair<ClientCharacter, string> message;
+                    bool result =  messageQueue.TryDequeue(out message);
+
+                    if (result == false) continue;
+
+                    ParseMessage(message.Key, message.Value);
+
+                }
+                
+            }
+        }
 
         // 받은 메세지를 해석함
         private void ParseMessage(ClientCharacter clientChar, string message)
@@ -403,6 +415,7 @@ namespace MultiGameServer
                     // 클라이언트의 좌표를 받아 다른 클라이언트에게 알려줌
                     case "Location":
                         {
+                            
                             int x = int.Parse(SplitMessage[1]);
                             int y = int.Parse(SplitMessage[2]);
 
@@ -417,8 +430,9 @@ namespace MultiGameServer
                             // 만약 겹친다면 다시 돌아가라고 명령
                             if(CollisionResult)
                             {
-                                Console.WriteLine("겹침");
-                                SendMessage($"Move#{clientChar.Location.X - x}#{clientChar.Location.Y - y}@",clientChar.key);
+                                Point velocity = new Point(clientChar.Location.X - x, clientChar.Location.Y - y);
+                                if(velocity.X != 0 || velocity.Y != 0)
+                                    SendMessage($"Move#{velocity.X}#{velocity.Y}@",clientChar.key);
                                 continue;
                             }
                             

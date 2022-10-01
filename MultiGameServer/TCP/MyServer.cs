@@ -14,9 +14,9 @@ namespace MultiGameServer
 {
     public delegate void ClientJoinEventHandler(ClientData newClient);
     public delegate void ClientLeaveEventHandler(ClientData oldClient);
-    class MyServer
+    public delegate void DataRecieveEventHandler(MyServer.AsyncResultParam param, string Message);
+    public class MyServer
     {
-
         // TCP통신에서 서버를 담당하는 클래스
         public TcpListener server { get; set; }
 
@@ -24,11 +24,13 @@ namespace MultiGameServer
         private Thread server_tr;
 
         // 클라이언트가 접속할경우 ClientJoin에 연결된 함수를 호출함
-        public event ClientJoinEventHandler ClientJoin;
+        public event ClientJoinEventHandler onClientJoin;
 
         // 클라이언트가 접속할경우 ClientLeave에 연결된 함수를 호출함
-        public event ClientLeaveEventHandler ClientLeave;
+        public event ClientLeaveEventHandler onClientLeave;
 
+        // 클라이언트로 부터 메세지가 수신되면 연결된 함수 호출
+        public event DataRecieveEventHandler onDataRecieve;
 
         public MyServer()
         {
@@ -68,8 +70,11 @@ namespace MultiGameServer
                     // 접속하려는 client가 없으면 무한 대기
                     TcpClient AcceptClient = server.AcceptTcpClient();
 
+                    // 클라이언트가 가져야 할 정보를 포함하는 클래스 생성
+                    ClientData clientData = new ClientData(AcceptClient);
+
                     // ClientJoin 이벤트에 연결된 함수를 호출함
-                    ClientJoin(new ClientData(AcceptClient));
+                    onClientJoin(clientData);
                 }
             }
             catch(ThreadStateException)
@@ -91,9 +96,48 @@ namespace MultiGameServer
             }
             catch
             {
-                ClientLeave(receiver);
+                onClientLeave(receiver);
+            }
+        }
+        
+        // 클라이언트 데이터 수신을 감지하고 ReturnObj와 함께 DataRecived 호출
+        public void DetectDataRecieve(AsyncResultParam asyncResultParam)
+        {
+            ClientData clientData = asyncResultParam.clientData;
+
+            clientData.client.GetStream().BeginRead(clientData.byteData, 0, clientData.byteData.Length, new AsyncCallback(DataRecieved), asyncResultParam);
+        }
+
+        // 데이터를 수신
+        public void DataRecieved(IAsyncResult ar)
+        {
+            AsyncResultParam result = ar.AsyncState as AsyncResultParam;
+            try
+            {
+                // 전달받은 byte를 string으로 바꿈
+                int bytesRead = result.clientData.client.GetStream().EndRead(ar);
+                string stringData = Encoding.Default.GetString(result.clientData.byteData, 0, bytesRead);
+
+                // 연결된 함수 호출
+                onDataRecieve(result, stringData);
+
+                // 다시 데이터 수신 감시
+                DetectDataRecieve(result);
+            }
+            catch
+            {
             }
         }
 
+        public class AsyncResultParam
+        {
+            public ClientData clientData { get; set; }
+            public object returnObj { get; set; }
+            public AsyncResultParam(ClientData clientData, object returnObj)
+            {
+                this.clientData = clientData;
+                this.returnObj = returnObj;
+            }
+        }
     }
 }
