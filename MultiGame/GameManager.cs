@@ -39,11 +39,6 @@ namespace MultiGame
 
         private Form1 form1;
 
-        // 게임 내의 열쇠 객체
-        private KeyObject keyObject;
-
-        // 게임 내의 문 객체
-        private Door door;
 
         public static GameManager GetInstance()
         {
@@ -199,14 +194,14 @@ namespace MultiGame
                                 break;
                             case "Key":
                                 {
-                                    keyObject = new KeyObject(key, new Point(x, y), new Size(width, height));
-                                    newObject = keyObject;
+                                    objectManager.keyObject = new KeyObject(key, new Point(x, y), new Size(width, height));
+                                    newObject = objectManager.keyObject;
                                 }
                                 break;
                             case "Door":
                                 {
-                                    door = new Door(key, new Point(x, y), new Size(width, height));
-                                    newObject = door;
+                                    objectManager.door = new Door(key, new Point(x, y), new Size(width, height));
+                                    newObject = objectManager.door;
                                 }
                                 break;
                             default:
@@ -268,7 +263,7 @@ namespace MultiGame
                                     if(context == "Open")
                                     {
                                         door.Open(true);
-                                        keyObject.isVisible = false;
+                                        objectManager.keyObject.isVisible = false;
                                     }
                                     // 누군가 입장
                                     else
@@ -582,25 +577,6 @@ namespace MultiGame
         public void RequestReady(bool bReady)
         {
             myClient.SendMessage($"Ready#{bReady}@");
-        }
-
-
-        public void TryOpenDoor()
-        {
-            ClientCharacter character = userClient.Character;
-
-            // 캐릭터의 충돌 박스
-            Rectangle a = new Rectangle(character.Location, character.size);
-
-            // 문의 충돌 박스
-            Rectangle b = new Rectangle(door.Location, door.size);
-
-            // 충돌 검사 ( 겹치면 false )
-            bool result = Rectangle.Intersect(a, b).IsEmpty;
-            if(result == false)
-            {
-                SendMessage($"ObjEvent#{door.key}#Door@");
-            }
         }
 
     }

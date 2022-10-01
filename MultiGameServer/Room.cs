@@ -140,7 +140,40 @@ namespace MultiGameServer
                 // 대상 충돌판정
                 Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
 
-                // 만약 움직였을때 겹친다면 리턴
+                // 만약  겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    list.Add(otherClient);
+                }
+            }
+
+            return list;
+        }
+
+        // 대상 클라이언트 발 아래에 있는 클라이언트 리스트 반환
+        public List<ClientCharacter> GetClientsUnderTheFoot(ClientCharacter client)
+        {
+            List<ClientCharacter> list = new List<ClientCharacter>();
+
+            // 대상의 발아래 충돌박스
+            Size size = new Size(client.size.Width - 4, 2);
+            Point location = new Point(client.Location.X + 2, client.Location.Y + client.size.Height + 1);
+            Rectangle a = new Rectangle(location, size);
+
+            // 모든 클라이언트와 비교
+            foreach (var item in roomClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient == client || otherClient.Collision == false)
+                {
+                    continue;
+                }
+
+                // 대상 충돌판정
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약  겹친다면 리턴
                 if (Rectangle.Intersect(a, b).IsEmpty == false)
                 {
                     list.Add(otherClient);

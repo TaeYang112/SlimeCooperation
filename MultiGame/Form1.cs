@@ -179,7 +179,7 @@ namespace MultiGame
 
             if(keyData == Keys.Up)
             {
-                gameManager.TryOpenDoor();
+                gameManager.userClient.TryOpenDoor();
             }
 
             return base.ProcessCmdKey(ref msg, keyData);

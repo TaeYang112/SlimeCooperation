@@ -15,6 +15,7 @@ namespace MultiGame.Object
             SetSkin(0);
             Collision = true;
             Blockable = true;
+            _type = "Floor";
         }
 
         override public void SetSkin(int num)

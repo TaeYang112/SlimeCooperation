@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using MultiGame.Object;
+using System.Drawing;
 
 
 namespace MultiGame.Client
@@ -280,6 +281,23 @@ namespace MultiGame.Client
             return false;
         }
 
+        public void TryOpenDoor()
+        {
+            Door door = GameManager.GetInstance().objectManager.door;
+
+            // 캐릭터의 충돌 박스
+            Rectangle a = new Rectangle(Character.Location, Character.size);
+
+            // 문의 충돌 박스
+            Rectangle b = new Rectangle(door.Location, door.size);
+
+            // 충돌 검사 ( 겹치면 false )
+            bool result = Rectangle.Intersect(a, b).IsEmpty;
+            if (result == false)
+            {
+                GameManager.GetInstance().SendMessage($"ObjEvent#{door.key}#Door@");
+            }
+        }
 
     }
 }

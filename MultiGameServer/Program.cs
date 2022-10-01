@@ -453,10 +453,14 @@ namespace MultiGameServer
 
                             if(velocity_x != 0)
                             {
-                                // 위에 있는 클라이언트들도 같은 방향으로 움직이게 함
+                                // 위에 있는 클라이언트들 목록 확인
                                 foreach (var client in list)
                                 {
-                                    SendMessage($"Move#{velocity_x}#{0}@", client.key);
+                                    // 만약 움직인 클라이언트 밑에 클라이언트가 하나밖에 없다면 움직인 방향으로 같이 움직임
+                                    List<ClientCharacter> list2 = room.GetClientsUnderTheFoot(client);
+
+                                    if(list2.Count == 1)
+                                        SendMessage($"Move#{velocity_x}#{0}@", client.key);
                                 }
                             }
                         }
