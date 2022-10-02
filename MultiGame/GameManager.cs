@@ -265,11 +265,29 @@ namespace MultiGame
                                         door.Open(true);
                                         objectManager.keyObject.isVisible = false;
                                     }
-                                    // 누군가 입장
-                                    else
+                                    // 문안으로 들어감
+                                    else if(context == "Enter")
                                     {
                                         client.isVisible = false;
                                         client.Collision = false;
+
+                                        // 만약 유저클라이언트일 경우 더이상 움직이지 못하게함
+                                        if(clientKey == -1)
+                                        {
+                                            userClient.CanMove = false;
+                                        }
+                                    }
+                                    // 문밖으로 나감
+                                    else
+                                    {
+                                        client.isVisible = true;
+                                        client.Collision = true;
+
+                                        // 만약 유저클라이언트일 경우 움직일 수 있게 함
+                                        if (clientKey == -1)
+                                        {
+                                            userClient.CanMove = true;
+                                        }
                                     }
                                 }
                                 break;
@@ -418,27 +436,35 @@ namespace MultiGame
                     }
                     break;
                 // 게임이 시작함
-                case "RoomStart":
+                case "MapStart":
                     {
                         // 좌표
                         int x = int.Parse(SplitMessage[1]);
                         int y = int.Parse(SplitMessage[2]);
 
+                        // 모든 오브젝트 제거
+                        objectManager.ClearObjects();
+
                         // 좌표 설정
                         userClient.Character.Location = new Point(x, y);
 
-                        // 시작 플래그 변수 변경
-                        IsGameStart = true;
-
-                        // 인게임 화면으로 변경
-                        form1.Invoke(new MethodInvoker(delegate ()
+                        // 게임이 처음 시작하는 거라면 ( 첫번째 맵을 플레이하는거라면 )
+                        if(IsGameStart == false)
                         {
-                            InGame_Screen inGame_Screen = new InGame_Screen(form1);
-                            form1.ActiveControl = null;
-                            inGame_Screen.StartUpdateScreen(true);
+                            // 시작 플래그 변수 변경
+                            IsGameStart = true;
 
-                            form1.ChangeScreen(inGame_Screen);
-                        }));
+                            // 인게임 화면으로 변경
+                            form1.Invoke(new MethodInvoker(delegate ()
+                            {
+                                InGame_Screen inGame_Screen = new InGame_Screen(form1);
+                                form1.ActiveControl = null;
+                                inGame_Screen.StartUpdateScreen(true);
+
+                                form1.ChangeScreen(inGame_Screen);
+                            }));
+                        }
+                        
 
                         // 각 캐릭터들 설정
                         foreach (var item in clientManager.ClientDic)
@@ -446,12 +472,18 @@ namespace MultiGame
                             // 화면에 출력
                             item.Value.isVisible = true;
 
+                            // 충돌 판정 켬
+                            item.Value.Blockable = true;
+                            item.Value.Collision = true;
+
                             // 움직임 시작
                             item.Value.GameStart();
                         }
 
                         // 유저 캐릭터
                         userClient.Character.isVisible = true;
+                        userClient.Character.Collision = true;
+                        userClient.Character.Blockable = true;
                         userClient.Start();
                     }
                     break;

@@ -21,6 +21,8 @@ namespace MultiGameServer
 
         public bool bGameStart { get; set; }
 
+        public int EnteredCount { get; set; }
+
         public Room(int key, string RoomTitle)
         {
             this.key = key;
@@ -34,7 +36,7 @@ namespace MultiGameServer
                 skinList.Add(i);
             }
 
-            _Map = new Stage1();
+            
         }
 
         // 방에 클라이언트를 추가함
@@ -72,7 +74,7 @@ namespace MultiGameServer
             int count = 0;
             foreach (var item in roomClientDic)
             {
-                if (item.Value.bReady == true)
+                if (item.Value.IsReady == true)
                 {
                     count++;
                 }
@@ -87,6 +89,38 @@ namespace MultiGameServer
             {
                 return false;
             }
+        }
+
+        // 문에 들어감, 문에 들어간 캐릭터 수 반환
+        public int EnterDoor(ClientCharacter clientChar, bool flag)
+        {
+            // 문에 들어감
+            if (flag == true)
+            {
+                if (clientChar.IsEnterDoor == false)
+                {
+                    EnteredCount++;
+                    clientChar.Collision = false;
+                    clientChar.IsEnterDoor = true;
+
+                    
+                }
+
+            }
+            // 문에서 나옴
+            else
+            {
+                if (clientChar.IsEnterDoor == true)
+                {
+                    EnteredCount--;
+                    clientChar.Collision = true;
+                    clientChar.IsEnterDoor = false;
+
+                    
+                }
+            }
+
+            return EnteredCount;
         }
 
         // 방에 있는 클라이언트 수를 반환
@@ -232,7 +266,10 @@ namespace MultiGameServer
 
         public void GameStart()
         {
+            _Map = new Stage1();
             bGameStart = true;
+
+            EnteredCount = 0;
 
             // 프로그램 인스턴스
             Program PInst = Program.GetInstance();
@@ -245,7 +282,7 @@ namespace MultiGameServer
                 X += 100;
 
                 // 클라이언트에게 게임 시작을 알려주고 시작 위치 설정
-                PInst.SendMessage($"RoomStart#{item.Value.Location.X}#{item.Value.Location.Y}@", item.Key);
+                PInst.SendMessage($"MapStart#{item.Value.Location.X}#{item.Value.Location.Y}@", item.Key);
 
                 // 클라이언트들의 시작 위치를 알려줌
                 foreach (var item2 in roomClientDic)
@@ -268,6 +305,9 @@ namespace MultiGameServer
                         $"{gameObject.SkinNum}@",item.Key);
                    
                 }
+                item.Value.IsEnterDoor = false;
+                item.Value.Blockable = true;
+                item.Value.Collision = true;
                 item.Value.GameStart();
             }
 

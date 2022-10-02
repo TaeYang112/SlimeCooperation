@@ -14,10 +14,13 @@ namespace MultiGame.Client
         public bool JumpDown { get; set; }
 
         // 땅인지
-        public bool isGround { get; set; }
+        public bool IsGround { get; set; }
+
+        // 움직일 수 있는지
+        public bool CanMove { get; set; }
 
         // 점프 및 중력관련
-        public bool isJump { get; set; }            // 점프중인지 체크하는 속성
+        public bool IsJump { get; set; }            // 점프중인지 체크하는 속성
         private float JumpTime;                     // 중력(점프) 계산에 필요한 변수 ( 2차 함수 그래프의 x에 해당 )
         private float JumpPower;                    // 점프의 높이
         private float dy;                           // 바로전에 얼만큼 뛰었는지
@@ -31,8 +34,8 @@ namespace MultiGame.Client
             RightDown = false;
             JumpDown = false;
 
-            isJump = false;
-            isGround = false;
+            IsJump = false;
+            IsGround = false;
             JumpTime = 0.0f;
             JumpPower = 50.0f;
             dy = 0;
@@ -47,11 +50,15 @@ namespace MultiGame.Client
         public void Start()
         {
             Character.GameStart();
+            CanMove = true;
         }
 
         // 현재 KeyDown 되어있는 키를 확인하여 움직임
         public void MoveWithKeyDown()
         {
+            // 움직일 수 없다면 리턴
+            if (CanMove == false) return;
+
             Point velocity = new Point(0, 0);
 
             bool bLookRight = false;
@@ -77,7 +84,7 @@ namespace MultiGame.Client
             }
 
             // 이차 함수를 이용한 점프
-            if (isJump)
+            if (IsJump)
             {
                 float JumpHeight = (JumpTime * JumpTime - JumpPower * JumpTime) / 10.0f;      // y = x^2 - ax 그래프
                 JumpTime += 1.2f;
@@ -87,7 +94,7 @@ namespace MultiGame.Client
                 {
                     JumpTime = 0;
                     dy = 0;
-                    isJump = false;
+                    IsJump = false;
                 }
                 else
                 {
@@ -136,11 +143,11 @@ namespace MultiGame.Client
         // 점프
         public void Jump()
         {
-            if (isJump == true || isGround == false) return;
+            if (IsJump == true || IsGround == false) return;
             GravityStart(false);
             JumpTime = 0;
             dy = 0;
-            isJump = true;
+            IsJump = true;
         }
 
 
@@ -193,8 +200,8 @@ namespace MultiGame.Client
                 {
                     // 이동
                     resultLoc = tempLoc;
-                    isGround = false;
-                    if (isJump == false) GravityStart(true);
+                    IsGround = false;
+                    if (IsJump == false) GravityStart(true);
                     break;
                 }
                 // 충돌했으면
@@ -212,7 +219,7 @@ namespace MultiGame.Client
                 if (velocity.Y > 0)
                 {
                     //땅위에 있다는 플래그변수 true
-                    isGround = true;
+                    IsGround = true;
                     GravityStart(false);
 
                     // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
@@ -222,7 +229,7 @@ namespace MultiGame.Client
                 // 만약 위로 가던중 충돌판정이 일어나면
                 else if(velocity.Y < 0)
                 {
-                    isJump = false;
+                    IsJump = false;
                 }
             }
 
@@ -284,6 +291,8 @@ namespace MultiGame.Client
         public void TryOpenDoor()
         {
             Door door = GameManager.GetInstance().objectManager.door;
+
+            if (door == null) return;
 
             // 캐릭터의 충돌 박스
             Rectangle a = new Rectangle(Character.Location, Character.size);
