@@ -273,12 +273,12 @@ namespace MultiGameServer
                             // 방 만든사람을 방에 접속시킴
                             ClientEnterRoom(newRoom, clientChar);
 
-                            clientChar.bFindingRoom = false;
+                            clientChar.IsFindingRoom = false;
 
                             // 방찾기에 있는 클라이언트한테 방이 새로 생긴걸 알려줌
                             foreach (var item in clientManager.ClientDic)
                             {
-                                if (item.Value.bFindingRoom == true)
+                                if (item.Value.IsFindingRoom == true)
                                 {
                                     SendMessage($"RoomList#Add#{newRoom.key}#{newRoom.RoomTitle}#{newRoom.GetPeopleCount()}@", item.Key);
                                 }
@@ -327,7 +327,7 @@ namespace MultiGameServer
                         {
                             // 레디 여부를 대입
                             bool bReady = bool.Parse(SplitMessage[1]);
-                            clientChar.bReady = bReady;
+                            clientChar.IsReady = bReady;
 
 
                             // 클라이언트가 들어있는 방을 찾음
@@ -361,10 +361,10 @@ namespace MultiGameServer
                     // 클라이언트가 로비 정보 요청 / 요청 종료
                     case "LobbyInfo":
                         {
-                            clientChar.bFindingRoom = bool.Parse(SplitMessage[1]);
+                            clientChar.IsFindingRoom = bool.Parse(SplitMessage[1]);
 
                             // 정보 요청이 true라면 원래 있던 방목록을 전달함
-                            if(clientChar.bFindingRoom == true)
+                            if(clientChar.IsFindingRoom == true)
                             {
                                 foreach (var item in roomManager.RoomDic)
                                 {
@@ -519,9 +519,38 @@ namespace MultiGameServer
                                         // 문이 이미 열렸을 경우
                                         if (door.isOpen)
                                         {
-                                            SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Enter@", clientChar.RoomKey,clientChar.key);
-                                            SendMessage($"ObjEvent#{key}#Door#{-1}#Enter@", clientChar.key);
-                                            clientChar.Collision = false;
+                                            // 문 안이라면
+                                            if(clientChar.IsEnterDoor == true)
+                                            {
+                                                // 문밖에 나갈 수 있는지 체크 후 문밖으로 나오게 함
+                                                bool result = room.CollisionCheck(clientChar, clientChar.Location);
+
+                                                if(result == false)
+                                                {
+                                                    // 문 밖으로 나옴
+                                                    room.EnterDoor(clientChar, false);
+
+                                                    SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Leave@", clientChar.RoomKey, clientChar.key);
+                                                    SendMessage($"ObjEvent#{key}#Door#{-1}#Leave@", clientChar.key);
+
+                                                }
+                                                
+                                            }
+                                            // 문 밖이라면
+                                            else
+                                            {
+                                                // 문 안에 들어감
+                                                int EnteredCount = room.EnterDoor(clientChar, true);
+
+                                                SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Enter@", clientChar.RoomKey, clientChar.key);
+                                                SendMessage($"ObjEvent#{key}#Door#{-1}#Enter@", clientChar.key);
+
+                                                // 3명이상 들어갔을 경우 다음 맵으로 이동
+                                                if (EnteredCount >= 3)
+                                                    room.GameStart();
+                                                    
+                                            }
+                                            
                                         }
                                         // 문이 닫혀있을 경우
                                         {
@@ -566,7 +595,7 @@ namespace MultiGameServer
         {
             foreach(var item in clientManager.ClientDic)
             {
-                if (item.Value.bFindingRoom == true)
+                if (item.Value.IsFindingRoom == true)
                 {
                     SendMessage($"RoomList#Update#{room.key}#{room.GetPeopleCount()}@", item.Key);
                 }
@@ -578,7 +607,7 @@ namespace MultiGameServer
         {
             foreach (var item in clientManager.ClientDic)
             {
-                if (item.Value.bFindingRoom == true)
+                if (item.Value.IsFindingRoom == true)
                 {
                     SendMessage($"RoomList#Del#{room.key}@", item.Key);
                 }
@@ -602,7 +631,7 @@ namespace MultiGameServer
             foreach (var item in room.roomClientDic)
             {
                 if (item.Key == clientChar.key) continue;
-                SendMessage($"EnterRoomOther#{item.Key}#{item.Value.bReady}#{item.Value.SkinNum}@", clientChar.key);
+                SendMessage($"EnterRoomOther#{item.Key}#{item.Value.IsReady}#{item.Value.SkinNum}@", clientChar.key);
             }
 
             // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌

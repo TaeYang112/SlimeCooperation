@@ -52,6 +52,8 @@ namespace MultiGame
         public void ClearObjects()
         {
             ObjectDic.Clear();
+            door = null;
+            keyObject = null;
         }
     }
 }
