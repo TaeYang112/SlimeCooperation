@@ -215,6 +215,7 @@ namespace MultiGame
         // 폼의 포커스가 풀리면 ( 알트 탭, 다른 윈도우 선택시 ) 이벤트 발생
         private void Form1_Deactivate(object sender, EventArgs e)
         {
+            return;
             // 사용자 캐릭터
             UserClient userClient = gameManager.userClient;
 

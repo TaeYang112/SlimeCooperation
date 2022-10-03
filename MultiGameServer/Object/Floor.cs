@@ -10,12 +10,17 @@ namespace MultiGameServer.Object
     public class Floor : GameObject
     {
 
-        public Floor(int key, Point Location, Size size)
-            : base(key,Location,size)
+        public Floor(Room room, int key, Point Location, Size size)
+            : base(room, key,Location,size)
         {
             _type = "Floor";
             Collision = true;
             Blockable = true;
+        }
+
+        public Floor(Room room, int key, Point Location, Point Location2)
+            : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y))
+        {
         }
     }
 }

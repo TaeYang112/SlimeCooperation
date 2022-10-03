@@ -42,10 +42,11 @@ namespace MultiGame.UserPanel
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
+            // 배경 이미지
             BackGroundImg = MultiGame.Properties.Resources.BackGround1.Clone() as Image;
 
 
-            TimerCallback tc2 = new TimerCallback(DebugTimer);                                    // 실행시킬 메소드
+            TimerCallback tc2 = new TimerCallback(DebugTimer);
             FPSTimer = new System.Threading.Timer(tc2, null, 0, 1000);
             FPS = 0;
         }

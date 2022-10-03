@@ -204,6 +204,15 @@ namespace MultiGame
                                     newObject = objectManager.door;
                                 }
                                 break;
+                            case "Stone":
+                                {
+                                    int weight = int.Parse(SplitMessage[8]);
+                                    Stone stone = new Stone(key, new Point(x, y), new Size(width, height));
+                                    stone.weight = weight;
+
+                                    newObject = stone;
+                                }
+                                break;
                             default:
                                 break;
                         }
@@ -289,6 +298,19 @@ namespace MultiGame
                                             userClient.CanMove = true;
                                         }
                                     }
+                                }
+                                break;
+                            case "Stone":
+                                {
+                                    Stone stone = gameObject as Stone;
+                                    if (gameObject == null) return;
+
+                                    int x = int.Parse(SplitMessage[4]);
+                                    int y = int.Parse(SplitMessage[5]);
+                                    int weight = int.Parse(SplitMessage[6]);
+
+                                    stone.Location = new Point(x, y);
+                                    stone.weight = weight;
                                 }
                                 break;
                         }

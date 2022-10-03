@@ -12,6 +12,8 @@ namespace MultiGameServer
         // 오브젝트를 구분하는 키
         public int key { get; set; }
 
+        public Room room { get; set; }
+
         // 타입
         protected string _type;
         public string Type { get { return _type; } }
@@ -31,7 +33,7 @@ namespace MultiGameServer
         // 충돌이 발생했을 때 false이면 통과함
         public bool Blockable { get; set; }
 
-        public GameObject(int key, Point Location, Size size)
+        public GameObject(Room room, int key, Point Location, Size size)
         {
             this.key = key;
             this.Location = Location;
@@ -39,11 +41,18 @@ namespace MultiGameServer
             this.Collision = false;
             this.Blockable = false;
             this._type = "object";
+            this.room = room;
             SkinNum = 0;
         }
 
         // 플레이어와 겹쳤을 때 호출됨
         virtual public void OnHit()
+        {
+
+        }
+
+        // 맵이나 방이 종료되었을 때 호출됨
+        virtual public void OnClose()
         {
 
         }

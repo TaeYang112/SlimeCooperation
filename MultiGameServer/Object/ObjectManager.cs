@@ -12,6 +12,8 @@ namespace MultiGameServer
     {
         public ConcurrentDictionary<int, GameObject> ObjectDic { get; set; }
 
+        public Room room { get; set; }
+
         // 오브젝트관리를 위에 부여할 키
         private int key;
 
@@ -41,6 +43,10 @@ namespace MultiGameServer
 
         public void ClearObjects()
         {
+            foreach(var item in ObjectDic)
+            {
+                item.Value.OnClose();
+            }
             ObjectDic.Clear();
         }
 
