@@ -164,12 +164,10 @@ namespace MultiGameServer
 
             Console.WriteLine("[INFO] " + oldClientData.key + "번 클라이언트와의 연결이 끊겼습니다.");
 
-            // 클라이언트가 속해있는 방을 가져옴
-            Room room;
-            bool bRoomValid = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+            Room room = clientChar.room;
 
             // 방이 존재하면
-            if(bRoomValid)
+            if(room != null)
             {
                 // 방에서 클라이언트 제거
                 int peopleCount = room.ClientLeave(clientChar);
@@ -189,7 +187,7 @@ namespace MultiGameServer
                     else
                     {
                         // 방 안의 다른 플레이어들한테 알려줌
-                        SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", room.key, clientChar.key);
+                        room.SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", clientChar.key);
 
                         // 방의 인원수가 바뀐것을 클라이언트들에게 알려줌
                         SendUpdateRoomInfo(room);
@@ -208,7 +206,7 @@ namespace MultiGameServer
                     else
                     {
                         // 방 안의 다른 플레이어들한테 알려줌
-                        SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", room.key, clientChar.key);
+                        room.SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", clientChar.key);
                     }
                 }
             }
@@ -331,17 +329,16 @@ namespace MultiGameServer
 
 
                             // 클라이언트가 들어있는 방을 찾음
-                            Room room;
-                            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+                            Room room = clientChar.room;
 
                             // 존재하지 않으면 return
-                            if (result == false)
+                            if (room == null)
                             {
                                 continue;
                             }
 
                             // 방안의 다른 클라이언트한테 레디했다고 알려줌
-                            SendMessageToAll_InRoom($"ReadyOther#{clientChar.key}#{bReady}@", room.key, clientChar.key);
+                            room.SendMessageToAll_InRoom($"ReadyOther#{clientChar.key}#{bReady}@", clientChar.key);
 
                             if (bReady == true)
                             {
@@ -381,17 +378,16 @@ namespace MultiGameServer
                     case "ExitLobby":
                         {
                             // 클라이언트가 속해있는 방을 가져옴
-                            Room room;
-                            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+                            Room room = clientChar.room;
 
                             // 방이 존재하지 않으면 종료
-                            if (result == false)
+                            if (room == null)
                             {
                                 continue;
                             }
 
                             // 다른 플레이어들한테 알려줌
-                            SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", room.key, clientChar.key);
+                            room.SendMessageToAll_InRoom($"LeaveRoomOther#{clientChar.key}@", clientChar.key);
 
                             // 룸의 클라이언트 배열에서도 제거
                             room.ClientLeave(clientChar);
@@ -420,8 +416,10 @@ namespace MultiGameServer
                             int y = int.Parse(SplitMessage[2]);
 
                             // 클라이언트가 속해있는 방을 가져옴
-                            Room room;
-                            bool result = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+                            Room room = clientChar.room;
+
+                            // 방이 존재하지 않으면 종료
+                            if (room == null) continue;
 
                             // 다른 클라이언트와 겹치는지 체크
                             bool CollisionResult = room.CollisionCheck(clientChar, new Point(x, y));
@@ -441,11 +439,7 @@ namespace MultiGameServer
                             clientChar.Location = new Point(x, y);
 
                             // 전체 클라이언트에게 이동한 좌표 전송
-                            SendMessageToAll_InRoom($"Location#{clientChar.key}#{x}#{y}@",clientChar.RoomKey,clientChar.key);
-
-                            // 방이 존재하지 않으면 종료
-                            if (result == false) continue;
-
+                            room.SendMessageToAll_InRoom($"Location#{clientChar.key}#{x}#{y}@",clientChar.key);
                             
 
                             // 움직인 클라이언트 위에 다른 클라이언트가 있는지 확인
@@ -470,7 +464,7 @@ namespace MultiGameServer
                         {
                             bool bLookRight = bool.Parse(SplitMessage[1]);
 
-                            SendMessageToAll_InRoom($"LookR#{clientChar.key}#{bLookRight}@",clientChar.RoomKey,clientChar.key);
+                            clientChar.room.SendMessageToAll_InRoom($"LookR#{clientChar.key}#{bLookRight}@",clientChar.key);
                         }
                         break;
                     // 클라이언트가 오브젝트와 상호작용함
@@ -479,11 +473,11 @@ namespace MultiGameServer
                             int key = int.Parse(SplitMessage[1]);
                             string type = SplitMessage[2];
 
-                            // 클라이언트가 속한 방을 찾음
-                            Room room;
-                            bool roomResult = roomManager.RoomDic.TryGetValue(clientChar.RoomKey, out room);
+                            // 클라이언트가 속해있는 방을 가져옴
+                            Room room = clientChar.room;
 
-                            if (roomResult == false) continue;
+                            // 방이 존재하지 않으면 종료
+                            if (room == null) continue;
 
                             // 해당 오브젝트를 찾음
                             GameObject gameObject;
@@ -505,7 +499,7 @@ namespace MultiGameServer
                                         {
                                             keyObj.ownerKey = clientChar.key;
 
-                                            SendMessageToAll_InRoom($"ObjEvent#{key}#KeyObject#{clientChar.key}@", clientChar.RoomKey,clientChar.key);
+                                            room.SendMessageToAll_InRoom($"ObjEvent#{key}#KeyObject#{clientChar.key}@",clientChar.key);
                                             SendMessage($"ObjEvent#{key}#KeyObject#{-1}@",clientChar.key);
                                         }
                                     }
@@ -530,7 +524,7 @@ namespace MultiGameServer
                                                     // 문 밖으로 나옴
                                                     room.EnterDoor(clientChar, false);
 
-                                                    SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Leave@", clientChar.RoomKey, clientChar.key);
+                                                    room.SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Leave@", clientChar.key);
                                                     SendMessage($"ObjEvent#{key}#Door#{-1}#Leave@", clientChar.key);
 
                                                 }
@@ -542,7 +536,7 @@ namespace MultiGameServer
                                                 // 문 안에 들어감
                                                 int EnteredCount = room.EnterDoor(clientChar, true);
 
-                                                SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Enter@", clientChar.RoomKey, clientChar.key);
+                                                room.SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Enter@", clientChar.key);
                                                 SendMessage($"ObjEvent#{key}#Door#{-1}#Enter@", clientChar.key);
 
                                                 // 3명이상 들어갔을 경우 다음 맵으로 이동
@@ -567,12 +561,21 @@ namespace MultiGameServer
                                             // 클라이언트가 열쇠를 가지고 있다면
                                             if(clientChar.key == keyObject.ownerKey)
                                             {
-                                                SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Open@", clientChar.RoomKey, clientChar.key);
+                                                room.SendMessageToAll_InRoom($"ObjEvent#{key}#Door#{clientChar.key}#Open@", clientChar.key);
                                                 SendMessage($"ObjEvent#{key}#Door#{-1}#Open@", clientChar.key);
                                                 door.isOpen = true;
                                             }
                                             
                                         }
+                                    }
+                                    break;
+                                case "Stone":
+                                    {
+                                        Stone stone = gameObject as Stone;
+
+                                        if (stone == null) continue;
+
+                                        stone.onPush();
                                     }
                                     break;
                                 default:
@@ -635,7 +638,7 @@ namespace MultiGameServer
             }
 
             // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
-            SendMessageToAll_InRoom($"EnterRoomOther#{clientChar.key}#False#{clientChar.SkinNum}@", clientChar.RoomKey, clientChar.key);
+            room.SendMessageToAll_InRoom($"EnterRoomOther#{clientChar.key}#False#{clientChar.SkinNum}@", clientChar.key);
         }
    
 
@@ -662,27 +665,6 @@ namespace MultiGameServer
             }
 
         }
-
-        // 방 안의 모든 클라이언트들에게 메세지 전송 ( senderKey로 예외 클라이언트 설정 )
-        public void SendMessageToAll_InRoom(string message,int roomKey, int senderKey = -1)
-        {
-            // 킷값을 이용하여 방을 찾음, 없으면 return
-            Room room;
-            bool result = roomManager.RoomDic.TryGetValue(roomKey, out room);
-            if (result == false) return;
-
-            
-            foreach (var item in room.roomClientDic)
-            {
-                if (item.Value.key == senderKey) continue;
-
-                SendMessage(message, item.Value.key);
-            }
-
-        }
-
-
-       
 
     }
 

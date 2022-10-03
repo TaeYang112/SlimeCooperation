@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameServer.Object;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,15 +36,19 @@ namespace MultiGameServer
             {
                 skinList.Add(i);
             }
+        }
 
-            
+        public void Close()
+        {
+            Map.objectManager.ClearObjects();
+            roomClientDic.Clear();
         }
 
         // 방에 클라이언트를 추가함
         public void ClientEnter(ClientCharacter clientChar)
         {
-            // 클라이언트가 속한 방키를 설정
-            clientChar.RoomKey = key;
+            // 클라이언트가 속한 방을 설정
+            clientChar.room = this;
 
             // 랜덤으로 스킨 부여
             int skinNum = GetRandomSkin();
@@ -58,7 +63,7 @@ namespace MultiGameServer
         // 클라이언트를 나가게 한뒤, 남은 인원수 반환
         public int ClientLeave(ClientCharacter clientChar)
         {
-            clientChar.RoomKey = -1;
+            clientChar.room = null;
             roomClientDic.TryRemove(clientChar.key, out _);
 
             // 나갈때 스킨을 다시 돌려줌
@@ -157,8 +162,8 @@ namespace MultiGameServer
             List<ClientCharacter> list = new List<ClientCharacter>();
 
             // 대상의 머리위 충돌박스
-            Size size = new Size(client.size.Width-4, 2);
-            Point location = new Point(client.Location.X+2, client.Location.Y - 2);
+            Size size = new Size(client.size.Width-4, 1);
+            Point location = new Point(client.Location.X+2, client.Location.Y - 1);
             Rectangle a = new Rectangle(location, size);
 
             // 모든 클라이언트와 비교
@@ -190,7 +195,7 @@ namespace MultiGameServer
             List<ClientCharacter> list = new List<ClientCharacter>();
 
             // 대상의 발아래 충돌박스
-            Size size = new Size(client.size.Width - 4, 2);
+            Size size = new Size(client.size.Width - 4, 1);
             Point location = new Point(client.Location.X + 2, client.Location.Y + client.size.Height + 1);
             Rectangle a = new Rectangle(location, size);
 
@@ -218,17 +223,17 @@ namespace MultiGameServer
         }
 
         // 겹치면 true 반환
-        public bool CollisionCheck(ClientCharacter character, Point newLocation)
+        public bool CollisionCheck(GameObject target, Point newLocation)
         {
-            // 캐릭터의 충돌 박스
-            Rectangle a = new Rectangle(newLocation, character.size);
+            // 대상의 충돌 박스
+            Rectangle a = new Rectangle(newLocation, target.size);
 
             // 모든 캐릭터와 부딪히는지 체크함
             foreach (var item in roomClientDic)
             {
                 ClientCharacter otherClient = item.Value;
 
-                if (otherClient == character) continue;
+                if (otherClient == target) continue;
 
                 // 충돌이 꺼져있으면 무시
                 if (otherClient.Collision == false) continue;
@@ -242,11 +247,12 @@ namespace MultiGameServer
                     return true;
                 }
             }
-
             // 맵의 모든 오브젝트와 부딪히는지 체크함
             foreach (var item in Map.objectManager.ObjectDic)
             {
                 GameObject gameObject = item.Value;
+
+                if (gameObject == target) continue;
 
                 if (gameObject.Collision == false) continue;
 
@@ -260,13 +266,16 @@ namespace MultiGameServer
                     else continue;
                 }
             }
-
+            
             return false;
         }
 
         public void GameStart()
         {
-            _Map = new Stage1();
+            if (Map != null)
+                Map.objectManager.ClearObjects();
+            
+            _Map = new Stage1(this);
             bGameStart = true;
 
             EnteredCount = 0;
@@ -298,17 +307,43 @@ namespace MultiGameServer
                 foreach(var objectPair in Map.objectManager.ObjectDic)
                 {
                     GameObject gameObject = objectPair.Value;
-                    PInst.SendMessage($"NewObject#" +
+
+                    if(gameObject.Type == "Stone")
+                    {
+                        Stone stone = gameObject as Stone;
+                        
+                        PInst.SendMessage($"NewObject#" +
                         $"{objectPair.Key}#{gameObject.Type}#" +
                         $"{gameObject.Location.X}#{gameObject.Location.Y}#" +
                         $"{gameObject.size.Width}#{gameObject.size.Height}#" +
-                        $"{gameObject.SkinNum}@",item.Key);
-                   
+                        $"{gameObject.SkinNum}#{stone.weight}@", item.Key);
+                    }
+                    else
+                    {
+                        PInst.SendMessage($"NewObject#" +
+                        $"{objectPair.Key}#{gameObject.Type}#" +
+                        $"{gameObject.Location.X}#{gameObject.Location.Y}#" +
+                        $"{gameObject.size.Width}#{gameObject.size.Height}#" +
+                        $"{gameObject.SkinNum}@", item.Key);
+                    }
+                    
                 }
                 item.Value.IsEnterDoor = false;
                 item.Value.Blockable = true;
                 item.Value.Collision = true;
                 item.Value.GameStart();
+            }
+
+        }
+
+        // 방 안의 모든 클라이언트들에게 메세지 전송 ( senderKey로 예외 클라이언트 설정 )
+        public void SendMessageToAll_InRoom(string message, int senderKey = -1)
+        {
+            foreach (var item in roomClientDic)
+            {
+                if (item.Value.key == senderKey) continue;
+
+                Program.GetInstance().SendMessage(message, item.Value.key);
             }
 
         }

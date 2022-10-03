@@ -35,7 +35,6 @@ namespace MultiGame.Object
         {
             base.OnHit();
             Collision = false;
-            Console.WriteLine("충돌");
             GameManager.GetInstance().SendMessage($"ObjEvent#{key}#KeyObject@");
         }
 

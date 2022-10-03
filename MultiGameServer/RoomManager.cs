@@ -35,6 +35,7 @@ namespace MultiGameServer
 
         public void RemoveRoom(Room room)
         {
+            room.Close();
             RoomDic.TryRemove(room.key,out _);
         }
     }

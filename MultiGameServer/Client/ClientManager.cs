@@ -24,7 +24,7 @@ namespace MultiGameServer
 
         public ClientCharacter AddClient(ClientData newClient)
         {
-            ClientCharacter newClientCharacter = new ClientCharacter(CurrentKey, newClient);
+            ClientCharacter newClientCharacter = new ClientCharacter(null,CurrentKey, newClient);
 
             // 새로운 클라이언트를 배열에 저장
             ClientDic.TryAdd(CurrentKey, newClientCharacter);

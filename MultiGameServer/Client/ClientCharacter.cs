@@ -15,12 +15,7 @@ namespace MultiGameServer
     public class ClientCharacter : GameObject
     {
         // TcpClient 객체
-        public ClientData clientData { get; set; }
-
-
-        // 현재 클라이언트가 속해 있는 방 키
-        public int RoomKey { get; set; }                                                    
-
+        public ClientData clientData { get; set; }    
 
         // 레디 여부
         public bool IsReady { get; set; }
@@ -32,8 +27,8 @@ namespace MultiGameServer
         public bool IsEnterDoor { get; set;}
 
 
-        public ClientCharacter(int key, ClientData clientData)
-            :base(key,new Point(0,0), new Size(60,50))
+        public ClientCharacter(Room room, int key, ClientData clientData)
+            :base(room, key,new Point(0,0), new Size(60,50))
         {
             this.clientData = clientData;
             clientData.key = key;

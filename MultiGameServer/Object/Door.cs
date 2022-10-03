@@ -11,12 +11,17 @@ namespace MultiGameServer.Object
     {
         public bool isOpen { get; set; }
 
-        public Door(int key, Point Location, Size size)
-            : base(key, Location, size)
+        public Door(Room room, int key, Point Location, Size size)
+            : base(room, key, Location, size)
         {
             _type = "Door";
             Collision = true;
             Blockable = false;
+        }
+
+        public Door(Room room, int key, Point Location, Point Location2)
+            : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y))
+        {
         }
     }
 }

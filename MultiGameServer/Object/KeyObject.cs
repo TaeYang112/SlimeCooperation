@@ -12,8 +12,8 @@ namespace MultiGameServer.Object
         // 열쇠 소유자 키
         public int ownerKey { get; set; }
 
-        public KeyObject(int key, Point Location, Size size)
-            : base(key, Location, size)
+        public KeyObject(Room room, int key, Point Location, Size size)
+            : base(room,key, Location, size)
         {
             _type = "Key";
             ownerKey = -1;
@@ -21,5 +21,9 @@ namespace MultiGameServer.Object
             Blockable = false;
         }
 
+        public KeyObject(Room room, int key, Point Location, Point Location2)
+            : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y))
+        {
+        }
     }
 }
