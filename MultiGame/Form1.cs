@@ -159,6 +159,7 @@ namespace MultiGame
             if (keyData == Keys.Left)
             {
                 userClient.LeftDown = true;
+                GameManager.GetInstance().SendMessage($"KeyInput#Left#True@");
                 return true;
             }
 
@@ -166,6 +167,7 @@ namespace MultiGame
             if (keyData == Keys.Right)
             {
                 userClient.RightDown = true;
+                GameManager.GetInstance().SendMessage($"KeyInput#Right#True@");
                 return true;
             }
 
@@ -200,9 +202,11 @@ namespace MultiGame
             {
                 case Keys.Left:
                     userClient.LeftDown = false;
+                    GameManager.GetInstance().SendMessage($"KeyInput#Left#False@");
                     break;
                 case Keys.Right:
                     userClient.RightDown = false;
+                    GameManager.GetInstance().SendMessage($"KeyInput#Right#False@");
                     break;
                 case Keys.Space:
                     userClient.JumpDown = false;
