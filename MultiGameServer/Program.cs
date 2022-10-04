@@ -584,6 +584,21 @@ namespace MultiGameServer
                             }
                         }
                         break;
+                    case "KeyInput":
+                        {
+                            string keyType = SplitMessage[1];
+                            bool bPress = bool.Parse(SplitMessage[2]);
+
+                            if(keyType == "Right")
+                            {
+                                clientChar.bRightPress = bPress;
+                            }
+                            else
+                            {
+                                clientChar.bLeftPress = bPress;
+                            }
+                        }
+                        break;
                     default:
                         Console.WriteLine("디폴트 : {0}", Messages[i]);
                         break;

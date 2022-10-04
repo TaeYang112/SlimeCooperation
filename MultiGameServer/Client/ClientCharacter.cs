@@ -27,6 +27,10 @@ namespace MultiGameServer
         public bool IsEnterDoor { get; set;}
 
 
+        // 키 입력 여부
+        public bool bLeftPress { get; set; }
+        public bool bRightPress { get; set; }
+
         public ClientCharacter(Room room, int key, ClientData clientData)
             :base(room, key,new Point(0,0), new Size(60,50))
         {
@@ -37,6 +41,9 @@ namespace MultiGameServer
             IsEnterDoor = false;
             Collision = true;
             Blockable = true;
+
+            bRightPress = false;
+            bLeftPress = false;
         }
 
         public void GameStart()
