@@ -240,6 +240,13 @@ namespace MultiGame.Client
             GameManager.GetInstance().SendMessage($"Location#{resultLoc.X}#{resultLoc.Y}#@");
         }
 
+        // 주로 키 입력을 이외의 상황에서 움직여야할 때 부자연스러움을 없애기 위해
+        public void MoveExtra(Point velocity)
+        {
+            if(LeftDown == false && RightDown == false)
+            Move(velocity);
+        }
+
         // 겹치면 true 반환
         public bool CollisionCheck(Point newLocation)
         {

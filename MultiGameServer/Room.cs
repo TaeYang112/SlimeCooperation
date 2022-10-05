@@ -22,7 +22,11 @@ namespace MultiGameServer
 
         public bool bGameStart { get; set; }
 
+        // 문안에 들어간 인원수
         public int EnteredCount { get; set; }
+
+        // 현재 몇 스테이지
+        public int stageNum { get; set; }
 
         public Room(int key, string RoomTitle)
         {
@@ -30,6 +34,7 @@ namespace MultiGameServer
             this.RoomTitle = RoomTitle;
             roomClientDic = new ConcurrentDictionary<int, ClientCharacter>();
             bGameStart = false;
+            stageNum = 1;
 
             skinList = new SortedSet<int>();
             for (int i = 0; i < 8; i++)
@@ -40,7 +45,10 @@ namespace MultiGameServer
 
         public void Close()
         {
-            Map.objectManager.ClearObjects();
+            if (Map != null)
+            {
+                Map.objectManager.ClearObjects();
+            }
             roomClientDic.Clear();
         }
 
@@ -86,7 +94,7 @@ namespace MultiGameServer
             }
             Console.WriteLine("[INFO] " + key + "번 방 "+ count + "/3 READY");
             // 준비한 캐릭터가 3명 이상일경우 true
-            if (count >= 3)
+            if (count >= 1)
             {
                 return true;
             }
@@ -156,71 +164,7 @@ namespace MultiGameServer
             return result;
         }
 
-        // 대상 클라이언트 머리위에 있는 클라이언트 리스트 반환
-        public List<ClientCharacter> GetClientsOverTheHead(ClientCharacter client)
-        {
-            List<ClientCharacter> list = new List<ClientCharacter>();
-
-            // 대상의 머리위 충돌박스
-            Size size = new Size(client.size.Width-4, 1);
-            Point location = new Point(client.Location.X+2, client.Location.Y - 1);
-            Rectangle a = new Rectangle(location, size);
-
-            // 모든 클라이언트와 비교
-            foreach (var item in roomClientDic)
-            {
-                ClientCharacter otherClient = item.Value;
-
-                if (otherClient == client || otherClient.Collision == false)
-                {
-                    continue;
-                }
-
-                // 대상 충돌판정
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약  겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    list.Add(otherClient);
-                }
-            }
-
-            return list;
-        }
-
-        // 대상 클라이언트 발 아래에 있는 클라이언트 리스트 반환
-        public List<ClientCharacter> GetClientsUnderTheFoot(ClientCharacter client)
-        {
-            List<ClientCharacter> list = new List<ClientCharacter>();
-
-            // 대상의 발아래 충돌박스
-            Size size = new Size(client.size.Width - 4, 1);
-            Point location = new Point(client.Location.X + 2, client.Location.Y + client.size.Height + 1);
-            Rectangle a = new Rectangle(location, size);
-
-            // 모든 클라이언트와 비교
-            foreach (var item in roomClientDic)
-            {
-                ClientCharacter otherClient = item.Value;
-
-                if (otherClient == client || otherClient.Collision == false)
-                {
-                    continue;
-                }
-
-                // 대상 충돌판정
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약  겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    list.Add(otherClient);
-                }
-            }
-
-            return list;
-        }
+        
 
         // 겹치면 true 반환
         public bool CollisionCheck(GameObject target, Point newLocation)
@@ -270,12 +214,24 @@ namespace MultiGameServer
             return false;
         }
 
-        public void GameStart()
+        public void GameStart(int stageNum)
         {
             if (Map != null)
                 Map.objectManager.ClearObjects();
             
-            _Map = new Stage1(this);
+            switch(stageNum)
+            {
+                case 1:
+                    _Map = new Stage1(this);
+                    break;
+                case 2:
+                    _Map = new Stage2(this);
+                    break;
+                default:
+                    _Map = new Stage1(this);
+                    break;
+            }
+            
             bGameStart = true;
 
             EnteredCount = 0;
@@ -334,6 +290,11 @@ namespace MultiGameServer
                 item.Value.GameStart();
             }
 
+        }
+
+        public void NextGame()
+        {
+            GameStart(++stageNum);
         }
 
         // 방 안의 모든 클라이언트들에게 메세지 전송 ( senderKey로 예외 클라이언트 설정 )

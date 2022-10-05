@@ -45,43 +45,55 @@ namespace MultiGameServer
             {
                 string []command = Console.ReadLine().Split(' ');
 
-                switch(command[0])
+                try
                 {
+                    switch (command[0])
+                    {
                     case "/roomstart":
-                        {
-                            if(command.Length != 2)
                             {
-                                Console.WriteLine("[ERROR] 올바르지 않은 매개변수 개수입니다.");
-                                continue;
+                               if(command.Length >= 2 && command.Length <= 3)
+                               {
+                                    int roomKey = int.Parse(command[1]);
+                                    Room room;
+                                    bool result = program.roomManager.RoomDic.TryGetValue(roomKey, out room);
+                                    if (result == false)
+                                    {
+                                        throw new Exception("[ERROR] 존재하지 않은 방입니다.");
+                                    }
+
+                                    int stageNum = 1;
+
+                                    if(command.Length == 3)
+                                    {
+                                        stageNum = int.Parse(command[2]);
+                                    }
+                                    room.GameStart(stageNum);
+                                    Console.WriteLine("[INFO] " + roomKey + "번 방을 시작하였습니다.");
+                               }
+                               else throw new Exception("[ERROR] 올바르지 않은 매개변수 개수입니다.");
+
+
                             }
-                            try
-                            {
-                                int roomKey = int.Parse(command[1]);
-                                Room room;
-                                bool result = program.roomManager.RoomDic.TryGetValue(roomKey, out room);
-                                if (result  == false)
-                                {
-                                    Console.WriteLine("[ERROR] 존재하지 않은 방입니다.");
-                                    continue;
-                                }
-                                room.GameStart();
-                                Console.WriteLine("[INFO] " + roomKey + "번 방을 시작하였습니다.");
-                            }
-                            catch(FormatException)
-                            {
-                                Console.WriteLine("[ERROR] 올바르지 않은 매개변수 형식입니다.");
-                                continue;
-                            }
-                            catch (ArgumentNullException)
-                            {
-                                Console.WriteLine("[ERROR] 매개변수가 존재하지 않습니다.");
-                                continue;
-                            }
-                        }
                         break;
                     default:
                         Console.WriteLine("[ERROR] 알수없는 명령어입니다.");
                         break;
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("[ERROR] 올바르지 않은 매개변수 형식입니다.");
+                    continue;
+                }
+                catch (ArgumentNullException)
+                {
+                    Console.WriteLine("[ERROR] 매개변수가 존재하지 않습니다.");
+                    continue;
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    continue;
                 }
             }
                 
@@ -346,7 +358,7 @@ namespace MultiGameServer
                                 if (room.IsAllReady() == true)
                                 {
                                     // 게임시작
-                                    room.GameStart();
+                                    room.GameStart(1);
 
                                     // 방찾기 중인 클라이언트들의 방목록에서 시작한 방을 제거
                                     SendDelRoomInfo(room);
@@ -435,28 +447,11 @@ namespace MultiGameServer
                             }
                             
                             // 겹치지 않다면 계속 진행함
-                            int velocity_x = x - clientChar.Location.X;
                             clientChar.Location = new Point(x, y);
 
                             // 전체 클라이언트에게 이동한 좌표 전송
                             room.SendMessageToAll_InRoom($"Location#{clientChar.key}#{x}#{y}@",clientChar.key);
                             
-
-                            // 움직인 클라이언트 위에 다른 클라이언트가 있는지 확인
-                            List<ClientCharacter> list = room.GetClientsOverTheHead(clientChar);
-
-                            if(velocity_x != 0)
-                            {
-                                // 위에 있는 클라이언트들 목록 확인
-                                foreach (var client in list)
-                                {
-                                    // 만약 움직인 클라이언트 밑에 클라이언트가 하나밖에 없다면 움직인 방향으로 같이 움직임
-                                    List<ClientCharacter> list2 = room.GetClientsUnderTheFoot(client);
-
-                                    if(list2.Count == 1)
-                                        SendMessage($"Move#{velocity_x}#{0}@", client.key);
-                                }
-                            }
                         }
                         break;
                     // 플레이어가 쳐다보는 방향 수신 ( true : 오른쪽 )
@@ -541,7 +536,7 @@ namespace MultiGameServer
 
                                                 // 3명이상 들어갔을 경우 다음 맵으로 이동
                                                 if (EnteredCount >= 3)
-                                                    room.GameStart();
+                                                    room.NextGame();
                                                     
                                             }
                                             

@@ -65,11 +65,11 @@ namespace MultiGameServer.Object
 
             // 오른쪽에서 힘을 가하는 인원
             Point checkLoc = new Point(this.Location.X + this.size.Width + 1, this.Location.Y);
-            TouchedClient(ref rList, true, checkLoc, new Size(1, this.size.Height), this);
+            TouchedClient(ref rList, true, checkLoc, new Size(2, this.size.Height), this);
 
             // 왼쪽에서 힘을 가하는 인원
-            checkLoc = new Point(this.Location.X - 1, this.Location.Y);
-            TouchedClient(ref lList, false, checkLoc, new Size(1, this.size.Height), this);
+            checkLoc = new Point(this.Location.X - 3, this.Location.Y);
+            TouchedClient(ref lList, false, checkLoc, new Size(3, this.size.Height), this);
 
             // 오른쪽 인원이 무게보다 크고 왼쪽 인원이 없다면 왼쪽으로
             if (rList.Count >= weight && lList.Count == 0)
@@ -84,7 +84,6 @@ namespace MultiGameServer.Object
                 List = lList;
             }
 
-            Console.WriteLine(lList.Count);
 
             // Stone이 움직여야한다면
             if (dx != 0)
@@ -110,6 +109,13 @@ namespace MultiGameServer.Object
                             Program.GetInstance().SendMessage($"Move#{dx}#{0}@", client.key);
                         }
                     }
+                }
+                else
+                {
+                    // 클라이언트에게 Stone의 Weight을 알림
+                    int showingWeight = Math.Max(0, weight - Math.Abs(rList.Count - lList.Count));
+                    room.SendMessageToAll_InRoom($"ObjEvent#{key}#{Type}#{-1}#" +
+                        $"{Location.X}#{Location.Y}#{showingWeight}@");
                 }
             }
             else
@@ -163,7 +169,7 @@ namespace MultiGameServer.Object
                         list.Add(otherClient);
                         // 대상 클라이언트의 왼쪽 면
                         checkNewLoc =
-                            new Point(otherClient.Location.X - 4, otherClient.Location.Y);
+                            new Point(otherClient.Location.X - 3, otherClient.Location.Y);
                     }
                     TouchedClient(ref list,bRight, checkNewLoc, new Size(3, otherClient.size.Height), otherClient);
 
