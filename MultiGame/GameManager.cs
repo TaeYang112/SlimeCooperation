@@ -133,6 +133,25 @@ namespace MultiGame
                         // 위치 설정
                         Point velocity = new Point(x - client.Location.X, y - client.Location.Y);
                         client.Location = new Point(x, y);
+
+                        if (velocity.X != 0)
+                        {
+                            // 움직인 클라이언트가 내 아래에 있는지 확인
+                            List<ClientCharacter> list = GetClientsUnderTheFoot(userClient.Character);
+
+                            if(list.Count == 1)
+                            {
+                                foreach(var underClient in list)
+                                {
+                                    // 만약 아래에 있는 클라이언트가 지금 움직인 클라이언트라면
+                                    if(underClient == client)
+                                    {
+                                        userClient.MoveExtra(new Point(velocity.X, 0));
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                     break;
                 // 플레이어가 쳐다보는 방향 ( true : 오른쪽 )
@@ -631,6 +650,40 @@ namespace MultiGame
         public void RequestReady(bool bReady)
         {
             myClient.SendMessage($"Ready#{bReady}@");
+        }
+
+
+        // 대상 클라이언트 발 아래에 있는 클라이언트 리스트 반환
+        public List<ClientCharacter> GetClientsUnderTheFoot(ClientCharacter client)
+        {
+            List<ClientCharacter> list = new List<ClientCharacter>();
+
+            // 대상의 발아래 충돌박스
+            Size size = new Size(client.size.Width - 4, 1);
+            Point location = new Point(client.Location.X + 2, client.Location.Y + client.size.Height + 1);
+            Rectangle a = new Rectangle(location, size);
+
+            // 모든 클라이언트와 비교
+            foreach (var item in clientManager.ClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient == client || otherClient.Collision == false)
+                {
+                    continue;
+                }
+
+                // 대상 충돌판정
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약  겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    list.Add(otherClient);
+                }
+            }
+
+            return list;
         }
 
     }
