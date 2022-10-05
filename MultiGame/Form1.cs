@@ -75,7 +75,7 @@ namespace MultiGame
             lobbyRoom_Screen.centerPicBox.Image = userCharacter.image.Clone() as Image;
 
             // 레디했으면 레디버튼 삽입
-            if (userCharacter.isReady == true)
+            if (userCharacter.IsReady == true)
             {
                 lobbyRoom_Screen.centerCheckPicBox.Image = MultiGame.Properties.Resources.ReadyCheck;
             }
@@ -95,7 +95,7 @@ namespace MultiGame
                 lobbyRoom_Screen.leftPicBox.Image = clientChar[0].image.Clone() as Image;
 
                 // 레디 했으면 레디버튼 삽입
-                if (clientChar[0].isReady == true)
+                if (clientChar[0].IsReady == true)
                 {
                     lobbyRoom_Screen.leftCheckPicBox.Image = MultiGame.Properties.Resources.ReadyCheck;
                 }
@@ -117,7 +117,7 @@ namespace MultiGame
                 lobbyRoom_Screen.rightPicBox.Image = clientChar[1].image.Clone() as Image;
 
                 // 레디 했으면 레디버튼 삽입
-                if (clientChar[1].isReady == true)
+                if (clientChar[1].IsReady == true)
                 {
                     lobbyRoom_Screen.rightCheckPicBox.Image = MultiGame.Properties.Resources.ReadyCheck;
                 }
@@ -128,7 +128,7 @@ namespace MultiGame
             }
 
             // 레디 버튼 텍스트 업데이트
-            if(userCharacter.isReady == true)
+            if(userCharacter.IsReady == true)
             {
                 lobbyRoom_Screen.ready_btn.Text = "준비 취소";
             }

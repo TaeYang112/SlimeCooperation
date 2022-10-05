@@ -23,17 +23,17 @@ namespace MultiGame.UserPanel
         {
             ClientCharacter userCharacter = GameManager.GetInstance().userClient.Character;
             // 유저가 준비상태에서 버튼 누름
-            if (userCharacter.isReady == true)
+            if (userCharacter.IsReady == true)
             {
                 // 준비 취소 시킴
                 GameManager.GetInstance().RequestReady(false);
-                userCharacter.isReady = false;
+                userCharacter.IsReady = false;
             }
             else
             {
                 // 준비 상태로 만듬
                 GameManager.GetInstance().RequestReady(true);
-                userCharacter.isReady = true;
+                userCharacter.IsReady = true;
             }
             form.UpdateLobby();
         }
@@ -47,7 +47,7 @@ namespace MultiGame.UserPanel
             GameManager.GetInstance().clientManager.ClientDic.Clear();
 
             // 레디 해제
-            GameManager.GetInstance().userClient.Character.isReady = false;
+            GameManager.GetInstance().userClient.Character.IsReady = false;
 
             // 메인화면으로 돌아감
             form.ChangeScreen(new MainMenu_Screen(form));

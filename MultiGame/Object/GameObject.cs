@@ -54,9 +54,9 @@ namespace MultiGame
 
         virtual public void OnPaint(object obj, PaintEventArgs pe)
         {
+            if (isVisible == false) return;
             var e = pe.Graphics;
 
-            if (isVisible == false) return;
             e.DrawImage(image, new Rectangle(Location, size));
 
         }

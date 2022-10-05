@@ -95,7 +95,7 @@ namespace MultiGame.UserPanel
             GameManager GInst = GameManager.GetInstance();
             var g = e.Graphics;
 
-            KeyObject keyObject = GInst.objectManager.keyObject;
+            
             
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(800,500)));
@@ -117,9 +117,14 @@ namespace MultiGame.UserPanel
             GInst.userClient.Character.OnPaint(sender,e);
 
             // 열쇠
-            if(keyObject != null)
-                GInst.objectManager.keyObject.OnPaint(sender, e);
-
+            int keyObjectKey = GInst.objectManager.keyObjectKey;
+            GameObject keyObject;
+            bool result = GInst.objectManager.ObjectDic.TryGetValue(keyObjectKey, out keyObject);
+            if(result)
+            {
+                keyObject.OnPaint(sender, e);
+            }
+            
             FPS++;
             
         }

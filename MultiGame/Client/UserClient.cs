@@ -77,10 +77,11 @@ namespace MultiGame.Client
                 bLookRight = true;
             }
 
-            if (LeftDown ^ RightDown && Character.bLookRight != bLookRight)
+            if (LeftDown ^ RightDown && Character.LookDirectionRight != bLookRight)
             {
+                System.Console.WriteLine(bLookRight);
                 GameManager.GetInstance().SendMessage($"LookR#{bLookRight}@");
-                Character.SetLookDirection(bLookRight);
+                Character.MoveDirectionRight = bLookRight;
             }
 
             // 이차 함수를 이용한 점프
@@ -297,7 +298,8 @@ namespace MultiGame.Client
 
         public void TryOpenDoor()
         {
-            Door door = GameManager.GetInstance().objectManager.door;
+            int doorKey = GameManager.GetInstance().objectManager.doorKey;
+            Door door = GameManager.GetInstance().objectManager.ObjectDic[doorKey] as Door;
 
             if (door == null) return;
 
