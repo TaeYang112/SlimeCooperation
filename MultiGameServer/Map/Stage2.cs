@@ -17,13 +17,11 @@ namespace MultiGameServer
             // 맵 바깥 벽 (왼)
             tempKey = objectManager.NextKey();
             Floor leftWall = new Floor(room, tempKey, new Point(-11, 0), new Size(10, 450));
-            leftWall.SkinNum = 0;
             objectManager.AddObject(leftWall);
 
             // 맵 바깥 벽 (우)
             tempKey = objectManager.NextKey();
             Floor rightWall = new Floor(room, tempKey, new Point(784, 0), new Size(10, 450));
-            rightWall.SkinNum = 0;
             objectManager.AddObject(rightWall);
 
             // 땅
@@ -77,19 +75,16 @@ namespace MultiGameServer
             // 문
             tempKey = objectManager.NextKey();
             Door door = new Door(room, tempKey, new Point(694, 21), new Size(70, 90));
-            door.SkinNum = 0;
             objectManager.AddObject(door);
 
             // 열쇠
             tempKey = objectManager.NextKey();
             KeyObject KeyObject = new KeyObject(room, tempKey, new Point(13, 93), new Size(35, 50));
-            KeyObject.SkinNum = 0;
             objectManager.AddObject(KeyObject);
 
             // 돌
             tempKey = objectManager.NextKey();
             Stone stone = new Stone(room, tempKey, new Point(60, 52), new Size(60, 90));
-            stone.SkinNum = 0;
             stone.weight = 2;
             objectManager.AddObject(stone);
 

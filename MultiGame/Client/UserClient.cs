@@ -79,7 +79,6 @@ namespace MultiGame.Client
 
             if (LeftDown ^ RightDown && Character.LookDirectionRight != bLookRight)
             {
-                System.Console.WriteLine(bLookRight);
                 GameManager.GetInstance().SendMessage($"LookR#{bLookRight}@");
                 Character.MoveDirectionRight = bLookRight;
             }

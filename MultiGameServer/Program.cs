@@ -570,7 +570,16 @@ namespace MultiGameServer
 
                                         if (stone == null) continue;
 
-                                        stone.onPush();
+                                        stone.OnEvent();
+                                    }
+                                    break;
+                                case "Button":
+                                    {
+                                        MultiGameServer.Object.Button button = gameObject as Button;
+
+                                        if (button == null) continue;
+
+                                        button.OnEvent();
                                     }
                                     break;
                                 default:
