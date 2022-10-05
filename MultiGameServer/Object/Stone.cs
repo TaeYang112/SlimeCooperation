@@ -40,14 +40,15 @@ namespace MultiGameServer.Object
             base.OnClose();
             MoveTimer.Dispose();
         }
-        public void onPush()
+
+        public override void OnEvent()
         {
-            if(IsStart == false)
+            base.OnEvent();
+            if (IsStart == false)
             {
                 MoveTimer.Change(0, 13);
                 IsStart = true;
             }
-           
         }
 
         public void CheckAndMove(object obj)

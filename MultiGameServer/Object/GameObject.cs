@@ -45,8 +45,8 @@ namespace MultiGameServer
             SkinNum = 0;
         }
 
-        // 플레이어와 겹쳤을 때 호출됨
-        virtual public void OnHit()
+        // 오브젝트와 상호작용이 일어났을 때 발생
+        virtual public void OnEvent()
         {
 
         }

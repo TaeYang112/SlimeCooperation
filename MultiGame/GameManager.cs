@@ -232,6 +232,11 @@ namespace MultiGame
                                     newObject = stone;
                                 }
                                 break;
+                            case "Button":
+                                {
+                                    newObject = new MultiGame.Object.Button(key, new Point(x, y), new Size(width, height));
+                                }
+                                break;
                             default:
                                 break;
                         }
@@ -323,7 +328,7 @@ namespace MultiGame
                             case "Stone":
                                 {
                                     Stone stone = gameObject as Stone;
-                                    if (gameObject == null) return;
+                                    if (stone == null) return;
 
                                     int x = int.Parse(SplitMessage[4]);
                                     int y = int.Parse(SplitMessage[5]);
@@ -331,6 +336,15 @@ namespace MultiGame
 
                                     stone.Location = new Point(x, y);
                                     stone.weight = weight;
+                                }
+                                break;
+                            case "Button":
+                                {
+                                    MultiGame.Object.Button button = gameObject as MultiGame.Object.Button;
+                                    if (button == null) return;
+
+                                    button.Pressed = true;
+
                                 }
                                 break;
                         }
