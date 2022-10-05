@@ -34,9 +34,12 @@ namespace MultiGame.Object
 
         public override void SetSkin(int skinNum)
         {
-            base.SetSkin(skinNum);
-            switch(skinNum)
+            isVisible = true;
+            switch (skinNum)
             {
+                case -1:
+                    isVisible = false;
+                    break;
                 case 0:
                     _image = MultiGame.Properties.Resources.Stone.Clone() as Image;
                     break;
@@ -45,6 +48,7 @@ namespace MultiGame.Object
         }
         public override void OnPaint(object obj, PaintEventArgs pe)
         {
+            if (isVisible == false) return;
             base.OnPaint(obj, pe);
             Graphics g= pe.Graphics;
 

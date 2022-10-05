@@ -13,11 +13,11 @@ namespace MultiGame
     {
         public ConcurrentDictionary<int, GameObject> ObjectDic { get; set; }
 
-        // 게임 내의 열쇠 객체
-        public KeyObject keyObject { get; set; }
+        // 게임 내의 열쇠 객체으 ㅣ킷값
+        public int keyObjectKey { get; set; }
 
-        // 게임 내의 문 객체
-        public Door door { get; set; }
+        // 게임 내의 문의 킷값
+        public int doorKey { get; set; }
 
         public ObjectManager()
         {
@@ -52,8 +52,8 @@ namespace MultiGame
         public void ClearObjects()
         {
             ObjectDic.Clear();
-            door = null;
-            keyObject = null;
+            doorKey = -1;
+            keyObjectKey = -1;
         }
     }
 }

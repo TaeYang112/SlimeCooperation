@@ -12,16 +12,30 @@ namespace MultiGameServer
     {
         public Stage1(Room room)
         {
+            int tempKey;
+
+            // 맵 바깥 벽 (왼)
+            tempKey = objectManager.NextKey();
+            Floor leftWall = new Floor(room, tempKey, new Point(-11, 0), new Size(10, 450));
+            leftWall.SkinNum = 0;
+            objectManager.AddObject(leftWall);
+
+            // 맵 바깥 벽 (우)
+            tempKey = objectManager.NextKey();
+            Floor rightWall = new Floor(room, tempKey, new Point(784, 0), new Size(10, 450));
+            rightWall.SkinNum = 0;
+            objectManager.AddObject(rightWall);
+
             // 땅
-            int tempKey = objectManager.NextKey();
+            tempKey = objectManager.NextKey();
             Floor Floor1 = new Floor(room, tempKey, new Point(0, 390), new Point(800, 450));
             Floor1.SkinNum = 0;
             objectManager.AddObject(Floor1);
 
             // 튀어나온벽
             tempKey = objectManager.NextKey();
-            Floor Floor2 = new Floor(room, tempKey, new Point(700, 240), new Point(800, 490));
-            Floor2.SkinNum = 0;
+            Floor Floor2 = new Floor(room, tempKey, new Point(700, 240), new Point(800, 391));
+            Floor2.SkinNum = 1;
             objectManager.AddObject(Floor2);
 
             // 문

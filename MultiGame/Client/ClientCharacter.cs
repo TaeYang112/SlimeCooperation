@@ -13,21 +13,26 @@ namespace MultiGame
     // Client 정보를 갖는 클래스
     public class ClientCharacter : GameObject
     {
-        public bool bLookRight { get; set; }
-        private bool FlipImage;
+        // 오른쪽으로 이동했으면 true 아니면 false
+        public bool MoveDirectionRight { get; set; }
 
-        public bool isReady { get; set; }
+        // 오른쪽을 보고있으면 true 아니면 false
+        private bool _LookDirectionRight;
+        public bool LookDirectionRight { get { return _LookDirectionRight; } }
+
+        public bool IsReady { get; set; }
 
         public ClientCharacter(int key, Point Location, int skinNum)
             : base(key, Location, new Size(42,35))
         {
-            isReady = false;
+            IsReady = false;
             Collision = true;
-            Blockable = true; 
+            Blockable = true;
 
             // 이미지 관련
-            bLookRight = true;
-            FlipImage = false;
+            MoveDirectionRight = true;
+            _LookDirectionRight = true;
+
             SetSkin(skinNum);
         }
 
@@ -69,10 +74,10 @@ namespace MultiGame
         override public void OnPaint(object obj, PaintEventArgs pe)
         {
             var e = pe.Graphics;
-            if(FlipImage)
+            if(MoveDirectionRight != LookDirectionRight)
             {
                 image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                FlipImage = false;
+                _LookDirectionRight = MoveDirectionRight;
             }
 
             if (isVisible == false) return;
@@ -80,15 +85,6 @@ namespace MultiGame
             Size siz = new Size(size.Width+1, size.Height+1);
             e.DrawImage(image,new Rectangle(Location, siz ));
             
-        }
-
-        public void SetLookDirection(bool bRight)
-        {
-            if (bRight != this.bLookRight)
-            {
-                FlipImage = true;
-                this.bLookRight = bRight;
-            }
         }
 
 

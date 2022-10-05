@@ -26,9 +26,12 @@ namespace MultiGame.Object
 
         public override void SetSkin(int skinNum)
         {
-            base.SetSkin(skinNum);
-            switch(skinNum)
+            isVisible = true;
+            switch (skinNum)
             {
+                case -1:
+                    isVisible = false;
+                    break;
                 case 0:
                     _image = MultiGame.Properties.Resources.Door.Clone() as Image;
                     break;

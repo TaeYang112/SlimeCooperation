@@ -169,7 +169,7 @@ namespace MultiGame
 
                         if (result == false) return;
 
-                        client.SetLookDirection(bLookRight);
+                        client.MoveDirectionRight = bLookRight;
                     }
                     break;
                 // 서버에 의해 캐릭터가 움직여짐
@@ -213,14 +213,14 @@ namespace MultiGame
                                 break;
                             case "Key":
                                 {
-                                    objectManager.keyObject = new KeyObject(key, new Point(x, y), new Size(width, height));
-                                    newObject = objectManager.keyObject;
+                                    newObject = new KeyObject(key, new Point(x, y), new Size(width, height));
+                                    objectManager.keyObjectKey = key;
                                 }
                                 break;
                             case "Door":
                                 {
-                                    objectManager.door = new Door(key, new Point(x, y), new Size(width, height));
-                                    newObject = objectManager.door;
+                                    newObject = new Door(key, new Point(x, y), new Size(width, height));
+                                    objectManager.doorKey = key;
                                 }
                                 break;
                             case "Stone":
@@ -291,7 +291,8 @@ namespace MultiGame
                                     if(context == "Open")
                                     {
                                         door.Open(true);
-                                        objectManager.keyObject.isVisible = false;
+                                        int keyObjectKey = objectManager.keyObjectKey;
+                                        objectManager.ObjectDic[keyObjectKey].isVisible = false;
                                     }
                                     // 문안으로 들어감
                                     else if(context == "Enter")
@@ -441,7 +442,7 @@ namespace MultiGame
 
                         // 새로운 클라이언트 생성
                         clientCharacter = clientManager.AddClient(key, new Point(0, 0), 1);
-                        clientCharacter.isReady = bReady;
+                        clientCharacter.IsReady = bReady;
                         clientCharacter.SetSkin(skinNum);
 
 
@@ -468,7 +469,7 @@ namespace MultiGame
                         // 존재하지 않은 클라이언트면 종료
                         if (result == false) return;
 
-                        clientCharacter.isReady = bReady;
+                        clientCharacter.IsReady = bReady;
 
                         form1.Invoke(new MethodInvoker(delegate ()
                         {

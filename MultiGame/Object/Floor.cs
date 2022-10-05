@@ -20,10 +20,20 @@ namespace MultiGame.Object
 
         override public void SetSkin(int num)
         {
+            isVisible = true;
             switch(num)
             {
+                case -1:
+                    isVisible = false;
+                    break;
                 case 0:
                     _image = MultiGame.Properties.Resources.Floor1;
+                    break;
+                case 1:
+                    _image = MultiGame.Properties.Resources.Floor2;
+                    break;
+                case 2:
+                    _image = MultiGame.Properties.Resources.Floor3;
                     break;
             }
         }
