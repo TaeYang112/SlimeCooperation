@@ -10,9 +10,13 @@ namespace MultiGameServer.Object
 {
     public class Stone : GameObject
     {
-
-        private bool IsStart;
         public int weight { get; set; }
+
+        private float GravityTime;                  // 중력 계산에 필요한 변수 ( 2차 함수 그래프의 x에 해당 )
+        private float GravityPower;                 // 중력 파워
+        private float dy;                           // 바로전에 얼만큼 뛰었는지
+        private bool GravityStarted;                // 떨어지기 시작할 때 초기화를 하기 위한 플래그 변수
+        private bool isGravity;                     // 중력의 ON / OFF
 
         // 움직임 타이머
         private System.Threading.Timer MoveTimer;
@@ -23,11 +27,16 @@ namespace MultiGameServer.Object
             _type = "Stone";
             Collision = true;
             Blockable = true;
-            IsStart = false;
             weight = 0;
 
+            GravityTime = 0.0f;
+            GravityPower = 50.0f;
+            dy = 0;
+            GravityStarted = false;
+            isGravity = false;
+
             TimerCallback tc = new TimerCallback(CheckAndMove);
-            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
+            MoveTimer = new System.Threading.Timer(tc, null, 0, 13);
         }
 
         public Stone(Room room, int key, Point Location, Point Location2)
@@ -41,18 +50,9 @@ namespace MultiGameServer.Object
             MoveTimer.Dispose();
         }
 
-        public override void OnEvent()
-        {
-            base.OnEvent();
-            if (IsStart == false)
-            {
-                MoveTimer.Change(0, 13);
-                IsStart = true;
-            }
-        }
-
         public void CheckAndMove(object obj)
         {
+            Point velocity = new Point(0, 0);
 
             // 각각 방향에서 Stone을 밀고있는 리스트
             List<ClientCharacter> rList = new List<ClientCharacter>();
@@ -60,9 +60,6 @@ namespace MultiGameServer.Object
 
             // 밀었을 때 같이 움직일 클라이언트 리스트
             List<ClientCharacter> List = null;
-
-            // 밀었을 때 움직일 거리
-            int dx = 0;
 
             // 오른쪽에서 힘을 가하는 인원
             Point checkLoc = new Point(this.Location.X + this.size.Width + 1, this.Location.Y);
@@ -75,63 +72,145 @@ namespace MultiGameServer.Object
             // 오른쪽 인원이 무게보다 크고 왼쪽 인원이 없다면 왼쪽으로
             if (rList.Count >= weight && lList.Count == 0)
             {
-                dx = -1;
+                velocity.X = -1;
                 List = rList;
             }
             // 왼쪽 인원이 무게보다 크고 오른쪽 인원이 없다면 오른쪽으로
             else if (lList.Count >= weight && rList.Count == 0)
             {
-                dx = 1;
+                velocity.X = 1;
                 List = lList;
             }
 
-
-            // Stone이 움직여야한다면
-            if (dx != 0)
+            if (isGravity)
             {
-                // 실제 이동가능한지 체크 후 이동 ( 이동 가능하면 false )
-                Point newLocation = new Point(Location.X + dx, Location.Y);
-                bool result = room.CollisionCheck(this, newLocation);
-                if (result == false)
-                {
-                    Location = newLocation;
+                float JumpHeight = (GravityTime * GravityTime - GravityPower * GravityTime) / 10.0f;
+                GravityTime -= 1.2f;
 
-                    // 클라이언트에게 Stone의 움직임을 알림
-                    int showingWeight = Math.Max(0, weight - Math.Abs(rList.Count - lList.Count));
-                    room.SendMessageToAll_InRoom($"ObjEvent#{key}#{Type}#{-1}#" +
-                        $"{Location.X}#{Location.Y}#{showingWeight}@");
+                velocity.Y -= (int)(dy - JumpHeight);
+                dy = JumpHeight;
 
-                    if (List != null)
-                    {
-                        // 클라이언트도 움직임
-                        foreach (var client in List)
-                        {
-                            client.Location = new Point(client.Location.X + dx, client.Location.Y);
-                            Program.GetInstance().SendMessage($"Move#{dx}#{0}@", client.key);
-                        }
-                    }
-                }
-                else
-                {
-                    // 클라이언트에게 Stone의 Weight을 알림
-                    int showingWeight = Math.Max(0, weight - Math.Abs(rList.Count - lList.Count));
-                    room.SendMessageToAll_InRoom($"ObjEvent#{key}#{Type}#{-1}#" +
-                        $"{Location.X}#{Location.Y}#{showingWeight}@");
-                }
             }
             else
-            {
-                // 클라이언트에게 Stone의 Weight을 알림
-                int showingWeight = Math.Max(0, weight - Math.Abs(rList.Count - lList.Count));
-                room.SendMessageToAll_InRoom($"ObjEvent#{key}#{Type}#{-1}#" +
-                    $"{Location.X}#{Location.Y}#{showingWeight}@");
-            }
+                velocity.Y = 1;
 
+            // 이동
+            Move(velocity);
+
+            // 클라이언트에게 Stone의 움직임을 알림
+            int showingWeight = Math.Max(0, weight - Math.Abs(rList.Count - lList.Count));
+            room.SendMessageToAll_InRoom($"ObjEvent#{key}#{Type}#{-1}#" +
+                $"{Location.X}#{Location.Y}#{showingWeight}@");
+
+            if (List != null)
+            {
+                // 클라이언트도 움직임
+                foreach (var client in List)
+                {
+                    client.Location = new Point(client.Location.X + velocity.X, client.Location.Y);
+                    Program.GetInstance().SendMessage($"Move#{velocity.X}#{0}@", client.key);
+                }
+            }
+            
             
         }
 
 
-        public void TouchedClient(ref List<ClientCharacter> list,bool bRight, Point checkLocation, Size size, GameObject ignoreObject)
+        // 충돌검사 후 이동
+        public void Move(Point velocity)
+        {
+            Point resultLoc = Location;
+            Point tempLoc;
+            int dxy = 0;
+
+            // x의 대한 충돌판정
+            if (velocity.X != 0)
+            {
+                tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
+
+                if (velocity.X < 0) dxy = 1;
+                else dxy = -1;
+
+                // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
+                while (tempLoc.X != Location.X)
+                {
+                    // 충돌하지 않았으면
+                    if (room.CollisionCheck(this,tempLoc) == false)
+                    {
+                        // 움직이기 위해 좌표 저장
+                        resultLoc = tempLoc;
+                        break;
+                    }
+                    // 충돌했으면
+                    else
+                    {
+                        // 좌표 1칸 옮겨봄
+                        tempLoc.X += dxy;
+                    }
+                }
+            }
+
+            // y에 대한 충돌 판정
+            tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+
+            if (velocity.Y < 0) dxy = 1;
+            else dxy = -1;
+
+
+            // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
+            while (tempLoc.Y != Location.Y)
+            {
+                // 충돌하지 않았으면
+                if (room.CollisionCheck(this,tempLoc) == false)
+                {
+                    // 이동
+                    resultLoc = tempLoc;
+                    GravityStart(true);
+                    break;
+                }
+                // 충돌했으면
+                else
+                {
+                    // 좌표 1칸 옮겨봄
+                    tempLoc.Y += dxy;
+                }
+            }
+
+            // 이동할 곳이 없으면 ( 반복문이 while 조건에 의해 종료 )
+            if (tempLoc.Y == Location.Y)
+            {
+                // 만약 밑으로 가던중 충돌판정이 일어나면 
+                if (velocity.Y > 0)
+                {
+                    //땅위에 있다는 플래그변수 true
+                    GravityStart(false);
+                }
+            }
+
+            // 실제 좌표를 이동시킴
+            Location = resultLoc;
+        }
+
+        // 중력을 시작하는 함수
+        public void GravityStart(bool bStart)
+        {
+            if (bStart == true)
+            {
+                if (GravityStarted == true) return;
+
+                GravityStarted = true;
+                isGravity = true;
+                GravityTime = GravityPower / 2;
+                dy = (GravityTime * GravityTime - GravityPower * GravityTime) / 10.0f;
+            }
+            else
+            {
+                GravityStarted = false;
+                isGravity = false;
+            }
+        }
+
+        public void TouchedClient(ref List<ClientCharacter> list, bool bRight, Point checkLocation, Size size, GameObject ignoreObject)
         {
             // 검사 충돌 박스
             Rectangle a = new Rectangle(checkLocation, size);
@@ -172,11 +251,10 @@ namespace MultiGameServer.Object
                         checkNewLoc =
                             new Point(otherClient.Location.X - 3, otherClient.Location.Y);
                     }
-                    TouchedClient(ref list,bRight, checkNewLoc, new Size(3, otherClient.size.Height), otherClient);
+                    TouchedClient(ref list, bRight, checkNewLoc, new Size(3, otherClient.size.Height), otherClient);
 
                 }
             }
         }
-
     }
 }
