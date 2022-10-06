@@ -55,7 +55,7 @@ namespace MultiGame.UserPanel
             // roomTitle_lbl
             // 
             this.roomTitle_lbl.Font = new System.Drawing.Font("맑은 고딕", 19F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.roomTitle_lbl.Location = new System.Drawing.Point(126, 41);
+            this.roomTitle_lbl.Location = new System.Drawing.Point(466, 127);
             this.roomTitle_lbl.Name = "roomTitle_lbl";
             this.roomTitle_lbl.Size = new System.Drawing.Size(513, 36);
             this.roomTitle_lbl.TabIndex = 0;
@@ -64,7 +64,7 @@ namespace MultiGame.UserPanel
             // 
             // leftPicBox
             // 
-            this.leftPicBox.Location = new System.Drawing.Point(156, 192);
+            this.leftPicBox.Location = new System.Drawing.Point(496, 351);
             this.leftPicBox.Name = "leftPicBox";
             this.leftPicBox.Size = new System.Drawing.Size(60, 50);
             this.leftPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -73,7 +73,7 @@ namespace MultiGame.UserPanel
             // 
             // centerPicBox
             // 
-            this.centerPicBox.Location = new System.Drawing.Point(346, 192);
+            this.centerPicBox.Location = new System.Drawing.Point(686, 351);
             this.centerPicBox.Name = "centerPicBox";
             this.centerPicBox.Size = new System.Drawing.Size(60, 50);
             this.centerPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -82,7 +82,7 @@ namespace MultiGame.UserPanel
             // 
             // rightPicBox
             // 
-            this.rightPicBox.Location = new System.Drawing.Point(548, 192);
+            this.rightPicBox.Location = new System.Drawing.Point(888, 351);
             this.rightPicBox.Name = "rightPicBox";
             this.rightPicBox.Size = new System.Drawing.Size(60, 50);
             this.rightPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -91,7 +91,7 @@ namespace MultiGame.UserPanel
             // 
             // ready_btn
             // 
-            this.ready_btn.Location = new System.Drawing.Point(316, 352);
+            this.ready_btn.Location = new System.Drawing.Point(656, 706);
             this.ready_btn.Name = "ready_btn";
             this.ready_btn.Size = new System.Drawing.Size(121, 55);
             this.ready_btn.TabIndex = 4;
@@ -101,7 +101,7 @@ namespace MultiGame.UserPanel
             // 
             // lobbyToFind_btn
             // 
-            this.lobbyToFind_btn.Location = new System.Drawing.Point(702, 405);
+            this.lobbyToFind_btn.Location = new System.Drawing.Point(1293, 794);
             this.lobbyToFind_btn.Name = "lobbyToFind_btn";
             this.lobbyToFind_btn.Size = new System.Drawing.Size(75, 23);
             this.lobbyToFind_btn.TabIndex = 5;
@@ -111,7 +111,7 @@ namespace MultiGame.UserPanel
             // 
             // leftCheckPicBox
             // 
-            this.leftCheckPicBox.Location = new System.Drawing.Point(176, 140);
+            this.leftCheckPicBox.Location = new System.Drawing.Point(516, 299);
             this.leftCheckPicBox.Name = "leftCheckPicBox";
             this.leftCheckPicBox.Size = new System.Drawing.Size(20, 20);
             this.leftCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -120,7 +120,7 @@ namespace MultiGame.UserPanel
             // 
             // centerCheckPicBox
             // 
-            this.centerCheckPicBox.Location = new System.Drawing.Point(366, 140);
+            this.centerCheckPicBox.Location = new System.Drawing.Point(706, 299);
             this.centerCheckPicBox.Name = "centerCheckPicBox";
             this.centerCheckPicBox.Size = new System.Drawing.Size(20, 20);
             this.centerCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -129,7 +129,7 @@ namespace MultiGame.UserPanel
             // 
             // rightCheckPicBox
             // 
-            this.rightCheckPicBox.Location = new System.Drawing.Point(568, 140);
+            this.rightCheckPicBox.Location = new System.Drawing.Point(908, 299);
             this.rightCheckPicBox.Name = "rightCheckPicBox";
             this.rightCheckPicBox.Size = new System.Drawing.Size(20, 20);
             this.rightCheckPicBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -139,7 +139,7 @@ namespace MultiGame.UserPanel
             // pictureBox1
             // 
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(518, 130);
+            this.pictureBox1.Location = new System.Drawing.Point(858, 289);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(121, 151);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -149,7 +149,7 @@ namespace MultiGame.UserPanel
             // pictureBox2
             // 
             this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox2.Location = new System.Drawing.Point(316, 130);
+            this.pictureBox2.Location = new System.Drawing.Point(656, 289);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(121, 151);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -159,7 +159,7 @@ namespace MultiGame.UserPanel
             // pictureBox3
             // 
             this.pictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox3.Location = new System.Drawing.Point(126, 130);
+            this.pictureBox3.Location = new System.Drawing.Point(466, 289);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(121, 151);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -183,7 +183,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox3);
             this.Name = "LobbyRoom_Screen";
-            this.Size = new System.Drawing.Size(800, 450);
+            this.Size = new System.Drawing.Size(1440, 862);
             ((System.ComponentModel.ISupportInitialize)(this.leftPicBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.centerPicBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightPicBox)).EndInit();

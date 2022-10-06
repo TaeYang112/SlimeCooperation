@@ -37,7 +37,7 @@ namespace MultiGame.UserPanel
             // makeRoom_btn
             // 
             this.makeRoom_btn.BackColor = System.Drawing.Color.Transparent;
-            this.makeRoom_btn.Location = new System.Drawing.Point(265, 203);
+            this.makeRoom_btn.Location = new System.Drawing.Point(583, 419);
             this.makeRoom_btn.Name = "makeRoom_btn";
             this.makeRoom_btn.Size = new System.Drawing.Size(253, 51);
             this.makeRoom_btn.TabIndex = 3;
@@ -46,7 +46,7 @@ namespace MultiGame.UserPanel
             // findRoom_btn
             // 
             this.findRoom_btn.BackColor = System.Drawing.Color.Transparent;
-            this.findRoom_btn.Location = new System.Drawing.Point(265, 265);
+            this.findRoom_btn.Location = new System.Drawing.Point(583, 531);
             this.findRoom_btn.Name = "findRoom_btn";
             this.findRoom_btn.Size = new System.Drawing.Size(253, 51);
             this.findRoom_btn.TabIndex = 4;
@@ -55,7 +55,7 @@ namespace MultiGame.UserPanel
             // exitGame_btn
             // 
             this.exitGame_btn.BackColor = System.Drawing.Color.Transparent;
-            this.exitGame_btn.Location = new System.Drawing.Point(265, 321);
+            this.exitGame_btn.Location = new System.Drawing.Point(592, 640);
             this.exitGame_btn.Name = "exitGame_btn";
             this.exitGame_btn.Size = new System.Drawing.Size(253, 51);
             this.exitGame_btn.TabIndex = 5;
@@ -72,7 +72,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.makeRoom_btn);
             this.DoubleBuffered = true;
             this.Name = "MainMenu_Screen";
-            this.Size = new System.Drawing.Size(800, 450);
+            this.Size = new System.Drawing.Size(1440, 862);
             this.ResumeLayout(false);
 
         }
