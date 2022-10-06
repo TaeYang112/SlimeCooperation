@@ -47,7 +47,7 @@ namespace MultiGame.UserPanel
             // 
             // findToMain_btn
             // 
-            this.findToMain_btn.Location = new System.Drawing.Point(653, 29);
+            this.findToMain_btn.Location = new System.Drawing.Point(1269, 784);
             this.findToMain_btn.Name = "findToMain_btn";
             this.findToMain_btn.Size = new System.Drawing.Size(114, 31);
             this.findToMain_btn.TabIndex = 0;
@@ -59,7 +59,7 @@ namespace MultiGame.UserPanel
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("맑은 고딕", 19F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(333, 122);
+            this.label1.Location = new System.Drawing.Point(663, 113);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(128, 36);
             this.label1.TabIndex = 1;
@@ -95,7 +95,7 @@ namespace MultiGame.UserPanel
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.roomList_GridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.roomList_GridView.EnableHeadersVisualStyles = false;
-            this.roomList_GridView.Location = new System.Drawing.Point(159, 238);
+            this.roomList_GridView.Location = new System.Drawing.Point(474, 215);
             this.roomList_GridView.MultiSelect = false;
             this.roomList_GridView.Name = "roomList_GridView";
             this.roomList_GridView.ReadOnly = true;
@@ -106,7 +106,7 @@ namespace MultiGame.UserPanel
             this.roomList_GridView.RowTemplate.Height = 25;
             this.roomList_GridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.roomList_GridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.roomList_GridView.Size = new System.Drawing.Size(498, 150);
+            this.roomList_GridView.Size = new System.Drawing.Size(530, 332);
             this.roomList_GridView.TabIndex = 2;
             this.roomList_GridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.roomList_GridView_CellDoubleClick);
             // 
@@ -138,7 +138,7 @@ namespace MultiGame.UserPanel
             // 
             // enterRoom_btn
             // 
-            this.enterRoom_btn.Location = new System.Drawing.Point(363, 406);
+            this.enterRoom_btn.Location = new System.Drawing.Point(700, 589);
             this.enterRoom_btn.Name = "enterRoom_btn";
             this.enterRoom_btn.Size = new System.Drawing.Size(75, 23);
             this.enterRoom_btn.TabIndex = 3;
@@ -155,7 +155,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.label1);
             this.Controls.Add(this.findToMain_btn);
             this.Name = "FindRoom_Screen";
-            this.Size = new System.Drawing.Size(800, 450);
+            this.Size = new System.Drawing.Size(1440, 862);
             ((System.ComponentModel.ISupportInitialize)(this.roomList_GridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
