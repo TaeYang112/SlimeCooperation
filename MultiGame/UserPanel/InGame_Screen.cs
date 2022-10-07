@@ -43,9 +43,8 @@ namespace MultiGame.UserPanel
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
             // 배경 이미지
-            BackGroundImg = MultiGame.Properties.Resources.BackGround1.Clone() as Image;
+            BackGroundImg = MultiGame.Properties.Resources.Background2.Clone() as Image;
 
-            //BackgroundImage = BackgroundImage;
 
             TimerCallback tc2 = new TimerCallback(DebugTimer);
             FPSTimer = new System.Threading.Timer(tc2, null, 0, 1000);
@@ -99,7 +98,7 @@ namespace MultiGame.UserPanel
             
             
             // 배경
-            //g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(1440, 862)));
+            g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(1440, 862)));
 
             // 오브젝트
             foreach (var item in GInst.objectManager.ObjectDic)

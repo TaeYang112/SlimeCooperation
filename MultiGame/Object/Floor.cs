@@ -35,6 +35,9 @@ namespace MultiGame.Object
                 case 2:
                     _image = MultiGame.Properties.Resources.Floor3;
                     break;
+                case 3:
+                    _image = MultiGame.Properties.Resources.Floor4;
+                    break;
             }
         }
     }
