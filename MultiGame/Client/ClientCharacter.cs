@@ -23,7 +23,7 @@ namespace MultiGame
         public bool IsReady { get; set; }
 
         public ClientCharacter(int key, Point Location, int skinNum)
-            : base(key, Location, new Size(42,35))
+            : base(key, Location, new Size(60,50))
         {
             IsReady = false;
             Collision = true;

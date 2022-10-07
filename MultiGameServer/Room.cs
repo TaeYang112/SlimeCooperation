@@ -239,12 +239,11 @@ namespace MultiGameServer
             // 프로그램 인스턴스
             Program PInst = Program.GetInstance();
 
-            int X = 0;
+            int num = 0;
             foreach (var item in roomClientDic)
             {
                 // 내부적으로 각 클라이언트 시작 위치 설정
-                item.Value.Location = new Point(X, 330);
-                X += 100;
+                item.Value.Location = Map.GetSpawnLocation(num++);
 
                 // 클라이언트에게 게임 시작을 알려주고 시작 위치 설정
                 PInst.SendMessage($"MapStart#{item.Value.Location.X}#{item.Value.Location.Y}@", item.Key);

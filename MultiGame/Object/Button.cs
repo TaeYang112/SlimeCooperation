@@ -11,6 +11,8 @@ namespace MultiGame.Object
     public class Button : GameObject
     {
         public bool Pressed { get; set; }
+
+        private Image PressedImage;
         public Button(int key, Point Location, Size size) :
             base(key, Location, size)
         {
@@ -20,7 +22,8 @@ namespace MultiGame.Object
             _type = "Button";
             Pressed = false;
 
-            _image = MultiGame.Properties.Resources.Stone.Clone() as Image;
+            _image = MultiGame.Properties.Resources.Button.Clone() as Image;
+            PressedImage = MultiGame.Properties.Resources.ButtonPressed.Clone() as Image;
         }
 
         public override void SetSkin(int skinNum)
@@ -32,7 +35,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Stone.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Button.Clone() as Image;
                     break;
             }
         
@@ -46,7 +49,7 @@ namespace MultiGame.Object
             if(Pressed == false)
                 e.DrawImage(image, new Rectangle(Location, size));
             else
-                e.DrawImage(image, new Rectangle(new Point(Location.X, Location.Y + size.Height/2), new Size(size.Width, size.Height/2)));
+                e.DrawImage(PressedImage, new Rectangle(new Point(Location.X, Location.Y + size.Height/2), new Size(size.Width, size.Height/2)));
 
         }
 

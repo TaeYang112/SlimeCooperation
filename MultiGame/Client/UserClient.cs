@@ -86,7 +86,7 @@ namespace MultiGame.Client
             // 이차 함수를 이용한 점프
             if (IsJump)
             {
-                float JumpHeight = (JumpTime * JumpTime - JumpPower * JumpTime) / 10.0f;      // y = x^2 - ax 그래프
+                float JumpHeight = (JumpTime * JumpTime - JumpPower * JumpTime) / 8.0f;      // y = x^2 - ax 그래프
                 JumpTime += 1.2f;
 
                 // 이차 함수의 맨 위에 도달

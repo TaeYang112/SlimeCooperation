@@ -24,7 +24,7 @@ namespace MultiGame.Object
             _type = "Stone";
 
             _image = MultiGame.Properties.Resources.Floor1.Clone() as Image;
-            font = new Font("맑은고딕", 20, FontStyle.Regular);
+            font = font = new Font(FontLibrary.Families[0], 20, FontStyle.Regular);
             format = new StringFormat();
             format.Alignment = StringAlignment.Center;
             format.LineAlignment = StringAlignment.Center;
@@ -52,7 +52,7 @@ namespace MultiGame.Object
             base.OnPaint(obj, pe);
             Graphics g= pe.Graphics;
 
-            g.DrawString(weight.ToString(), font, Brushes.Black, new RectangleF(Location,size), format);
+            g.DrawString(weight.ToString(), font, Brushes.Black, new RectangleF(new Point(Location.X + 4,Location.Y),size), format);
         }
 
 

@@ -32,7 +32,7 @@ namespace MultiGameServer
         public bool bRightPress { get; set; }
 
         public ClientCharacter(Room room, int key, ClientData clientData)
-            :base(room, key,new Point(0,0), new Size(42,35))
+            :base(room, key,new Point(0,0), new Size(60,50))
         {
             this.clientData = clientData;
             clientData.key = key;

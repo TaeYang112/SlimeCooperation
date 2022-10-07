@@ -10,72 +10,86 @@ namespace MultiGameServer
 {
     class Stage2 : MapBase
     {
-        public Stage2(Room room)
+        public Stage2(Room room) : base(room)
+        {
+
+        }
+
+        protected override void SetSpawnLocation()
+        {
+            SpawnLocation[0] = new Point(0, 330);
+            SpawnLocation[1] = new Point(100, 330);
+            SpawnLocation[2] = new Point(200, 330);
+        }
+
+        protected override void DesignMap()
         {
             int tempKey;
 
             // 맵 바깥 벽 (왼)
             tempKey = objectManager.NextKey();
-            Floor leftWall = new Floor(room, tempKey, new Point(-11, 0), new Size(10, 450));
+            Floor leftWall = new Floor(room, tempKey, new Point(-11, 0), new Size(10, 865));
+            leftWall.SkinNum = -1;
             objectManager.AddObject(leftWall);
 
             // 맵 바깥 벽 (우)
             tempKey = objectManager.NextKey();
-            Floor rightWall = new Floor(room, tempKey, new Point(784, 0), new Size(10, 450));
+            Floor rightWall = new Floor(room, tempKey, new Point(1424, 0), new Size(10, 865));
+            rightWall.SkinNum = -1;
             objectManager.AddObject(rightWall);
 
             // 땅
             tempKey = objectManager.NextKey();
-            Floor Floor = new Floor(room, tempKey, new Point(0, 390), new Point(800, 450));
+            Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(1440, 865));
             Floor.SkinNum = 2;
             objectManager.AddObject(Floor);
 
-            // 벽1
-            tempKey = objectManager.NextKey();
-            Floor Floor1 = new Floor(room, tempKey, new Point(613, 315), new Size(151, 29));
-            Floor1.SkinNum = 2;
-            objectManager.AddObject(Floor1);
-
             // 돌1
             tempKey = objectManager.NextKey();
-            Stone stone1 = new Stone(room, tempKey, new Point(663, 274), new Size(40, 40));
-            stone1.weight = 2;
+            Stone stone1 = new Stone(room, tempKey, new Point(663, 759), new Size(40, 40));
+            stone1.weight = 1;
             objectManager.AddObject(stone1);
+
+            // 벽1
+            tempKey = objectManager.NextKey();
+            Floor Floor1 = new Floor(room, tempKey, new Point(208, 715), new Size(125, 30));
+            Floor1.SkinNum = 3;
+            objectManager.AddObject(Floor1);
 
             // 벽2
             tempKey = objectManager.NextKey();
-            Floor Floor2 = new Floor(room, tempKey, new Point(404, 244), new Size(151, 29));
-            Floor2.SkinNum = 2;
+            Floor Floor2 = new Floor(room, tempKey, new Point(485, 690), new Size(125, 30));
+            Floor2.SkinNum = 3;
             objectManager.AddObject(Floor2);
 
             // 벽3
             tempKey = objectManager.NextKey();
-            Floor Floor3 = new Floor(room, tempKey, new Point(230, 187), new Size(151, 29));
-            Floor3.SkinNum = 2;
+            Floor Floor3 = new Floor(room, tempKey, new Point(762, 665), new Size(125, 30));
+            Floor3.SkinNum = 3;
             objectManager.AddObject(Floor3);
 
             // 벽4
             tempKey = objectManager.NextKey();
-            Floor Floor4 = new Floor(room, tempKey, new Point(13, 143), new Size(151, 29));
-            Floor4.SkinNum = 2;
+            Floor Floor4 = new Floor(room, tempKey, new Point(1039, 640), new Size(125, 30));
+            Floor4.SkinNum = 3;
             objectManager.AddObject(Floor4);
 
             // 벽5
             tempKey = objectManager.NextKey();
-            Floor Floor5 = new Floor(room, tempKey, new Point(230, 71), new Size(151, 29));
-            Floor5.SkinNum = 2;
+            Floor Floor5 = new Floor(room, tempKey, new Point(1236, 615), new Size(205, 30));
+            Floor5.SkinNum = 3;
             objectManager.AddObject(Floor5);
 
             // 벽6
             tempKey = objectManager.NextKey();
-            Floor Floor6 = new Floor(room, tempKey, new Point(422, 499), new Size(151, 29));
-            Floor6.SkinNum = 2;
+            Floor Floor6 = new Floor(room, tempKey, new Point(422, 499), new Size(125, 30));
+            Floor6.SkinNum = 3;
             objectManager.AddObject(Floor6);
 
             // 벽7
             tempKey = objectManager.NextKey();
-            Floor Floor7 = new Floor(room, tempKey, new Point(613, 111), new Size(151, 29));
-            Floor7.SkinNum = 2;
+            Floor Floor7 = new Floor(room, tempKey, new Point(613, 111), new Size(125, 30));
+            Floor7.SkinNum = 3;
             objectManager.AddObject(Floor7);
 
             // 문
@@ -87,15 +101,6 @@ namespace MultiGameServer
             tempKey = objectManager.NextKey();
             KeyObject KeyObject = new KeyObject(room, tempKey, new Point(13, 93), new Size(35, 50));
             objectManager.AddObject(KeyObject);
-
-            // 돌
-            tempKey = objectManager.NextKey();
-            Stone stone2 = new Stone(room, tempKey, new Point(60, 52), new Size(60, 90));
-            stone2.weight = 2;
-            objectManager.AddObject(stone2);
-
-
         }
-
     }
 }
