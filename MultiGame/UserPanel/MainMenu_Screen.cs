@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,7 +31,10 @@ namespace MultiGame.UserPanel
             if(result == DialogResult.OK)
             {
                 // 서버로 제목과 함께 방만들기 요청을 보냄
-                GameManager.GetInstance().RequestCreateRoom(makeRoom_Form.roomTitle_TB.Text);
+                MessageGenerator generator = new MessageGenerator(Protocols.REQ_CREATE_ROOM);
+                generator.AddString(makeRoom_Form.roomTitle_TB.Text);
+
+                GameManager.GetInstance().SendMessage(generator.GetMessage());
             }
         }
 
@@ -39,7 +43,11 @@ namespace MultiGame.UserPanel
             // 앞으로 서버로 부터 방목록 정보를 받도록 설정
             form.ChangeScreen(new FindRoom_Screen(form));
 
-            GameManager.GetInstance().RequestLobbyInfo(true);
+            // 메시지 생성 후 서버로 전송
+            MessageGenerator generator = new MessageGenerator(Protocols.REQ_ROOM_LIST);
+            generator.AddBool(true);
+
+            GameManager.GetInstance().SendMessage(generator.GetMessage());
         }
 
         private void exitGame_btn_Click(object sender, EventArgs e)

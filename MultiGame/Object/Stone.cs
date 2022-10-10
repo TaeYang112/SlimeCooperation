@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -59,7 +60,12 @@ namespace MultiGame.Object
         public override void OnHit()
         {
             base.OnHit();
-            GameManager.GetInstance().SendMessage($"ObjEvent#{key}#Stone@");
+
+            MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
+            generator.AddInt(key).AddByte(ObjectTypes.STONE);
+            byte[] message = generator.GetMessage();
+
+            GameManager.GetInstance().SendMessage(message);
         }
 
     }

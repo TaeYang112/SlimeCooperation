@@ -14,7 +14,7 @@ namespace MultiGameServer
 {
     public delegate void ClientJoinEventHandler(ClientData newClient);
     public delegate void ClientLeaveEventHandler(ClientData oldClient);
-    public delegate void DataRecieveEventHandler(MyServer.AsyncResultParam param, string Message);
+    public delegate void DataRecieveEventHandler(MyServer.AsyncResultParam param, byte[] Message);
     public class MyServer
     {
         // TCP통신에서 서버를 담당하는 클래스
@@ -29,7 +29,11 @@ namespace MultiGameServer
         // 클라이언트가 접속할경우 ClientLeave에 연결된 함수를 호출함
         public event ClientLeaveEventHandler onClientLeave;
 
-        // 클라이언트로 부터 메세지가 수신되면 연결된 함수 호출
+        // 클라이언트로 부터
+        //
+        //
+        //
+        // 가 수신되면 연결된 함수 호출
         public event DataRecieveEventHandler onDataRecieve;
 
         public MyServer()
@@ -84,15 +88,12 @@ namespace MultiGameServer
 
         }
 
-        public void SendMessage(string message, ClientData receiver)
+        public void SendMessage(byte[] message, ClientData receiver)
         {
-            // 서버로 메세지 전송 하기 위한 string to byte 형변환
-            byte[] buf = Encoding.Default.GetBytes(message);
-
             try
             {
-                // 메세지 전송
-                receiver.client.GetStream().Write(buf, 0, buf.Length);
+                // 메시지 전송
+                receiver.client.GetStream().Write(message, 0, message.Length);
             }
             catch
             {
@@ -109,17 +110,15 @@ namespace MultiGameServer
         }
 
         // 데이터를 수신
-        public void DataRecieved(IAsyncResult ar)
+        private void DataRecieved(IAsyncResult ar)
         {
             AsyncResultParam result = ar.AsyncState as AsyncResultParam;
             try
             {
-                // 전달받은 byte를 string으로 바꿈
-                int bytesRead = result.clientData.client.GetStream().EndRead(ar);
-                string stringData = Encoding.Default.GetString(result.clientData.byteData, 0, bytesRead);
-
                 // 연결된 함수 호출
-                onDataRecieve(result, stringData);
+                onDataRecieve(result, (byte[])result.clientData.byteData.Clone());
+
+                Array.Clear(result.clientData.byteData, 0, result.clientData.byteData.Length);
 
                 // 다시 데이터 수신 감시
                 DetectDataRecieve(result);

@@ -7,24 +7,24 @@ using System.Threading;
 
 namespace MultiGame
 {
-    public delegate void TakeMessageEventHandler(string message);
+    public delegate void TakeMessageEventHandler(byte[] message);
     public delegate void ExceptionEventHandler(Exception exception);
     public class MyClient
     {
-        // 서버로부터 메세지가 도착하면 이벤트 알림
-        public event TakeMessageEventHandler TakeMessage;
+        // 서버로부터 메시지가 도착하면 이벤트 알림
+        public event TakeMessageEventHandler onDataRecieve;
 
         // 에러가 발생하면 이벤트 알림
         public event ExceptionEventHandler onException;
 
-        // 메세지 버퍼
+        // 메시지 버퍼
         private byte[] readByteData;
 
         // TcpClient ( 통신 클래스 )
         private TcpClient client;
 
         // client를 실행시킬 스레드            
-        private Thread client_tr;                                                  
+        private Thread client_tr;
 
 
         public MyClient()
@@ -45,7 +45,6 @@ namespace MultiGame
         {
             //클라이언트 종료
             client.Close();
-
         }
 
 
@@ -77,21 +76,17 @@ namespace MultiGame
                 break;
             }
             
-            // 서버로 부터 메세지를 받을경우 OnMessageReceive 메소드 호출
-            client.GetStream().BeginRead(readByteData, 0, readByteData.Length, new AsyncCallback(OnMessageReceive), null);
+            // 서버로 부터 메시지를 받을경우 OnMessageReceive 메소드 호출
+            client.GetStream().BeginRead(readByteData, 0, readByteData.Length, new AsyncCallback(DataRecieved), null);
         }
 
 
-        // 메세지를 서버로 보냄
-        public void SendMessage(string message)
+        // 메시지를 서버로 보냄
+        public void SendMessage(byte[] message)
         {
-            // 서버로 메세지 전송 하기 위한 string to byte 형변환
-            byte[] buf = Encoding.Default.GetBytes(message);
-
             try
             {
-                // 서버로 write
-                client.GetStream().Write(buf, 0, buf.Length);
+                client.GetStream().Write(message, 0, message.Length);
             }
             catch(System.InvalidOperationException e)
             {
@@ -99,19 +94,20 @@ namespace MultiGame
             }
         }
 
-        private void OnMessageReceive(IAsyncResult ar)
+        private void DataRecieved(IAsyncResult ar)
         {
-            // 출력을 위해 byte를 String으로 형변환
-            string stringData = Encoding.Default.GetString(readByteData);
+            // 이벤트 발생 ( 이벤트에 연결된 함수들 호출 ) 
+            onDataRecieve((byte[])readByteData.Clone());
+
             Array.Clear(readByteData, 0, readByteData.Length);
 
-            // 이벤트 발생 ( 이벤트에 연결된 함수들 호출 ) 
-            TakeMessage(stringData);
+            
+            
 
-            // 다시 메세지가 올때 이 함수가 호출되도록 함
+            // 다시 메시지가 올때 이 함수가 호출되도록 함
             try
             {
-                client.GetStream().BeginRead(readByteData, 0, readByteData.Length, new AsyncCallback(OnMessageReceive), null);
+                client.GetStream().BeginRead(readByteData, 0, readByteData.Length, new AsyncCallback(DataRecieved), null);
 
             }
             catch (System.IO.IOException)

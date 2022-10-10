@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,8 +16,8 @@ namespace MultiGameServer
         public Room room { get; set; }
 
         // 타입
-        protected string _type;
-        public string Type { get { return _type; } }
+        protected byte _type;
+        public byte Type { get { return _type; } }
 
         // 스킨 번호
         public int SkinNum { get; set; }
@@ -40,7 +41,7 @@ namespace MultiGameServer
             this.size = size;
             this.Collision = false;
             this.Blockable = false;
-            this._type = "object";
+            this._type = ObjectTypes.GAME_OBJECT;
             this.room = room;
             SkinNum = 0;
         }

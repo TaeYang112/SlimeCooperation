@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace MultiGameServer.Object
         public Door(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
         {
-            _type = "Door";
+            _type = ObjectTypes.DOOR;
             Collision = true;
             Blockable = false;
         }

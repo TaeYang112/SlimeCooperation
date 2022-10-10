@@ -17,7 +17,7 @@ namespace MultiGameServer
         // TCP 통신에서 TcpServer에 대응되는 클라이언트 객체
         public TcpClient client { get; set; }
 
-        // 메세지를 받을 때 사용하는 버퍼
+        // 메시지를 받을 때 사용하는 버퍼
         public byte[] byteData { get; set; }                                                
 
         // 클라이언트 고유 키

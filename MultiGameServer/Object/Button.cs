@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace MultiGameServer.Object
         public Button(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
         {
-            _type = "Button";
+            _type = ObjectTypes.BUTTON;
             Collision = true;
             Blockable = false;
             TargetObject = null;
@@ -27,7 +28,12 @@ namespace MultiGameServer.Object
 
         public override void OnEvent()
         {
-            room.SendMessageToAll_InRoom($"ObjEvent#{key}#{Type}#{-1}@");
+            MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+            generator.AddInt(key);
+            generator.AddByte(Type);
+            generator.AddInt(-1);
+
+            room.SendMessageToAll_InRoom(generator.GetMessage());
         }
        
         

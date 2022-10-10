@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,14 +30,22 @@ namespace MultiGame.UserPanel
             // 선택한 방( 행 )의 키를 받음
             int roomKey = int.Parse(roomList_GridView.SelectedRows[0].Cells[0].Value.ToString());
 
+            // 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.REQ_ENTER_ROOM);
+            generator.AddInt(roomKey);
+
             // 서버로 입장 요청
-            GameManager.GetInstance().RequestEnterRoom(roomKey);
+            GameManager.GetInstance().SendMessage(generator.GetMessage());
         }
 
         private void findToMain_btn_Click(object sender, EventArgs e)
         {
-            // 서버로부터 받는 방목록 정보 수신을 종료함
-            GameManager.GetInstance().RequestLobbyInfo(false);
+            // 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.REQ_ROOM_LIST);
+            generator.AddBool(false);
+
+            // 서버로 전송
+            GameManager.GetInstance().SendMessage(generator.GetMessage());
 
             // 메인화면으로 돌아감
             form.ChangeScreen(new MainMenu_Screen(form));
@@ -46,7 +55,13 @@ namespace MultiGame.UserPanel
         private void roomList_GridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             int roomKey = int.Parse(roomList_GridView.SelectedRows[0].Cells[0].Value.ToString());
-            GameManager.GetInstance().RequestEnterRoom(roomKey);
+
+            // 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.REQ_ENTER_ROOM);
+            generator.AddInt(roomKey);
+
+            // 서버로 입장 요청
+            GameManager.GetInstance().SendMessage(generator.GetMessage());
         }
     }
 }
