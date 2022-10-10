@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,26 +23,37 @@ namespace MultiGame.UserPanel
         private void ready_btn_Click(object sender, EventArgs e)
         {
             ClientCharacter userCharacter = GameManager.GetInstance().userClient.Character;
+
+            // 서버로 보낼 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.C_READY);
+
             // 유저가 준비상태에서 버튼 누름
             if (userCharacter.IsReady == true)
             {
                 // 준비 취소 시킴
-                GameManager.GetInstance().RequestReady(false);
+                generator.AddBool(false);
                 userCharacter.IsReady = false;
             }
             else
             {
                 // 준비 상태로 만듬
-                GameManager.GetInstance().RequestReady(true);
+                generator.AddBool(true);
                 userCharacter.IsReady = true;
             }
+            // 로비 UI 업데이트
             form.UpdateLobby();
+
+            // 서버로 전송
+            GameManager.GetInstance().SendMessage(generator.GetMessage());
         }
 
         private void lobbyToFind_btn_Click(object sender, EventArgs e)
         {
+            // 서버로 보낼 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.C_EXIT_ROOM);
+
             // 서버로 방을 나갔다고 알림
-            GameManager.GetInstance().myClient.SendMessage($"ExitLobby#d@");
+            GameManager.GetInstance().myClient.SendMessage(generator.GetMessage());
 
             // 다른 클라이언트들 목록에서 제거
             GameManager.GetInstance().clientManager.ClientDic.Clear();

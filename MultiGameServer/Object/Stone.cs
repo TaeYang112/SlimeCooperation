@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace MultiGameServer.Object
         public Stone(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
         {
-            _type = "Stone";
+            _type = ObjectTypes.STONE;
             Collision = true;
             Blockable = true;
             weight = 0;
@@ -97,11 +98,22 @@ namespace MultiGameServer.Object
             // 이동
             Move(velocity);
 
-            // 클라이언트에게 Stone의 움직임을 알림
-            int showingWeight = Math.Max(0, weight - Math.Abs(rList.Count - lList.Count));
-            room.SendMessageToAll_InRoom($"ObjEvent#{key}#{Type}#{-1}#" +
-                $"{Location.X}#{Location.Y}#{showingWeight}@");
 
+
+            // 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+            generator.AddInt(key);
+            generator.AddByte(Type);
+            generator.AddInt(-1);
+            generator.AddInt(Location.X).AddInt(Location.Y);
+            generator.AddInt(Math.Max(0, weight - Math.Abs(rList.Count - lList.Count)));     // 보여질 무게
+
+            // 방안에 클라이언트들에게 돌이 움직였다고 알림
+            room.SendMessageToAll_InRoom(generator.GetMessage());
+
+
+            /*
+            // 힘을 가한 클라이언트들도 자연스움을 위해 움직임
             if (List != null)
             {
                 // 클라이언트도 움직임
@@ -111,7 +123,7 @@ namespace MultiGameServer.Object
                     Program.GetInstance().SendMessage($"Move#{velocity.X}#{0}@", client.key);
                 }
             }
-            
+            */
             
         }
 

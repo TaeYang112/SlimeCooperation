@@ -17,9 +17,9 @@ namespace MultiGameServer
 
         protected override void SetSpawnLocation()
         {
-            SpawnLocation[0] = new Point(0, 330);
-            SpawnLocation[1] = new Point(100, 330);
-            SpawnLocation[2] = new Point(200, 330);
+            SpawnLocation[0] = new Point(0, 740);
+            SpawnLocation[1] = new Point(100, 740);
+            SpawnLocation[2] = new Point(200, 740);
         }
 
         protected override void DesignMap()

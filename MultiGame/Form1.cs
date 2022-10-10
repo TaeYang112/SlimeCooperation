@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using MultiGame.Client;
 using MultiGame.UserPanel;
+using MultiGameModule;
 
 namespace MultiGame
 {
@@ -26,6 +27,7 @@ namespace MultiGame
         {
             InitializeComponent();
 
+            
             // 최적화
             SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.UserPaint, true);
@@ -35,6 +37,7 @@ namespace MultiGame
             gameManager = GameManager.GetInstance();
 
             this.Controls.Add(new MainMenu_Screen(this));
+            
         }
 
         // 폼이 완전히 로드되었을 때 호출
@@ -155,36 +158,34 @@ namespace MultiGame
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
-            // 왼쪽 방향키
-            if (keyData == Keys.Left)
+            MessageGenerator generator = new MessageGenerator(Protocols.C_KEY_INPUT);
+
+            switch (keyData)
             {
-                userClient.LeftDown = true;
-                GameManager.GetInstance().SendMessage($"KeyInput#Left#True@");
-                return true;
+                case Keys.Left:
+                    userClient.LeftDown = true;
+                    generator.AddByte(Keyboards.LEFT_ARROW).AddBool(true);
+                    break;
+                case Keys.Right:
+                    userClient.RightDown = true;
+                    generator.AddByte(Keyboards.RIGHT_ARROW).AddBool(true);
+                    break;
+                case Keys.Space:
+                    userClient.Jump();
+                    userClient.JumpDown = true;
+                    break;
+                case Keys.Up:
+                    gameManager.userClient.TryOpenDoor();
+                    break;
+                default:
+                    return base.ProcessCmdKey(ref msg, keyData);
+
             }
 
-            // 오른쪽 방향키
-            if (keyData == Keys.Right)
-            {
-                userClient.RightDown = true;
-                GameManager.GetInstance().SendMessage($"KeyInput#Right#True@");
-                return true;
-            }
+            byte[] message = generator.GetMessage();
+            gameManager.SendMessage(message);
 
-            // 점프
-            if (keyData == Keys.Space)
-            {
-                userClient.Jump();
-                userClient.JumpDown = true;
-                return true;
-            }
-
-            if(keyData == Keys.Up)
-            {
-                gameManager.userClient.TryOpenDoor();
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
+            return true;
         }
 
         // 키가 떼어졌을 때
@@ -198,15 +199,18 @@ namespace MultiGame
             {
                 return;
             }
+
+            MessageGenerator generator = new MessageGenerator(Protocols.C_KEY_INPUT);
+
             switch (e.KeyData)
             {
                 case Keys.Left:
                     userClient.LeftDown = false;
-                    GameManager.GetInstance().SendMessage($"KeyInput#Left#False@");
+                    generator.AddByte(Keyboards.LEFT_ARROW).AddBool(false);
                     break;
                 case Keys.Right:
                     userClient.RightDown = false;
-                    GameManager.GetInstance().SendMessage($"KeyInput#Right#False@");
+                    generator.AddByte(Keyboards.RIGHT_ARROW).AddBool(false);
                     break;
                 case Keys.Space:
                     userClient.JumpDown = false;
@@ -214,6 +218,8 @@ namespace MultiGame
                 default:
                     break;   
             }
+            byte[] message = generator.GetMessage();
+            gameManager.SendMessage(message);
         }
 
         // 폼의 포커스가 풀리면 ( 알트 탭, 다른 윈도우 선택시 ) 이벤트 발생

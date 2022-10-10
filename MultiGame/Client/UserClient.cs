@@ -1,4 +1,6 @@
 ﻿using MultiGame.Object;
+using MultiGameModule;
+using System.Collections.Generic;
 using System.Drawing;
 
 
@@ -79,7 +81,14 @@ namespace MultiGame.Client
 
             if (LeftDown ^ RightDown && Character.LookDirectionRight != bLookRight)
             {
-                GameManager.GetInstance().SendMessage($"LookR#{bLookRight}@");
+                // 서버로 보낼 메시지 생성
+                MessageGenerator generator = new MessageGenerator(Protocols.C_LOOK_DIRECTION);
+                generator.AddBool(bLookRight);
+                byte[] message = generator.GetMessage();
+
+                // 서버로 전송
+                GameManager.GetInstance().SendMessage(message);
+
                 Character.MoveDirectionRight = bLookRight;
             }
 
@@ -236,8 +245,14 @@ namespace MultiGame.Client
             // 실제 좌표를 이동시킴
             Character.Location = resultLoc;
 
-            // 서버로 전송
-            GameManager.GetInstance().SendMessage($"Location#{resultLoc.X}#{resultLoc.Y}#@");
+            
+            // 서버로 보낼 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
+            generator.AddInt(resultLoc.X).AddInt(resultLoc.Y);
+            byte[] message = generator.GetMessage();
+
+            // 서버로 보냄
+            GameManager.GetInstance().SendMessage(message);
         }
 
         // 주로 키 입력을 이외의 상황에서 움직여야할 때 부자연스러움을 없애기 위해
@@ -312,8 +327,48 @@ namespace MultiGame.Client
             bool result = Rectangle.Intersect(a, b).IsEmpty;
             if (result == false)
             {
-                GameManager.GetInstance().SendMessage($"ObjEvent#{door.key}#Door@");
+                // 서버로 보낼 메시지 생성
+                MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
+                generator.AddInt(door.key).AddByte(ObjectTypes.DOOR);
+                byte[] message = generator.GetMessage();
+
+                // 서버로 전송
+                GameManager.GetInstance().SendMessage(message);
             }
+
+        }
+
+        // 대상 클라이언트 발 아래에 있는 클라이언트 리스트 반환
+        public List<ClientCharacter> GetClientsUnderTheFoot()
+        {
+            List<ClientCharacter> list = new List<ClientCharacter>();
+
+            // 대상의 발아래 충돌박스
+            Size size = new Size(Character.size.Width - 4, 1);
+            Point location = new Point(Character.Location.X + 2, Character.Location.Y + Character.size.Height + 1);
+            Rectangle a = new Rectangle(location, size);
+
+            // 모든 클라이언트와 비교
+            foreach (var item in GameManager.GetInstance().clientManager.ClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient.Collision == false)
+                {
+                    continue;
+                }
+
+                // 대상 충돌판정
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약  겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    list.Add(otherClient);
+                }
+            }
+
+            return list;
         }
 
     }

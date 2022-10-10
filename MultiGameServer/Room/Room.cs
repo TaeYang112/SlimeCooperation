@@ -1,4 +1,5 @@
-﻿using MultiGameServer.Object;
+﻿using MultiGameModule;
+using MultiGameServer.Object;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -66,6 +67,39 @@ namespace MultiGameServer
             skinList.Remove(skinNum);
 
             roomClientDic.TryAdd(clientChar.key, clientChar);
+
+
+
+            // 방 입장을 클라이언트한테 알림
+            MessageGenerator generator = new MessageGenerator(Protocols.RES_ENTER_ROOM);
+            generator.AddInt(key).AddString(RoomTitle).AddInt(clientChar.SkinNum);
+
+            Program.GetInstance().SendMessage(generator.GetMessage(), clientChar.key);
+
+
+
+            // 접속한 클라이언트에게 방에 원래 있던 클라이언트들 정보를 알려줌
+            generator.Protocol = Protocols.S_ENTER_ROOM_OTHER;
+            foreach (var item in roomClientDic)
+            {
+                if (item.Key == clientChar.key) continue;
+
+                generator.Clear();
+                generator.AddInt(item.Key);
+                generator.AddBool(item.Value.IsReady);
+                generator.AddInt(item.Value.SkinNum);
+
+                Program.GetInstance().SendMessage(generator.GetMessage(), clientChar.key);
+            }
+
+
+            // 기존 클라이언트들에게 새로 접속한 클라이언트를 알려줌
+            generator.Clear();
+            generator.AddInt(clientChar.key);
+            generator.AddBool(clientChar.IsReady);
+            generator.AddInt(clientChar.SkinNum);
+
+            SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
         }
 
         // 클라이언트를 나가게 한뒤, 남은 인원수 반환
@@ -219,6 +253,7 @@ namespace MultiGameServer
             if (Map != null)
                 Map.objectManager.ClearObjects();
             
+
             switch(stageNum)
             {
                 case 1:
@@ -239,14 +274,23 @@ namespace MultiGameServer
             // 프로그램 인스턴스
             Program PInst = Program.GetInstance();
 
+            // 메시지 생성기
+            MessageGenerator generator = new MessageGenerator();
+
             int num = 0;
             foreach (var item in roomClientDic)
             {
                 // 내부적으로 각 클라이언트 시작 위치 설정
                 item.Value.Location = Map.GetSpawnLocation(num++);
 
-                // 클라이언트에게 게임 시작을 알려주고 시작 위치 설정
-                PInst.SendMessage($"MapStart#{item.Value.Location.X}#{item.Value.Location.Y}@", item.Key);
+                // 맵 시작 메시지 생성
+                generator.Clear();
+                generator.Protocol = Protocols.S_MAP_START;
+                generator.AddInt(item.Value.Location.X);
+                generator.AddInt(item.Value.Location.Y);
+
+                // 전송
+                PInst.SendMessage(generator.GetMessage(), item.Key);
 
                 // 클라이언트들의 시작 위치를 알려줌
                 foreach (var item2 in roomClientDic)
@@ -255,34 +299,53 @@ namespace MultiGameServer
 
                     // 각 플레이어들의 위치를 전송
                     else
-                        PInst.SendMessage($"Location#{item2.Key}#{item2.Value.Location.X}#{item2.Value.Location.Y}#@", item.Key);
+                    {
+                        // 위치 메시지 생성
+                        generator.Clear();
+                        generator.Protocol = Protocols.S_LOCATION_OTHER;
+                        generator.AddInt(item2.Key);
+                        generator.AddInt(item2.Value.Location.X);
+                        generator.AddInt(item2.Value.Location.Y);
+
+                        // 전송
+                        PInst.SendMessage(generator.GetMessage(), item.Key);
+                    }
+                        
                 }
+
+                generator.Clear();
+                generator.Protocol = Protocols.S_NEW_OBJECT;
 
                 // 맵에 있는 오브젝트들을 알려줌
                 foreach(var objectPair in Map.objectManager.ObjectDic)
                 {
                     GameObject gameObject = objectPair.Value;
 
-                    if(gameObject.Type == "Stone")
+                    generator.Clear();
+                    generator.AddInt(objectPair.Key);
+                    generator.AddByte(gameObject.Type);
+                    generator.AddInt(gameObject.Location.X).AddInt(gameObject.Location.Y);
+                    generator.AddInt(gameObject.size.Width).AddInt(gameObject.size.Height);
+                    generator.AddInt(gameObject.SkinNum);
+
+                    switch (gameObject.Type)
                     {
-                        Stone stone = gameObject as Stone;
-                        
-                        PInst.SendMessage($"NewObject#" +
-                        $"{objectPair.Key}#{gameObject.Type}#" +
-                        $"{gameObject.Location.X}#{gameObject.Location.Y}#" +
-                        $"{gameObject.size.Width}#{gameObject.size.Height}#" +
-                        $"{gameObject.SkinNum}#{stone.weight}@", item.Key);
+                        // 돌 오브젝트는 자신의 무게를 메시지에 추가해서 보냄
+                        case ObjectTypes.STONE:
+                            {
+                                Stone stone = gameObject as Stone;
+
+                                generator.AddInt(stone.weight);
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                    else
-                    {
-                        PInst.SendMessage($"NewObject#" +
-                        $"{objectPair.Key}#{gameObject.Type}#" +
-                        $"{gameObject.Location.X}#{gameObject.Location.Y}#" +
-                        $"{gameObject.size.Width}#{gameObject.size.Height}#" +
-                        $"{gameObject.SkinNum}@", item.Key);
-                    }
-                    
+
+                    // 서버로 전송
+                    PInst.SendMessage(generator.GetMessage(), item.Key);
                 }
+
                 item.Value.IsEnterDoor = false;
                 item.Value.Blockable = true;
                 item.Value.Collision = true;
@@ -296,8 +359,8 @@ namespace MultiGameServer
             GameStart(++stageNum);
         }
 
-        // 방 안의 모든 클라이언트들에게 메세지 전송 ( senderKey로 예외 클라이언트 설정 )
-        public void SendMessageToAll_InRoom(string message, int senderKey = -1)
+        // 방 안의 모든 클라이언트들에게 메시지 전송 ( senderKey로 예외 클라이언트 설정 )
+        public void SendMessageToAll_InRoom(byte[] message, int senderKey = -1)
         {
             foreach (var item in roomClientDic)
             {

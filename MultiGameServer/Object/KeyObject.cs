@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace MultiGameServer.Object
         public KeyObject(Room room, int key, Point Location, Size size)
             : base(room,key, Location, size)
         {
-            _type = "Key";
+            _type = ObjectTypes.KEY_OBJECT;
             ownerKey = -1;
             Collision = true;
             Blockable = false;

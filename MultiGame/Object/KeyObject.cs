@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -35,7 +36,12 @@ namespace MultiGame.Object
         {
             base.OnHit();
             Collision = false;
-            GameManager.GetInstance().SendMessage($"ObjEvent#{key}#KeyObject@");
+
+            MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
+            generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT);
+            byte[] message = generator.GetMessage();
+
+            GameManager.GetInstance().SendMessage(message);
         }
 
        public void SetOwner(ClientCharacter newOwner)
