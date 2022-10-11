@@ -42,6 +42,8 @@ namespace MultiGame
         // 수신받은 메시지 보관하는 큐
         ConcurrentQueue<byte[]> messageQueue;
 
+        // 메시지가 없으면 대기하기 위한 락 오브젝트
+        object lockObject = new object();
 
         public static GameManager GetInstance()
         {
@@ -69,6 +71,7 @@ namespace MultiGame
             messageManager = new MessageManager(this);
             messageQueue = new ConcurrentQueue<byte[]>();
             messageProcess_thread = new Thread(MessageProcess);
+            messageProcess_thread.IsBackground = true;
 
             // 사용자 캐릭터
             userClient = new UserClient();
@@ -87,6 +90,9 @@ namespace MultiGame
         private void onDataRecieve(byte[] message)
         {
             messageQueue.Enqueue(message);
+
+            // 큐에 메시지가 있다는거를 알려줌
+            lock (lockObject) { Monitor.Pulse(lockObject); }
         }
 
         private void MessageProcess()
@@ -101,7 +107,11 @@ namespace MultiGame
                     if (result == false) continue;
 
                     messageManager.ParseMessage(message);
-
+                }
+                else
+                {
+                    // 큐에 메시지가 더이상 없으면 다음 데이터가 들어올때 까지 대기
+                    lock (lockObject) { Monitor.Wait(lockObject); }
                 }
 
             }
