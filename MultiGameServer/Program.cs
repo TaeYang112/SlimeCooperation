@@ -41,7 +41,8 @@ namespace MultiGameServer
         // 하나의 클라이언트가 여러번 나가는거를 막기위한 세마포
         private Semaphore sema_ClientLeave;
 
-        
+        // 메시지가 없으면 대기하기 위한 락 오브젝트
+        object lockObject = new object();
 
         static void Main(string[] args)
         {
@@ -173,6 +174,10 @@ namespace MultiGameServer
                     messageManager.ParseMessage(message.Key, message.Value);
 
                 }
+                else
+                {
+                    lock (lockObject) { Monitor.Wait(lockObject); }
+                }    
                 
             }
         }
@@ -333,6 +338,8 @@ namespace MultiGameServer
 
             // 메시지 처리를 위해 큐에 넣음
             messageQueue.Enqueue(new KeyValuePair<ClientCharacter, byte[]>(clientCharacter, message));
+
+            lock (lockObject) { Monitor.Pulse(lockObject); }
         }
         #endregion
     }
