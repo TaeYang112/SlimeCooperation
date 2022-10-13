@@ -321,8 +321,8 @@ namespace MultiGame
                     case ObjectTypes.KEY_OBJECT:
                         {
                             KeyObject keyObj = gameObject as KeyObject;
-                            if (keyObj == null) return;
-
+                            if (keyObj == null)
+                                return;
                             // keyObj.isVisible = false;
                             keyObj.Collision = false;
                             keyObj.SetOwner(client);
@@ -334,38 +334,43 @@ namespace MultiGame
                             Door door = gameObject as Door;
                             if (door == null) return;
 
-                            string context = converter.NextString();
+                            byte doorEvent = converter.NextByte();
 
                             // 문이 열림
-                            if (context == "Open")
+                            switch (doorEvent)
                             {
-                                door.Open(true);
-                                int keyObjectKey = objectManager.keyObjectKey;
-                                objectManager.ObjectDic[keyObjectKey].isVisible = false;
-                            }
-                            // 문안으로 들어감
-                            else if (context == "Enter")
-                            {
-                                client.isVisible = false;
-                                client.Collision = false;
+                                case DoorEvent.OPEN:
+                                    {
+                                        door.Open(true);
+                                        int keyObjectKey = objectManager.keyObjectKey;
+                                        objectManager.ObjectDic[keyObjectKey].isVisible = false;
+                                        
+                                    }
+                                    break;
+                                case DoorEvent.ENTER:
+                                    {
+                                        client.isVisible = false;
+                                        client.Collision = false;
 
-                                // 만약 유저클라이언트일 경우 더이상 움직이지 못하게함
-                                if (clientKey == -1)
-                                {
-                                    userClient.CanMove = false;
-                                }
-                            }
-                            // 문밖으로 나감
-                            else
-                            {
-                                client.isVisible = true;
-                                client.Collision = true;
+                                        // 만약 유저클라이언트일 경우 더이상 움직이지 못하게함
+                                        if (clientKey == -1)
+                                        {
+                                            userClient.CanMove = false;
+                                        }
+                                    }
+                                    break;
+                                case DoorEvent.LEAVE:
+                                    {
+                                        client.isVisible = true;
+                                        client.Collision = true;
 
-                                // 만약 유저클라이언트일 경우 움직일 수 있게 함
-                                if (clientKey == -1)
-                                {
-                                    userClient.CanMove = true;
-                                }
+                                        // 만약 유저클라이언트일 경우 움직일 수 있게 함
+                                        if (clientKey == -1)
+                                        {
+                                            userClient.CanMove = true;
+                                        }
+                                    }
+                                    break;
                             }
                         }
                         break;
