@@ -25,7 +25,7 @@ namespace MultiGame.Object
             Blockable = false;
             _image = MultiGame.Properties.Resources.Key.Clone() as Image;
             _owner = null;
-            _type = "KeyObject";
+            _type = ObjectTypes.KEY_OBJECT;
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveToTargetTimer);                                    // 실행시킬 메소드
@@ -39,7 +39,7 @@ namespace MultiGame.Object
 
             MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
             generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT);
-            byte[] message = generator.GetMessage();
+            byte[] message = generator.Generate();
 
             GameManager.GetInstance().SendMessage(message);
         }

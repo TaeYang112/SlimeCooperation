@@ -22,14 +22,39 @@ namespace MultiGame
                 this.gameManager = gameManager;
             }
 
+            private byte[] remainedMessage = null;
 
             // 메시지를 해석 후 실행
             public void ParseMessage(byte[] message)
             {
-                MessageConverter converter = new MessageConverter(message);
-                do
+                // 만약 저번 해석때 메시지가 남았더라면 남은 메시지와 이어붙임
+                byte[] message2;
+                if (remainedMessage == null)
                 {
+                    message2 = message;
+                }
+                else
+                {
+                    message2 = new byte[remainedMessage.Length + message.Length];
+                    Array.Copy(remainedMessage, message2, remainedMessage.Length);
+                    Array.Copy(message, 0, message2, remainedMessage.Length, message.Length);
+                }
+
+                MessageConverter converter = new MessageConverter(message2);
+
+                while (true)
+                {
+                    bool result = converter.NextMessage();
+
+                    // 다음 메시지가 없으면 종료
+                    if (result == false)
+                    {
+                        remainedMessage = converter.RemainMessage;
+                        break;
+                    }
+
                     byte protocol = converter.Protocol;
+
                     switch (protocol)
                     {
                         // 다른 클라이언트의 캐릭터 위치 수신
@@ -122,10 +147,7 @@ namespace MultiGame
                             Console.WriteLine("에러 : " + protocol);
                             break;
                     }
-
-
-                    // 다음 메시지가 더 있으면 반복
-                } while (converter.NextMessage());
+                }
             }
 
             public void Location(MessageConverter converter)
@@ -217,8 +239,6 @@ namespace MultiGame
                 // 스킨 번호
                 int skinNum = converter.NextInt();
 
-                Console.WriteLine($"키 : {key} 타입 {type} 좌표 : {x} y : {y} , width: {width} height {height}");
-
                 GameObject newObject = null;
                 ObjectManager objectManager = gameManager.objectManager;
                 switch (type)
@@ -252,6 +272,11 @@ namespace MultiGame
                     case ObjectTypes.BUTTON:
                         {
                             newObject = new MultiGame.Object.Button(key, new Point(x, y), new Size(width, height));
+                        }
+                        break;
+                    case ObjectTypes.STONE_DOOR:
+                        {
+                            newObject = new StoneDoor(key, new Point(x, y), new Size(width, height));
                         }
                         break;
                     default:
@@ -347,7 +372,10 @@ namespace MultiGame
                     case ObjectTypes.STONE:
                         {
                             Stone stone = gameObject as Stone;
-                            if (stone == null) return;
+                            if (stone == null)
+                            {
+                                return;
+                            }
 
                             int x = converter.NextInt();
                             int y = converter.NextInt();
@@ -364,6 +392,33 @@ namespace MultiGame
 
                             button.Pressed = true;
 
+                        }
+                        break;
+                    case ObjectTypes.STONE_DOOR:
+                        {
+                            int x = converter.NextInt();
+                            int y = converter.NextInt();
+                            
+                            int dy = y - gameObject.Location.Y;
+                            gameObject.Location = new Point(x, y);
+                            if (dy < 0)
+                            {
+                                Rectangle a = new Rectangle(new Point(x, y), gameObject.size);
+
+                                Size size = new Size(userClient.Character.size.Width, 1);
+                                Point location = new Point(userClient.Character.Location.X, userClient.Character.Location.Y + userClient.Character.size.Height + 1);
+                                Rectangle b = new Rectangle(location, size);
+
+                                Rectangle result = Rectangle.Intersect(a, b);
+
+                                if(result.IsEmpty == false)
+                                {
+                                    userClient.Move(new Point(0, dy));
+                                }
+                             
+                            }
+                            
+                            //gameObject.Location = new Point(x, y);
                         }
                         break;
                 }

@@ -154,7 +154,7 @@ namespace MultiGameServer
         private void HeartBeat(object t)
         {
             MessageGenerator generator = new MessageGenerator(Protocols.S_PING);
-            SendMessageToAll(generator.GetMessage());
+            SendMessageToAll(generator.Generate());
         }
 
         
@@ -218,7 +218,7 @@ namespace MultiGameServer
             {
                 if (item.Value.IsFindingRoom == true)
                 {
-                    SendMessage(generator.GetMessage(), item.Key);
+                    SendMessage(generator.Generate(), item.Key);
                 }
             }
         }
@@ -234,7 +234,7 @@ namespace MultiGameServer
             {
                 if (item.Value.IsFindingRoom == true)
                 {
-                    SendMessage(generator.GetMessage(), item.Key);
+                    SendMessage(generator.Generate(), item.Key);
                 }
             }
         }
@@ -301,7 +301,7 @@ namespace MultiGameServer
                     else
                     {
                         // 방 안의 다른 플레이어들한테 알려줌
-                        room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+                        room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
                         // 방의 인원수가 바뀐것을 클라이언트들에게 알려줌
                         SendUpdateRoomInfo(room);
@@ -320,7 +320,7 @@ namespace MultiGameServer
                     else
                     {
                         // 방 안의 다른 플레이어들한테 알려줌
-                        room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+                        room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
                     }
                 }
             }

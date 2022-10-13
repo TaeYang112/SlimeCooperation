@@ -34,7 +34,7 @@ namespace MultiGame.UserPanel
                 MessageGenerator generator = new MessageGenerator(Protocols.REQ_CREATE_ROOM);
                 generator.AddString(makeRoom_Form.roomTitle_TB.Text);
 
-                GameManager.GetInstance().SendMessage(generator.GetMessage());
+                GameManager.GetInstance().SendMessage(generator.Generate());
             }
         }
 
@@ -47,7 +47,7 @@ namespace MultiGame.UserPanel
             MessageGenerator generator = new MessageGenerator(Protocols.REQ_ROOM_LIST);
             generator.AddBool(true);
 
-            GameManager.GetInstance().SendMessage(generator.GetMessage());
+            GameManager.GetInstance().SendMessage(generator.Generate());
         }
 
         private void exitGame_btn_Click(object sender, EventArgs e)

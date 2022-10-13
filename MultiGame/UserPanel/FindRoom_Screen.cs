@@ -35,7 +35,7 @@ namespace MultiGame.UserPanel
             generator.AddInt(roomKey);
 
             // 서버로 입장 요청
-            GameManager.GetInstance().SendMessage(generator.GetMessage());
+            GameManager.GetInstance().SendMessage(generator.Generate());
         }
 
         private void findToMain_btn_Click(object sender, EventArgs e)
@@ -45,7 +45,7 @@ namespace MultiGame.UserPanel
             generator.AddBool(false);
 
             // 서버로 전송
-            GameManager.GetInstance().SendMessage(generator.GetMessage());
+            GameManager.GetInstance().SendMessage(generator.Generate());
 
             // 메인화면으로 돌아감
             form.ChangeScreen(new MainMenu_Screen(form));
@@ -61,7 +61,7 @@ namespace MultiGame.UserPanel
             generator.AddInt(roomKey);
 
             // 서버로 입장 요청
-            GameManager.GetInstance().SendMessage(generator.GetMessage());
+            GameManager.GetInstance().SendMessage(generator.Generate());
         }
     }
 }

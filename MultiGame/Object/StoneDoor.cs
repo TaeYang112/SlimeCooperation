@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace MultiGame.Object
 {
-    public class Floor : GameObject
+    public class StoneDoor : GameObject
     {
-        public Floor(int key, Point Location, Size size):
+        public StoneDoor(int key, Point Location, Size size):
             base(key,Location,size)
         {
             SetSkin(0);
             Collision = true;
             Blockable = true;
-            _type = ObjectTypes.FLOOR;
+            _type = ObjectTypes.STONE_DOOR;
         }
 
         override public void SetSkin(int num)
@@ -28,18 +28,10 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Floor1;
-                    break;
-                case 1:
-                    _image = MultiGame.Properties.Resources.Floor2;
-                    break;
-                case 2:
-                    _image = MultiGame.Properties.Resources.Floor3;
-                    break;
-                case 3:
-                    _image = MultiGame.Properties.Resources.Floor4;
+                    _image = MultiGame.Properties.Resources.Stone;
                     break;
             }
         }
+
     }
 }

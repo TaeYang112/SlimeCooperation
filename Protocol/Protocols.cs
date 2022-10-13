@@ -7,9 +7,9 @@
         // 클라이언트 -> 서버 
 
         // REQ(Request)는 클라이언트가 서버로 요청을 보낸 후 RES(Response)를 기다림
-        public const byte REQ_ROOM_LIST = 0;
-        public const byte REQ_CREATE_ROOM = 1;
-        public const byte REQ_ENTER_ROOM = 2;
+        public const byte REQ_ROOM_LIST = 1;
+        public const byte REQ_CREATE_ROOM = 2;
+        public const byte REQ_ENTER_ROOM = 3;
 
         // 서버로 자신의 변경사항을 알려줌
         public const byte C_READY = 30;

@@ -84,7 +84,7 @@ namespace MultiGame.Client
                 // 서버로 보낼 메시지 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.C_LOOK_DIRECTION);
                 generator.AddBool(bLookRight);
-                byte[] message = generator.GetMessage();
+                byte[] message = generator.Generate();
 
                 // 서버로 전송
                 GameManager.GetInstance().SendMessage(message);
@@ -249,7 +249,7 @@ namespace MultiGame.Client
             // 서버로 보낼 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
             generator.AddInt(resultLoc.X).AddInt(resultLoc.Y);
-            byte[] message = generator.GetMessage();
+            byte[] message = generator.Generate();
 
             // 서버로 보냄
             GameManager.GetInstance().SendMessage(message);
@@ -330,7 +330,7 @@ namespace MultiGame.Client
                 // 서버로 보낼 메시지 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
                 generator.AddInt(door.key).AddByte(ObjectTypes.DOOR);
-                byte[] message = generator.GetMessage();
+                byte[] message = generator.Generate();
 
                 // 서버로 전송
                 GameManager.GetInstance().SendMessage(message);
