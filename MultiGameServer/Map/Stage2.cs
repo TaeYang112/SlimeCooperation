@@ -80,6 +80,24 @@ namespace MultiGameServer
             Floor5.SkinNum = 3;
             objectManager.AddObject(Floor5);
 
+            // 돌문
+            tempKey = objectManager.NextKey();
+            StoneDoor stoneDoor = new StoneDoor(room, tempKey, new Point(363, 699), new Size(50, 100));
+            objectManager.AddObject(stoneDoor);
+
+            // 버튼
+            tempKey = objectManager.NextKey(); // 1340 780
+            Button button = new Button(room, tempKey, new Point(363, 679), new Size(30, 20));
+            button.TargetObject = stoneDoor;
+            objectManager.AddObject(button);
+
+            // 돌2
+            tempKey = objectManager.NextKey();
+            Stone stone2 = new Stone(room, tempKey, new Point(1310, 514), new Size(60, 100));
+            stone2.weight = 3;
+            objectManager.AddObject(stone2);
+
+
             // 벽6
             tempKey = objectManager.NextKey();
             Floor Floor6 = new Floor(room, tempKey, new Point(422, 499), new Size(125, 30));
@@ -91,6 +109,8 @@ namespace MultiGameServer
             Floor Floor7 = new Floor(room, tempKey, new Point(613, 111), new Size(125, 30));
             Floor7.SkinNum = 3;
             objectManager.AddObject(Floor7);
+
+            
 
             // 문
             tempKey = objectManager.NextKey();

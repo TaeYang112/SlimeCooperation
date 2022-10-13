@@ -20,7 +20,7 @@ namespace MultiGame.Object
             SetSkin(0);
             Collision = true;
             Blockable = false;
-            _type = "Button";
+            _type = ObjectTypes.BUTTON;
             Pressed = false;
 
             _image = MultiGame.Properties.Resources.Button.Clone() as Image;
@@ -63,7 +63,7 @@ namespace MultiGame.Object
 
                 MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
                 generator.AddInt(key).AddByte(ObjectTypes.BUTTON);
-                byte[] message = generator.GetMessage();
+                byte[] message = generator.Generate();
 
                 GameManager.GetInstance().SendMessage(message);
             }

@@ -74,7 +74,7 @@ namespace MultiGameServer
             MessageGenerator generator = new MessageGenerator(Protocols.RES_ENTER_ROOM);
             generator.AddInt(key).AddString(RoomTitle).AddInt(clientChar.SkinNum);
 
-            Program.GetInstance().SendMessage(generator.GetMessage(), clientChar.key);
+            Program.GetInstance().SendMessage(generator.Generate(), clientChar.key);
 
 
 
@@ -89,7 +89,7 @@ namespace MultiGameServer
                 generator.AddBool(item.Value.IsReady);
                 generator.AddInt(item.Value.SkinNum);
 
-                Program.GetInstance().SendMessage(generator.GetMessage(), clientChar.key);
+                Program.GetInstance().SendMessage(generator.Generate(), clientChar.key);
             }
 
 
@@ -99,7 +99,7 @@ namespace MultiGameServer
             generator.AddBool(clientChar.IsReady);
             generator.AddInt(clientChar.SkinNum);
 
-            SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+            SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
         }
 
         // 클라이언트를 나가게 한뒤, 남은 인원수 반환
@@ -198,7 +198,51 @@ namespace MultiGameServer
             return result;
         }
 
-        
+        public Point CharacterLocationValidCheck(Point velocity, ClientCharacter character)
+        {
+            Point resultLoc = character.Location;
+            Point tempLoc;
+            int dxy = 0;
+
+            // x의 대한 충돌판정
+            if (velocity.X != 0)
+            {
+                tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
+
+                if (velocity.X < 0) dxy = 1;
+                else dxy = -1;
+
+                while (true)
+                {
+                    if (CollisionCheck(character, tempLoc) == false)
+                    {
+                        resultLoc = tempLoc;
+                        break;
+                    }
+                    tempLoc.X += dxy;
+                }
+            }
+
+            // y에 대한 충돌 판정
+            tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+
+            if (velocity.Y < 0) dxy = 1;
+            else dxy = -1;
+
+            while (true)
+            {
+                if (CollisionCheck(character, tempLoc) == false)
+                {
+                    resultLoc = tempLoc;
+                    break;
+                }
+                tempLoc.Y += dxy;
+            }
+
+
+            return resultLoc;
+        }
+
 
         // 겹치면 true 반환
         public bool CollisionCheck(GameObject target, Point newLocation)
@@ -290,7 +334,7 @@ namespace MultiGameServer
                 generator.AddInt(item.Value.Location.Y);
 
                 // 전송
-                PInst.SendMessage(generator.GetMessage(), item.Key);
+                PInst.SendMessage(generator.Generate(), item.Key);
 
                 // 클라이언트들의 시작 위치를 알려줌
                 foreach (var item2 in roomClientDic)
@@ -308,7 +352,7 @@ namespace MultiGameServer
                         generator.AddInt(item2.Value.Location.Y);
 
                         // 전송
-                        PInst.SendMessage(generator.GetMessage(), item.Key);
+                        PInst.SendMessage(generator.Generate(), item.Key);
                     }
                         
                 }
@@ -343,7 +387,7 @@ namespace MultiGameServer
                     }
 
                     // 서버로 전송
-                    PInst.SendMessage(generator.GetMessage(), item.Key);
+                    PInst.SendMessage(generator.Generate(), item.Key);
                 }
 
                 item.Value.IsEnterDoor = false;

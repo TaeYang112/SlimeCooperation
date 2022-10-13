@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace MultiGame.Object
             Blockable = false;
             _image = MultiGame.Properties.Resources.Door.Clone() as Image;
             _open = false;
-            _type = "Door";
+            _type = ObjectTypes.DOOR;
         }
 
         public override void SetSkin(int skinNum)

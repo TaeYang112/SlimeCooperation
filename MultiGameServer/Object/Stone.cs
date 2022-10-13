@@ -109,7 +109,7 @@ namespace MultiGameServer.Object
             generator.AddInt(Math.Max(0, weight - Math.Abs(rList.Count - lList.Count)));     // 보여질 무게
 
             // 방안에 클라이언트들에게 돌이 움직였다고 알림
-            room.SendMessageToAll_InRoom(generator.GetMessage());
+            room.SendMessageToAll_InRoom(generator.Generate());
 
 
             /*

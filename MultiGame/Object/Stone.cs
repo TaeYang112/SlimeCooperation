@@ -22,7 +22,7 @@ namespace MultiGame.Object
             SetSkin(0);
             Collision = true;
             Blockable = true;
-            _type = "Stone";
+            _type = ObjectTypes.STONE;
 
             _image = MultiGame.Properties.Resources.Floor1.Clone() as Image;
             font = font = new Font(FontLibrary.Families[0], 20, FontStyle.Regular);
@@ -63,7 +63,7 @@ namespace MultiGame.Object
 
             MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
             generator.AddInt(key).AddByte(ObjectTypes.STONE);
-            byte[] message = generator.GetMessage();
+            byte[] message = generator.Generate();
 
             GameManager.GetInstance().SendMessage(message);
         }

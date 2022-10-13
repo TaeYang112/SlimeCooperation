@@ -33,7 +33,9 @@ namespace MultiGameServer.Object
             generator.AddByte(Type);
             generator.AddInt(-1);
 
-            room.SendMessageToAll_InRoom(generator.GetMessage());
+            if (TargetObject != null) TargetObject.OnEvent();
+
+            room.SendMessageToAll_InRoom(generator.Generate());
         }
        
         

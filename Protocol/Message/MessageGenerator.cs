@@ -16,7 +16,7 @@ namespace MultiGameModule
             set
             {
                 _protocol = value;
-                list[4] = value;
+                list[0] = value;
             }
         }
         private List<byte> list;
@@ -63,14 +63,14 @@ namespace MultiGameModule
             return this;
         }
 
-        public byte[] GetMessage()
+        public byte[] Generate()
         {
             // 메시지의 앞에 메시지의 크기를 붙여서 보냄
-            byte[] listSize_bytes = BitConverter.GetBytes(list.Count);
-            list[0] = listSize_bytes[0];
-            list[1] = listSize_bytes[1];
-            list[2] = listSize_bytes[2];
-            list[3] = listSize_bytes[3];
+            byte[] bytes = BitConverter.GetBytes(list.Count);
+            list[1] = bytes[0];
+            list[2] = bytes[1];
+            list[3] = bytes[2];
+            list[4] = bytes[3];
 
             return list.ToArray();
         }
@@ -79,7 +79,7 @@ namespace MultiGameModule
         {
             list.Clear();
             list = new List<byte>(new byte[5]);
-            list[4] = Protocol;
+            list[0] = Protocol;
         }
 
 

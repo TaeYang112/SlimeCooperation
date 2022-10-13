@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -28,8 +29,8 @@ namespace MultiGame
         // 충돌이 발생했을 때 false이면 통과함
         public bool Blockable { get; set; }
 
-        protected string _type;
-        public string type { get; }
+        protected byte _type;
+        public byte type { get {return _type; } }
 
         // 이미지
         protected Image _image;
@@ -43,7 +44,7 @@ namespace MultiGame
             this.Collision = false;
             this.Blockable = false;
             this.isVisible = true;
-            this._type = "object";
+            this._type = ObjectTypes.GAME_OBJECT;
         }
 
         // 플레이어와 겹쳤을 때 호출됨

@@ -18,13 +18,37 @@ namespace MultiGameServer
             this.program = program;
         }
 
+        private byte[] remainedMessage = null;
+
         // 받은 메시지를 해석함
         public void ParseMessage(ClientCharacter clientChar, byte[] message)
         {
-            MessageConverter converter = new MessageConverter(message);
-  
-            do
+            // 만약 저번 해석때 메시지가 남았더라면 남은 메시지와 이어붙임
+            byte[] message2;
+            if(remainedMessage == null)
             {
+                message2 = message;
+            }
+            else
+            {
+                message2 = new byte[remainedMessage.Length + message.Length];
+                Array.Copy(remainedMessage, message2, remainedMessage.Length);
+                Array.Copy(message, 0, message2, remainedMessage.Length, message.Length);
+            }
+            
+            MessageConverter converter = new MessageConverter(message2);
+
+            while (true)
+            {
+                bool result = converter.NextMessage();
+
+                // 다음 메시지가 없으면 종료
+                if(result == false)
+                {
+                    remainedMessage = converter.RemainMessage;
+                    break;
+                }
+
                 byte protocol = converter.Protocol;
                 switch (protocol)
                 {
@@ -85,20 +109,20 @@ namespace MultiGameServer
                     default:
                         Console.WriteLine("에러");
                         break;
-                        
+
                 }
-            } while (converter.NextMessage());
+            }
         }
 
 
-        
+
 
         // 클라이언트 방만들기 요청
         public void ClientCreateRoom(ClientCharacter clientChar, MessageConverter converter)
         {
             // 방 제목
             string RoomTitle = converter.NextString();
-            
+
             // 방 생성
             Room newRoom = program.roomManager.CreateRoom(RoomTitle);
 
@@ -118,7 +142,7 @@ namespace MultiGameServer
             {
                 if (item.Value.IsFindingRoom == true)
                 {
-                    program.SendMessage(generator.GetMessage(), item.Key);
+                    program.SendMessage(generator.Generate(), item.Key);
                 }
             }
         }
@@ -141,7 +165,7 @@ namespace MultiGameServer
             {
                 // 방이 없다고 에러 보냄
                 generator.AddInt(1);
-                program.SendMessage(generator.GetMessage(), clientChar.key);
+                program.SendMessage(generator.Generate(), clientChar.key);
                 return;
             }
 
@@ -150,7 +174,7 @@ namespace MultiGameServer
             {
                 // 방이 꽉찼다고 에러 보냄
                 generator.AddInt(0);
-                program.SendMessage(generator.GetMessage(), clientChar.key);
+                program.SendMessage(generator.Generate(), clientChar.key);
                 return;
             }
 
@@ -181,7 +205,7 @@ namespace MultiGameServer
             generator.AddBool(bReady);
 
             // 방안의 다른 클라이언트한테 레디했다고 알려줌
-            room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+            room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
             if (bReady == true)
             {
@@ -215,7 +239,7 @@ namespace MultiGameServer
                         generator.AddString(room.RoomTitle);
                         generator.AddInt(room.GetPeopleCount());
 
-                        program.SendMessage(generator.GetMessage(), clientChar.key);
+                        program.SendMessage(generator.Generate(), clientChar.key);
                     }
                 }
             }
@@ -235,7 +259,7 @@ namespace MultiGameServer
             generator.AddInt(clientChar.key);
 
             // 다른 플레이어들한테 알려줌
-            room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+            room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
             // 룸의 클라이언트 배열에서도 제거
             room.ClientLeave(clientChar);
@@ -266,9 +290,14 @@ namespace MultiGameServer
             // 방이 존재하지 않으면 종료
             if (room == null) return;
 
+            int dx = x - clientChar.Location.X;
+            int dy = y - clientChar.Location.Y;
+
+            /*
             // 다른 클라이언트와 겹치는지 체크
             bool CollisionResult = room.CollisionCheck(clientChar, new Point(x, y));
 
+            
 
             // 만약 겹친다면 다시 돌아가라고 명령
             if (CollisionResult)
@@ -285,9 +314,22 @@ namespace MultiGameServer
                 }
                 return;
             }
+            */
+
+            Point point = room.CharacterLocationValidCheck(new Point(dx, dy), clientChar);
+
+            clientChar.Location = new Point(point.X, point.Y);
 
             // 겹치지 않다면 계속 진행함
-            clientChar.Location = new Point(x, y);
+            if (point.X != x || point.Y != y)
+            {
+                // 메시지 생성
+                MessageGenerator generator3 = new MessageGenerator(Protocols.S_MOVE);
+                generator3.AddInt(point.X - x );
+                generator3.AddInt(point.Y - y);
+                Program.GetInstance().SendMessage(generator3.Generate(), clientChar.key);
+            }
+
 
 
             // 메시지 생성
@@ -297,9 +339,10 @@ namespace MultiGameServer
             generator2.AddInt(y);
 
             // 전체 클라이언트에게 이동한 좌표 전송
-            room.SendMessageToAll_InRoom(generator2.GetMessage(), clientChar.key);
+            room.SendMessageToAll_InRoom(generator2.Generate(), clientChar.key);
         }
 
+       
 
         public void ClientLookDirection(ClientCharacter clientChar, MessageConverter converter)
         {
@@ -311,7 +354,7 @@ namespace MultiGameServer
             generator.AddBool(bLookRight);
 
             // 서버로 전송
-            clientChar.room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+            clientChar.room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
         }
 
 
@@ -352,13 +395,13 @@ namespace MultiGameServer
 
                             // 메시지를 만들어서 전송
                             generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT).AddInt(clientChar.key);
-                            room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+                            room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
                             generator.Clear();
 
                             // 당사자한테는 킷값을 -1로 보냄
                             generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT).AddInt(-1);
-                            room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+                            room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
                         }
                     }
                     break;
@@ -384,13 +427,13 @@ namespace MultiGameServer
 
                                     // 메시지를 만들어서 전송
                                     generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(clientChar.key).AddByte(DoorEvent.LEAVE);
-                                    room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+                                    room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
                                     generator.Clear();
 
                                     // 당사자한테는 킷값을 -1로 보냄
                                     generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(-1).AddByte(DoorEvent.LEAVE);
-                                    program.SendMessage(generator.GetMessage(), clientChar.key);
+                                    program.SendMessage(generator.Generate(), clientChar.key);
 
                                 }
 
@@ -403,13 +446,13 @@ namespace MultiGameServer
 
                                 // 메시지를 만들어서 전송
                                 generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(clientChar.key).AddByte(DoorEvent.ENTER);
-                                room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+                                room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
                                 generator.Clear();
 
                                 // 당사자한테는 킷값을 -1로 보냄
                                 generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(-1).AddByte(DoorEvent.ENTER);
-                                program.SendMessage(generator.GetMessage(), clientChar.key);
+                                program.SendMessage(generator.Generate(), clientChar.key);
 
                                 // 3명이상 들어갔을 경우 다음 맵으로 이동
                                 if (EnteredCount >= 3)
@@ -435,13 +478,13 @@ namespace MultiGameServer
                             {
                                 // 메시지를 만들어서 전송
                                 generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(clientChar.key).AddByte(DoorEvent.OPEN);
-                                room.SendMessageToAll_InRoom(generator.GetMessage(), clientChar.key);
+                                room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
                                 generator.Clear();
 
                                 // 당사자한테는 킷값을 -1로 보냄
                                 generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(-1).AddByte(DoorEvent.OPEN);
-                                program.SendMessage(generator.GetMessage(), clientChar.key);
+                                program.SendMessage(generator.Generate(), clientChar.key);
                                 door.isOpen = true;
                             }
 

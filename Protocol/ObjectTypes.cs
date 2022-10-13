@@ -8,6 +8,7 @@
         public const byte DOOR = 3;
         public const byte KEY_OBJECT = 4;
         public const byte STONE = 5;
+        public const byte STONE_DOOR = 6;
     }
 
     public static class DoorEvent

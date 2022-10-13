@@ -44,7 +44,7 @@ namespace MultiGame.UserPanel
             form.UpdateLobby();
 
             // 서버로 전송
-            GameManager.GetInstance().SendMessage(generator.GetMessage());
+            GameManager.GetInstance().SendMessage(generator.Generate());
         }
 
         private void lobbyToFind_btn_Click(object sender, EventArgs e)
@@ -53,7 +53,7 @@ namespace MultiGame.UserPanel
             MessageGenerator generator = new MessageGenerator(Protocols.C_EXIT_ROOM);
 
             // 서버로 방을 나갔다고 알림
-            GameManager.GetInstance().myClient.SendMessage(generator.GetMessage());
+            GameManager.GetInstance().myClient.SendMessage(generator.Generate());
 
             // 다른 클라이언트들 목록에서 제거
             GameManager.GetInstance().clientManager.ClientDic.Clear();

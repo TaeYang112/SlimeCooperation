@@ -163,12 +163,20 @@ namespace MultiGame
             switch (keyData)
             {
                 case Keys.Left:
-                    userClient.LeftDown = true;
-                    generator.AddByte(Keyboards.LEFT_ARROW).AddBool(true);
+                    if(userClient.LeftDown == false)
+                    {
+                        userClient.LeftDown = true;
+                        generator.AddByte(Keyboards.LEFT_ARROW).AddBool(true);
+                        gameManager.SendMessage(generator.Generate());
+                    }
                     break;
                 case Keys.Right:
-                    userClient.RightDown = true;
-                    generator.AddByte(Keyboards.RIGHT_ARROW).AddBool(true);
+                    if(userClient.RightDown == false)
+                    {
+                        userClient.RightDown = true;
+                        generator.AddByte(Keyboards.RIGHT_ARROW).AddBool(true);
+                        gameManager.SendMessage(generator.Generate());
+                    }
                     break;
                 case Keys.Space:
                     userClient.Jump();
@@ -181,9 +189,7 @@ namespace MultiGame
                     return base.ProcessCmdKey(ref msg, keyData);
 
             }
-
-            byte[] message = generator.GetMessage();
-            gameManager.SendMessage(message);
+            
 
             return true;
         }
@@ -205,21 +211,27 @@ namespace MultiGame
             switch (e.KeyData)
             {
                 case Keys.Left:
-                    userClient.LeftDown = false;
-                    generator.AddByte(Keyboards.LEFT_ARROW).AddBool(false);
+                    if(userClient.LeftDown == true)
+                    {
+                        userClient.LeftDown = false;
+                        generator.AddByte(Keyboards.LEFT_ARROW).AddBool(false);
+                        gameManager.SendMessage(generator.Generate());
+                    }
                     break;
                 case Keys.Right:
-                    userClient.RightDown = false;
-                    generator.AddByte(Keyboards.RIGHT_ARROW).AddBool(false);
+                    if(userClient.RightDown == true)
+                    {
+                        userClient.RightDown = false;
+                        generator.AddByte(Keyboards.RIGHT_ARROW).AddBool(false);
+                        gameManager.SendMessage(generator.Generate());
+                    }
                     break;
                 case Keys.Space:
                     userClient.JumpDown = false;
                     break;
                 default:
-                    break;   
+                    break;
             }
-            byte[] message = generator.GetMessage();
-            gameManager.SendMessage(message);
         }
 
         // 폼의 포커스가 풀리면 ( 알트 탭, 다른 윈도우 선택시 ) 이벤트 발생

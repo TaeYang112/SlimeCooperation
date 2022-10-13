@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
+
+
 namespace MultiGame
 {
     public partial class GameManager
@@ -94,7 +96,6 @@ namespace MultiGame
             // 큐에 메시지가 있다는거를 알려줌
             lock (lockObject) { Monitor.Pulse(lockObject); }
         }
-
         private void MessageProcess()
         {
             while (true)
