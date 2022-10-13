@@ -385,6 +385,7 @@ namespace MultiGameServer
                     {
                         KeyObject keyObj = gameObject as KeyObject;
 
+                        
                         if (keyObj == null) break;
 
                         // 소유자가 있으면 무시
@@ -397,11 +398,12 @@ namespace MultiGameServer
                             generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT).AddInt(clientChar.key);
                             room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
 
+
                             generator.Clear();
 
                             // 당사자한테는 킷값을 -1로 보냄
                             generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT).AddInt(-1);
-                            room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
+                            program.SendMessage(generator.Generate(), clientChar.key);
                         }
                     }
                     break;
