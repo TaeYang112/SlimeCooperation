@@ -13,6 +13,9 @@ namespace MultiGameServer
     public class Room
     {
         public int key { get; }
+
+        private int _nextObjKey = 0;
+        public int NextObjKey { get { return _nextObjKey++; } }
         public ConcurrentDictionary<int, ClientCharacter> roomClientDic { get; }
         public SortedSet<int> skinList;
 
@@ -288,7 +291,6 @@ namespace MultiGameServer
                     // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
                     if (gameObject.Blockable == true)
                     {
-                        Console.WriteLine(gameObject.Type);
                         return true;
                     }
                     else continue;

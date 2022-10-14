@@ -402,29 +402,38 @@ namespace MultiGame
                         break;
                     case ObjectTypes.STONE_DOOR:
                         {
-                            int x = converter.NextInt();
-                            int y = converter.NextInt();
-                            
-                            int dy = y - gameObject.Location.Y;
-                            gameObject.Location = new Point(x, y);
-                            if (dy < 0)
+                            int OpenMode = converter.NextByte();
+
+                            if(OpenMode == StoneDoorMode.MOVE)
                             {
-                                Rectangle a = new Rectangle(new Point(x, y), gameObject.size);
+                                int x = converter.NextInt();
+                                int y = converter.NextInt();
 
-                                Size size = new Size(userClient.Character.size.Width, 1);
-                                Point location = new Point(userClient.Character.Location.X, userClient.Character.Location.Y + userClient.Character.size.Height + 1);
-                                Rectangle b = new Rectangle(location, size);
-
-                                Rectangle result = Rectangle.Intersect(a, b);
-
-                                if(result.IsEmpty == false)
+                                // 캐릭터가 돌 위에 있을경우 같이 움직임
+                                int dy = y - gameObject.Location.Y;
+                                gameObject.Location = new Point(x, y);
+                                if (dy < 0)
                                 {
-                                    userClient.Move(new Point(0, dy));
+                                    Rectangle a = new Rectangle(new Point(x, y), gameObject.size);
+
+                                    Size size = new Size(userClient.Character.size.Width, 1);
+                                    Point location = new Point(userClient.Character.Location.X, userClient.Character.Location.Y + userClient.Character.size.Height + 1);
+                                    Rectangle b = new Rectangle(location, size);
+
+                                    Rectangle result = Rectangle.Intersect(a, b);
+
+                                    if (result.IsEmpty == false)
+                                    {
+                                        userClient.Move(new Point(0, dy));
+                                    }
                                 }
-                             
+
                             }
-                            
-                            //gameObject.Location = new Point(x, y);
+                            else
+                            {
+                                gameObject.isVisible = false;
+                                gameObject.Collision = false;
+                            }
                         }
                         break;
                 }

@@ -14,19 +14,15 @@ namespace MultiGameServer
 
         public Room room { get; set; }
 
-        // 오브젝트관리를 위에 부여할 키
-        private int key;
-
         public ObjectManager()
         {
             ObjectDic = new ConcurrentDictionary<int, GameObject>();
-            key = 0;
         }
 
         public GameObject AddObject(GameObject gameObject)
         {
             // 새로운 오브젝트를 배열에 저장
-            ObjectDic.TryAdd(key, gameObject);
+            ObjectDic.TryAdd(gameObject.key, gameObject);
 
             return gameObject;
         }
@@ -48,11 +44,6 @@ namespace MultiGameServer
                 item.Value.OnClose();
             }
             ObjectDic.Clear();
-        }
-
-        public int NextKey()
-        {
-            return ++key;
         }
     }
 }

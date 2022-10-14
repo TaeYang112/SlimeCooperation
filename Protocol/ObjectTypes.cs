@@ -17,4 +17,10 @@
         public const byte ENTER = 1;
         public const byte LEAVE = 2;
     }
+
+    public static class StoneDoorMode
+    {
+        public const byte MOVE = 0;
+        public const byte BEGONE = 1;
+    }
 }
