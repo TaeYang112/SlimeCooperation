@@ -57,7 +57,7 @@ namespace MultiGameServer
                 {
                     switch (command[0])
                     {
-                    case "/roomstart":
+                    case "/r":
                             {
                                if(command.Length >= 2 && command.Length <= 3)
                                {
