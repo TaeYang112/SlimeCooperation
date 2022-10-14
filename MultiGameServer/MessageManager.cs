@@ -293,50 +293,44 @@ namespace MultiGameServer
             int dx = x - clientChar.Location.X;
             int dy = y - clientChar.Location.Y;
 
-            /*
-            // 다른 클라이언트와 겹치는지 체크
-            bool CollisionResult = room.CollisionCheck(clientChar, new Point(x, y));
+            int MoveNum = converter.NextInt();
 
-            
-
-            // 만약 겹친다면 다시 돌아가라고 명령
-            if (CollisionResult)
+            // 클라이언트에게 이동 명령을 보낸뒤 다시 MoveNum이 돌아오기 전까지의 이동을 무시함
+            if(MoveNum == clientChar.MoveNum)
             {
-                Point velocity = new Point(clientChar.Location.X - x, clientChar.Location.Y - y);
-                if (velocity.X != 0 || velocity.Y != 0)
-                {
-                    // 메시지 생성
-                    MessageGenerator generator = new MessageGenerator(Protocols.S_MOVE);
-                    generator.AddInt(velocity.X).AddInt(velocity.Y);
-
-                    // 서버로 전송
-                    program.SendMessage(generator.GetMessage(), clientChar.key);
-                }
-                return;
+                Console.WriteLine("무브넘" + MoveNum);
+                clientChar.IgnoreLocation = false;
+                clientChar.MoveNum++;
             }
-            */
+            else
+            {
+                if (clientChar.IgnoreLocation == true) return;
+            }
 
+            // 충돌체크 후 이동할 수 있는 좌표 가능
             Point point = room.CharacterLocationValidCheck(new Point(dx, dy), clientChar);
 
             clientChar.Location = new Point(point.X, point.Y);
 
-            // 겹치지 않다면 계속 진행함
             if (point.X != x || point.Y != y)
             {
-                // 메시지 생성
+                // 클라이언트에게 좌표를 조정하라고 알림
                 MessageGenerator generator3 = new MessageGenerator(Protocols.S_MOVE);
                 generator3.AddInt(point.X - x );
                 generator3.AddInt(point.Y - y);
+                generator3.AddInt(clientChar.MoveNum);
                 Program.GetInstance().SendMessage(generator3.Generate(), clientChar.key);
+
+                clientChar.IgnoreLocation = true;
             }
 
 
 
-            // 메시지 생성
+            // 다른 클라이언트들에게 이 클라이언트가 움직였다는거를 알려줌
             MessageGenerator generator2 = new MessageGenerator(Protocols.S_LOCATION_OTHER);
             generator2.AddInt(clientChar.key);
-            generator2.AddInt(x);
-            generator2.AddInt(y);
+            generator2.AddInt(point.X);
+            generator2.AddInt(point.Y);
 
             // 전체 클라이언트에게 이동한 좌표 전송
             room.SendMessageToAll_InRoom(generator2.Generate(), clientChar.key);

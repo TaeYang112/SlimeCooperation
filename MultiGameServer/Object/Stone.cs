@@ -35,6 +35,7 @@ namespace MultiGameServer.Object
             dy = 0;
             GravityStarted = false;
             isGravity = false;
+            IsStatic = false;
 
             TimerCallback tc = new TimerCallback(CheckAndMove);
             MoveTimer = new System.Threading.Timer(tc, null, 0, 13);

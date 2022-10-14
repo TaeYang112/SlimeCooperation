@@ -34,6 +34,9 @@ namespace MultiGameServer
         // 충돌이 발생했을 때 false이면 통과함
         public bool Blockable { get; set; }
 
+        // 움직임이 정적인지
+        public bool IsStatic { get; set; }
+
         public GameObject(Room room, int key, Point Location, Size size)
         {
             this.key = key;
@@ -43,6 +46,7 @@ namespace MultiGameServer
             this.Blockable = false;
             this._type = ObjectTypes.GAME_OBJECT;
             this.room = room;
+            this.IsStatic = true;
             SkinNum = 0;
         }
 

@@ -161,7 +161,7 @@ namespace MultiGame.Client
 
 
         // 캐릭터 충돌검사 후 이동
-        public void Move(Point velocity)
+        public void Move(Point velocity, int MoveNum = -1)
         {
             Point resultLoc = Character.Location;
             Point tempLoc;
@@ -249,6 +249,7 @@ namespace MultiGame.Client
             // 서버로 보낼 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
             generator.AddInt(resultLoc.X).AddInt(resultLoc.Y);
+            generator.AddInt(MoveNum);
             byte[] message = generator.Generate();
 
             // 서버로 보냄

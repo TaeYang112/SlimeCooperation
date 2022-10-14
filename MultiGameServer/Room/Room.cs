@@ -214,7 +214,7 @@ namespace MultiGameServer
 
                 while (true)
                 {
-                    if (CollisionCheck(character, tempLoc) == false)
+                    if (CharacterCollisionCheck(character, tempLoc) == false)
                     {
                         resultLoc = tempLoc;
                         break;
@@ -224,25 +224,79 @@ namespace MultiGameServer
             }
 
             // y에 대한 충돌 판정
-            tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
-
-            if (velocity.Y < 0) dxy = 1;
-            else dxy = -1;
-
-            while (true)
+            if(velocity.Y != 0)
             {
-                if (CollisionCheck(character, tempLoc) == false)
+                tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+
+                if (velocity.Y < 0) dxy = 1;
+                else dxy = -1;
+
+                while (true)
                 {
-                    resultLoc = tempLoc;
-                    break;
+                    if (CharacterCollisionCheck(character, tempLoc) == false)
+                    {
+                        resultLoc = tempLoc;
+                        break;
+                    }
+                    tempLoc.Y += dxy;
                 }
-                tempLoc.Y += dxy;
             }
+            
 
 
             return resultLoc;
         }
 
+        // 겹치면 true 반환
+        public bool CharacterCollisionCheck(GameObject target, Point newLocation)
+        {
+            // 대상의 충돌 박스
+            Rectangle a = new Rectangle(newLocation, target.size);
+
+            // 모든 캐릭터와 부딪히는지 체크함
+            foreach (var item in roomClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient == target) continue;
+
+                // 충돌이 꺼져있으면 무시
+                if (otherClient.Collision == false) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return true;
+                }
+            }
+            // 맵의 모든 오브젝트와 부딪히는지 체크함
+            foreach (var item in Map.objectManager.ObjectDic)
+            {
+                GameObject gameObject = item.Value;
+
+                if (gameObject == target) continue;
+                if (gameObject.Collision == false || gameObject.IsStatic == true) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
+                // 만약 움직였을때 겹친다면 충돌 발생
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
+                    if (gameObject.Blockable == true)
+                    {
+                        Console.WriteLine(gameObject.Type);
+                        return true;
+                    }
+                    else continue;
+                }
+            }
+
+            return false;
+        }
 
         // 겹치면 true 반환
         public bool CollisionCheck(GameObject target, Point newLocation)
@@ -305,9 +359,6 @@ namespace MultiGameServer
                     break;
                 case 2:
                     _Map = new Stage2(this);
-                    break;
-                case 3:
-                    _Map = new Stage3(this);
                     break;
                 default:
                     _Map = new Stage1(this);

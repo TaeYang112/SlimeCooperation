@@ -26,6 +26,7 @@ namespace MultiGameServer.Object
             baseY = Location.Y;
             TimerCallback tc = new TimerCallback(Opening);
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
+            IsStatic = false;
         }
 
         public StoneDoor(Room room, int key, Point Location, Point Location2)

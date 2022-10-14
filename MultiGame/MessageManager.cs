@@ -215,9 +215,10 @@ namespace MultiGame
                 // 좌표
                 int x = converter.NextInt();
                 int y = converter.NextInt();
+                int MoveNum = converter.NextInt();
 
                 // 이동
-                gameManager.userClient.Move(new Point(x, y));
+                gameManager.userClient.Move(new Point(x, y), MoveNum);
             }
 
             public void NewObject(MessageConverter converter)
