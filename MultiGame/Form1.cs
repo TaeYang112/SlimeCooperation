@@ -183,7 +183,7 @@ namespace MultiGame
                     userClient.JumpDown = true;
                     break;
                 case Keys.Up:
-                    gameManager.userClient.TryOpenDoor();
+                    gameManager.userClient.Interaction();
                     break;
                 default:
                     return base.ProcessCmdKey(ref msg, keyData);

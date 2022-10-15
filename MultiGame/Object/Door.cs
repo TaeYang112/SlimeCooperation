@@ -20,7 +20,6 @@ namespace MultiGame.Object
             SetSkin(0);
             Collision = false;
             Blockable = false;
-            _image = MultiGame.Properties.Resources.Door.Clone() as Image;
             _open = false;
             _type = ObjectTypes.DOOR;
         }
@@ -34,10 +33,10 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Door.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Door;
                     break;
                 case 1:
-                    _image = MultiGame.Properties.Resources.DoorOpened.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.DoorOpened;
                     break;
             }
         }

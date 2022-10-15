@@ -23,7 +23,6 @@ namespace MultiGame.Object
             _type = ObjectTypes.BUTTON;
             Pressed = false;
 
-            _image = MultiGame.Properties.Resources.Button.Clone() as Image;
             PressedImage = MultiGame.Properties.Resources.ButtonPressed.Clone() as Image;
         }
 

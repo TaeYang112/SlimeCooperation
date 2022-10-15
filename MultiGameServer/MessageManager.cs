@@ -48,7 +48,7 @@ namespace MultiGameServer
                     remainedMessage = converter.RemainMessage;
                     break;
                 }
-
+                
                 byte protocol = converter.Protocol;
                 switch (protocol)
                 {
@@ -224,7 +224,6 @@ namespace MultiGameServer
         public void ClientReqRoomList(ClientCharacter clientChar, MessageConverter converter)
         {
             clientChar.IsFindingRoom = converter.NextBool();
-
             MessageGenerator generator = new MessageGenerator(Protocols.RES_ADD_ROOM_LIST);
 
             // 정보 요청이 true라면 원래 있던 방목록을 전달함
@@ -290,47 +289,55 @@ namespace MultiGameServer
             // 방이 존재하지 않으면 종료
             if (room == null) return;
 
-            int dx = x - clientChar.Location.X;
-            int dy = y - clientChar.Location.Y;
-
             int MoveNum = converter.NextInt();
+            bool isTeleport = converter.NextBool();
 
-            // 클라이언트에게 이동 명령을 보낸뒤 다시 MoveNum이 돌아오기 전까지의 이동을 무시함
-            if(MoveNum == clientChar.MoveNum)
+            // 서버에서 클라이언트의 위치를 옮겼을 때 동기화를 위해 번호를 맞춤
+            if (MoveNum != clientChar.MoveNum)
             {
-                Console.WriteLine("무브넘" + MoveNum);
-                clientChar.IgnoreLocation = false;
-                clientChar.MoveNum++;
+                return;
+            }
+
+            Point point = new Point(x,y);
+
+            // 텔레포트가 라면
+            if (isTeleport == true)
+            {
+                clientChar.Location = point;
             }
             else
             {
-                if (clientChar.IgnoreLocation == true) return;
+                int dx = x - clientChar.Location.X;
+                int dy = y - clientChar.Location.Y;
+
+                // 충돌체크 후 이동할 수 있는 좌표 가능
+                point = room.CharacterLocationValidCheck(new Point(dx, dy), clientChar);
+
+                clientChar.Location = new Point(point.X, point.Y);
+
+                // 만약 클라이언트가 가려는 좌표에 다른 무언가가 있다면
+                // 클라이언트에게 좌표를 조정하라고 명령
+                if (point.X - x != 0 || point.Y - y != 0)
+                {
+                    clientChar.MoveNum++;
+                    clientChar.Location = point;
+
+                    MessageGenerator generator3 = new MessageGenerator(Protocols.S_MOVE);
+                    generator3.AddInt(point.X - x);
+                    generator3.AddInt(point.Y - y);
+                    generator3.AddInt(clientChar.MoveNum);
+                    Program.GetInstance().SendMessage(generator3.Generate(), clientChar.key);
+                }
             }
-
-            // 충돌체크 후 이동할 수 있는 좌표 가능
-            Point point = room.CharacterLocationValidCheck(new Point(dx, dy), clientChar);
-
-            clientChar.Location = new Point(point.X, point.Y);
-
-            if (point.X != x || point.Y != y)
-            {
-                // 클라이언트에게 좌표를 조정하라고 알림
-                MessageGenerator generator3 = new MessageGenerator(Protocols.S_MOVE);
-                generator3.AddInt(point.X - x );
-                generator3.AddInt(point.Y - y);
-                generator3.AddInt(clientChar.MoveNum);
-                Program.GetInstance().SendMessage(generator3.Generate(), clientChar.key);
-
-                clientChar.IgnoreLocation = true;
-            }
-
-
+           
+            
+            
 
             // 다른 클라이언트들에게 이 클라이언트가 움직였다는거를 알려줌
             MessageGenerator generator2 = new MessageGenerator(Protocols.S_LOCATION_OTHER);
             generator2.AddInt(clientChar.key);
-            generator2.AddInt(point.X);
-            generator2.AddInt(point.Y);
+            generator2.AddInt(clientChar.Location.X);
+            generator2.AddInt(clientChar.Location.Y);
 
             // 전체 클라이언트에게 이동한 좌표 전송
             room.SendMessageToAll_InRoom(generator2.Generate(), clientChar.key);
@@ -369,145 +376,8 @@ namespace MultiGameServer
 
             if (objResult == false) return;
 
-
-            // 메시지 생성
-            MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-
-            switch (type)
-            {
-                case ObjectTypes.KEY_OBJECT:
-                    {
-                        KeyObject keyObj = gameObject as KeyObject;
-
-                        
-                        if (keyObj == null) break;
-
-                        // 소유자가 있으면 무시
-                        if (keyObj.ownerKey != -1) break;
-                        else
-                        {
-                            keyObj.ownerKey = clientChar.key;
-
-                            // 메시지를 만들어서 전송
-                            generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT).AddInt(clientChar.key);
-                            room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
-
-
-                            generator.Clear();
-
-                            // 당사자한테는 킷값을 -1로 보냄
-                            generator.AddInt(key).AddByte(ObjectTypes.KEY_OBJECT).AddInt(-1);
-                            program.SendMessage(generator.Generate(), clientChar.key);
-                        }
-                    }
-                    break;
-                case ObjectTypes.DOOR:
-                    {
-                        Door door = gameObject as Door;
-
-                        if (door == null) break;
-
-                        // 문이 이미 열렸을 경우
-                        if (door.isOpen)
-                        {
-                            // 문 안이라면
-                            if (clientChar.IsEnterDoor == true)
-                            {
-                                // 문밖에 나갈 수 있는지 체크 후 문밖으로 나오게 함
-                                bool result = room.CollisionCheck(clientChar, clientChar.Location);
-
-                                if (result == false)
-                                {
-                                    // 문 밖으로 나옴
-                                    room.EnterDoor(clientChar, false);
-
-                                    // 메시지를 만들어서 전송
-                                    generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(clientChar.key).AddByte(DoorEvent.LEAVE);
-                                    room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
-
-                                    generator.Clear();
-
-                                    // 당사자한테는 킷값을 -1로 보냄
-                                    generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(-1).AddByte(DoorEvent.LEAVE);
-                                    program.SendMessage(generator.Generate(), clientChar.key);
-
-                                }
-
-                            }
-                            // 문 밖이라면
-                            else
-                            {
-                                // 문 안에 들어감
-                                int EnteredCount = room.EnterDoor(clientChar, true);
-
-                                // 메시지를 만들어서 전송
-                                generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(clientChar.key).AddByte(DoorEvent.ENTER);
-                                room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
-
-                                generator.Clear();
-
-                                // 당사자한테는 킷값을 -1로 보냄
-                                generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(-1).AddByte(DoorEvent.ENTER);
-                                program.SendMessage(generator.Generate(), clientChar.key);
-
-                                // 3명이상 들어갔을 경우 다음 맵으로 이동
-                                if (EnteredCount >= 3)
-                                    room.NextGame();
-
-                            }
-
-                        }
-                        // 문이 닫혀있을 경우
-                        {
-                            // 맵에서 키를 검색함
-                            KeyObject keyObject = null;
-                            foreach (var item in room.Map.objectManager.ObjectDic)
-                            {
-                                keyObject = item.Value as KeyObject;
-
-                                if (keyObject != null) break;
-                            }
-                            if (keyObject == null) break;
-
-                            // 클라이언트가 열쇠를 가지고 있다면
-                            if (clientChar.key == keyObject.ownerKey)
-                            {
-                                // 메시지를 만들어서 전송
-                                generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(clientChar.key).AddByte(DoorEvent.OPEN);
-                                room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
-
-                                generator.Clear();
-
-                                // 당사자한테는 킷값을 -1로 보냄
-                                generator.AddInt(key).AddByte(ObjectTypes.DOOR).AddInt(-1).AddByte(DoorEvent.OPEN);
-                                program.SendMessage(generator.Generate(), clientChar.key);
-                                door.isOpen = true;
-                            }
-
-                        }
-                    }
-                    break;
-                case ObjectTypes.STONE:
-                    {
-                        Stone stone = gameObject as Stone;
-
-                        if (stone == null) break;
-
-                        stone.OnEvent();
-                    }
-                    break;
-                case ObjectTypes.BUTTON:
-                    {
-                        MultiGameServer.Object.Button button = gameObject as Button;
-
-                        if (button == null) break;
-
-                        button.OnEvent();
-                    }
-                    break;
-                default:
-                    break;
-            }
+            GameObject.EventParam param = new GameObject.EventParam(clientChar);
+            gameObject.OnEvent(param);
         }
         
         public void ClientKeyInput(ClientCharacter clientChar, MessageConverter converter)

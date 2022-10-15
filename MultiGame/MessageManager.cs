@@ -217,8 +217,26 @@ namespace MultiGame
                 int y = converter.NextInt();
                 int MoveNum = converter.NextInt();
 
-                // 이동
-                gameManager.userClient.Move(new Point(x, y), MoveNum);
+                UserClient userClient = gameManager.userClient;
+
+                lock(userClient.MoveLock)
+                {
+                    // 만약 서버로부터 새로운 이동명령이 오면
+                    if(userClient.MoveNum != MoveNum)
+                    {
+                        userClient.MoveNum = MoveNum;
+
+                        // 텔레포트
+                        userClient.Move(new Point(x, y), true);
+                    }
+                    else
+                    {
+                        // 이동
+                        userClient.Move(new Point(x, y));
+                    }
+                    
+                }
+                
             }
 
             public void NewObject(MessageConverter converter)
@@ -232,10 +250,12 @@ namespace MultiGame
                 // 좌표
                 int x = converter.NextInt();
                 int y = converter.NextInt();
+                Point location = new Point(x, y);
 
                 // 사이즈
                 int width = converter.NextInt();
                 int height = converter.NextInt();
+                Size size = new Size(width, height);
 
                 // 스킨 번호
                 int skinNum = converter.NextInt();
@@ -246,25 +266,25 @@ namespace MultiGame
                 {
                     case ObjectTypes.FLOOR:
                         {
-                            newObject = new Floor(key, new Point(x, y), new Size(width, height));
+                            newObject = new Floor(key, location, size);
                         }
                         break;
                     case ObjectTypes.KEY_OBJECT:
                         {
-                            newObject = new KeyObject(key, new Point(x, y), new Size(width, height));
+                            newObject = new KeyObject(key, location, size);
                             objectManager.keyObjectKey = key;
                         }
                         break;
                     case ObjectTypes.DOOR:
                         {
-                            newObject = new Door(key, new Point(x, y), new Size(width, height));
+                            newObject = new Door(key, location, size);
                             objectManager.doorKey = key;
                         }
                         break;
                     case ObjectTypes.STONE:
                         {
                             int weight = converter.NextInt();
-                            Stone stone = new Stone(key, new Point(x, y), new Size(width, height));
+                            Stone stone = new Stone(key, location, size);
                             stone.weight = weight;
 
                             newObject = stone;
@@ -272,12 +292,17 @@ namespace MultiGame
                         break;
                     case ObjectTypes.BUTTON:
                         {
-                            newObject = new MultiGame.Object.Button(key, new Point(x, y), new Size(width, height));
+                            newObject = new MultiGame.Object.Button(key, location, size);
                         }
                         break;
                     case ObjectTypes.STONE_DOOR:
                         {
-                            newObject = new StoneDoor(key, new Point(x, y), new Size(width, height));
+                            newObject = new StoneDoor(key, location, size);
+                        }
+                        break;
+                    case ObjectTypes.PORTAL:
+                        {
+                            newObject = new Portal(key, location, size);
                         }
                         break;
                     default:
@@ -350,9 +375,9 @@ namespace MultiGame
                                     break;
                                 case DoorEvent.ENTER:
                                     {
+                                        int dd = converter.NextInt();
                                         client.isVisible = false;
                                         client.Collision = false;
-
                                         // 만약 유저클라이언트일 경우 더이상 움직이지 못하게함
                                         if (clientKey == -1)
                                         {
@@ -434,6 +459,11 @@ namespace MultiGame
                                 gameObject.isVisible = false;
                                 gameObject.Collision = false;
                             }
+                        }
+                        break;
+                    case ObjectTypes.PORTAL:
+                        {
+                            
                         }
                         break;
                 }

@@ -38,7 +38,7 @@ namespace MultiGameServer.Object
         {
         }
 
-        public override void OnEvent()
+        public override void OnEvent(EventParam param)
         {
             Open();
         }

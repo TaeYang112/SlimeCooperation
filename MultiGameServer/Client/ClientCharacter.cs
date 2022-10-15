@@ -34,8 +34,6 @@ namespace MultiGameServer
         // 서버에서 클라이언트에게 Move 명령을 내리면 MoveNum을 다시 돌려받기 전까지 오는 위치정보를 무시함
         public int MoveNum { get; set; }
 
-        public bool IgnoreLocation { get; set; }
-
         public ClientCharacter(Room room, int key, ClientData clientData)
             :base(room, key,new Point(0,0), new Size(60,50))
         {
@@ -51,7 +49,6 @@ namespace MultiGameServer
             bLeftPress = false;
 
             MoveNum = 0;
-            IgnoreLocation = false;
         }
 
         public void GameStart()

@@ -23,13 +23,26 @@ namespace MultiGame.Object
             SetSkin(0);
             Collision = true;
             Blockable = false;
-            _image = MultiGame.Properties.Resources.Key.Clone() as Image;
             _owner = null;
             _type = ObjectTypes.KEY_OBJECT;
 
             // 눌려있는 키를 확인하여 캐릭터를 움직이게 하는 타이머 ( 0.01초마다 확인 )
             TimerCallback tc = new TimerCallback(MoveToTargetTimer);                                    // 실행시킬 메소드
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite); 
+        }
+
+        override public void SetSkin(int num)
+        {
+            isVisible = true;
+            switch (num)
+            {
+                case -1:
+                    isVisible = false;
+                    break;
+                case 0:
+                    _image = MultiGame.Properties.Resources.Key;
+                    break;
+            }
         }
 
         public override void OnHit()

@@ -84,6 +84,12 @@ namespace MultiGameServer
             stone1.weight = 1;
             objectManager.AddObject(stone1);
 
+            // 포탈
+            tempKey = room.NextObjKey;
+            Portal portal1 = new Portal(room, tempKey, new Point(1285, 528), new Size(120, 120));
+            portal1.TargetLocation = new Point(10, 10);
+            objectManager.AddObject(portal1);
+
             // 땅2
             tempKey = room.NextObjKey;
             Floor Floor7 = new Floor(room, tempKey, new Point(0, 335), new Size(1440, 65));

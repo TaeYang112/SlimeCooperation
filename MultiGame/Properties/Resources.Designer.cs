@@ -213,6 +213,16 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap Lava1 {
+            get {
+                object obj = ResourceManager.GetObject("Lava1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap MainMenu {
             get {
                 object obj = ResourceManager.GetObject("MainMenu", resourceCulture);
@@ -236,6 +246,16 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Pink {
             get {
                 object obj = ResourceManager.GetObject("Pink", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap portal_2 {
+            get {
+                object obj = ResourceManager.GetObject("portal_2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

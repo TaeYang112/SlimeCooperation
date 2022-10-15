@@ -95,7 +95,7 @@ namespace MultiGame.UserPanel
             GameManager GInst = GameManager.GetInstance();
             var g = e.Graphics;
 
-            
+            ImageAnimator.UpdateFrames();
             
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(1440, 862)));
@@ -134,7 +134,11 @@ namespace MultiGame.UserPanel
             if (e.Button == MouseButtons.Left)
                 Console.WriteLine("좌표 / X : " + e.X + "    Y : " + e.Y);
             else if (e.Button == MouseButtons.Right)
-                GameManager.GetInstance().userClient.Character.Location = new Point(e.X, e.Y);
+            {
+                Point point = GameManager.GetInstance().userClient.Character.Location;
+
+                GameManager.GetInstance().userClient.Move(new Point( e.X - point.X, e.Y - point.Y), true);
+            }
         }
     }
 }

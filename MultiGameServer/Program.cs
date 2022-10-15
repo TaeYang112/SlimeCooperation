@@ -189,7 +189,6 @@ namespace MultiGameServer
 
             bool result = clientManager.ClientDic.TryGetValue(recieverKey, out clientChar);
             if (result == false) return;
-
             server.SendMessage(message, clientChar.clientData);
 
         }
