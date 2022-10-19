@@ -114,7 +114,7 @@ namespace MultiGameServer.Object
             // 방안에 클라이언트들에게 돌이 움직였다고 알림
             room.SendMessageToAll_InRoom(generator.Generate());
 
-
+            /*
             // 힘을 가한 클라이언트들도 자연스움을 위해 움직임
             if (List != null)
             {
@@ -132,7 +132,7 @@ namespace MultiGameServer.Object
 
                 }
             }
-            
+            */
             
         }
 

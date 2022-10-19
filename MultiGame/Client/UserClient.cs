@@ -377,6 +377,8 @@ namespace MultiGame.Client
                                 GameManager.GetInstance().SendMessage(generator.Generate());
                             }
                             break;
+                        default:
+                            continue;
                     }
                     return;
                 }
