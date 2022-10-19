@@ -123,13 +123,13 @@ namespace MultiGameServer
             Floor13.SkinNum = 3;
             objectManager.AddObject(Floor13);
 
-
+            /*
             // 돌2
             tempKey = room.NextObjKey;
             Stone stone2 = new Stone(room, tempKey, new Point(150, 10), new Size(40, 75));
             stone2.weight = 1;
             objectManager.AddObject(stone2);
-
+            */
             // 벽6
             tempKey = room.NextObjKey;
             Floor Floor11 = new Floor(room, tempKey, new Point(605, 236), new Size(125, 30));

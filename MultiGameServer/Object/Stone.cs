@@ -96,10 +96,12 @@ namespace MultiGameServer.Object
             else
                 velocity.Y = 1;
 
+            Point realVelo = Location;
+
             // 이동
             Move(velocity);
 
-
+            realVelo = new Point(Location.X - realVelo.X, Location.Y - realVelo.Y);
 
             // 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
@@ -113,18 +115,24 @@ namespace MultiGameServer.Object
             room.SendMessageToAll_InRoom(generator.Generate());
 
 
-            /*
             // 힘을 가한 클라이언트들도 자연스움을 위해 움직임
             if (List != null)
             {
                 // 클라이언트도 움직임
                 foreach (var client in List)
                 {
-                    client.Location = new Point(client.Location.X + velocity.X, client.Location.Y);
-                    Program.GetInstance().SendMessage($"Move#{velocity.X}#{0}@", client.key);
+                    client.MoveNum++;
+                    client.Location = new Point(client.Location.X + realVelo.X, client.Location.Y);
+
+                    MessageGenerator generator3 = new MessageGenerator(Protocols.S_MOVE);
+                    generator3.AddInt(realVelo.X);
+                    generator3.AddInt(0);
+                    generator3.AddInt(client.MoveNum);
+                    Program.GetInstance().SendMessage(generator3.Generate(), client.key);
+
                 }
             }
-            */
+            
             
         }
 

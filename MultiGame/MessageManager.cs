@@ -45,7 +45,6 @@ namespace MultiGame
                 while (true)
                 {
                     bool result = converter.NextMessage();
-
                     // 다음 메시지가 없으면 종료
                     if (result == false)
                     {
@@ -54,7 +53,6 @@ namespace MultiGame
                     }
 
                     byte protocol = converter.Protocol;
-
                     switch (protocol)
                     {
                         // 다른 클라이언트의 캐릭터 위치 수신
@@ -234,9 +232,9 @@ namespace MultiGame
                         // 이동
                         userClient.Move(new Point(x, y));
                     }
-                    
+
                 }
-                
+
             }
 
             public void NewObject(MessageConverter converter)

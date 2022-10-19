@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace MultiGame
 {
-    public class FontLibrary
+    public class ResourceLibrary
     {
-        private static FontLibrary inst = new FontLibrary();
+
+        private static ResourceLibrary inst = new ResourceLibrary();
+
         public PrivateFontCollection privateFont = new PrivateFontCollection();
         public static FontFamily[] Families
         {
@@ -21,9 +23,21 @@ namespace MultiGame
             }
         }
 
-        public FontLibrary()
+        private Bitmap _portal;
+        public static Bitmap Portal
+        {
+            get
+            {
+                return inst._portal;
+            }
+        }
+
+        public ResourceLibrary()
         {
             AddFontFromMemory();
+
+            _portal = MultiGame.Properties.Resources.portal_2;
+            ImageAnimator.Animate(_portal, null);
         }
 
         private void AddFontFromMemory()
@@ -38,6 +52,5 @@ namespace MultiGame
                 privateFont.AddMemoryFont(fontBuffer, font.Length);
             }
         }
-
     }
 }

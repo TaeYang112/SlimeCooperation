@@ -43,8 +43,10 @@ namespace MultiGame.UserPanel
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
             // 배경 이미지
-            BackGroundImg = MultiGame.Properties.Resources.Background2.Clone() as Image;
+            BackGroundImg = MultiGame.Properties.Resources.Background2;
 
+            // 포탈 gif 애니메이션
+            
 
             TimerCallback tc2 = new TimerCallback(DebugTimer);
             FPSTimer = new System.Threading.Timer(tc2, null, 0, 1000);
@@ -96,7 +98,6 @@ namespace MultiGame.UserPanel
             var g = e.Graphics;
 
             ImageAnimator.UpdateFrames();
-            
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(1440, 862)));
 

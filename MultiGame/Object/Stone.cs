@@ -24,7 +24,7 @@ namespace MultiGame.Object
             Blockable = true;
             _type = ObjectTypes.STONE;
 
-            font = font = new Font(FontLibrary.Families[0], 20, FontStyle.Regular);
+            font = font = new Font(ResourceLibrary.Families[0], 20, FontStyle.Regular);
             format = new StringFormat();
             format.Alignment = StringAlignment.Center;
             format.LineAlignment = StringAlignment.Center;

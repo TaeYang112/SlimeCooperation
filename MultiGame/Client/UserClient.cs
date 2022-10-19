@@ -368,6 +368,15 @@ namespace MultiGame.Client
                                 GameManager.GetInstance().SendMessage(message);
                             }
                             break;
+                        case ObjectTypes.PORTAL:
+                            {
+                                MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
+                                generator.AddInt(gameObject.key);
+                                generator.AddByte(gameObject.type);
+
+                                GameManager.GetInstance().SendMessage(generator.Generate());
+                            }
+                            break;
                     }
                     return;
                 }

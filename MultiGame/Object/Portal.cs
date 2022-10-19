@@ -19,7 +19,6 @@ namespace MultiGame.Object
             Collision = true;
             Blockable = false;
             _type = ObjectTypes.PORTAL;
-            
         }
 
         public override void SetSkin(int skinNum)
@@ -31,12 +30,13 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.portal_2;
-                    ImageAnimator.Animate(_image, null);
+                    _image = ResourceLibrary.Portal;
                     break;
             }
         
         }
+
+
 
         public override void OnPaint(object obj, PaintEventArgs pe)
         {
@@ -48,11 +48,7 @@ namespace MultiGame.Object
         {
              base.OnHit();
 
-            MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
-            generator.AddInt(key);
-            generator.AddByte(type);
-
-            GameManager.GetInstance().SendMessage(generator.Generate());
+            
             
         }
 
