@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MultiGameServer
@@ -32,6 +33,11 @@ namespace MultiGameServer
         // 현재 몇 스테이지
         public int stageNum { get; set; }
 
+        public bool IsAllDie { get; set; }
+
+        // 죽고 부활 타이머
+        private System.Threading.Timer RespawnTimer;
+
         public Room(int key, string RoomTitle)
         {
             this.key = key;
@@ -45,6 +51,10 @@ namespace MultiGameServer
             {
                 skinList.Add(i);
             }
+            IsAllDie = false;
+
+            TimerCallback tc = new TimerCallback(Respawn);
+            RespawnTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         public void Close()
@@ -201,6 +211,25 @@ namespace MultiGameServer
             return result;
         }
 
+        public void AllDie()
+        {
+            if (IsAllDie == false)
+            {
+                IsAllDie = true;
+                MessageGenerator generator = new MessageGenerator(Protocols.S_ALLDIE);
+
+                SendMessageToAll_InRoom(generator.Generate());
+
+                RespawnTimer.Change(1000, Timeout.Infinite);
+            }
+        }
+
+        private void Respawn(object o)
+        {
+            GameStart(stageNum);
+            IsAllDie = false;
+        }
+
         public Point CharacterLocationValidCheck(Point velocity, ClientCharacter character)
         {
             Point resultLoc = character.Location;
@@ -350,6 +379,8 @@ namespace MultiGameServer
 
         public void GameStart(int stageNum)
         {
+            this.stageNum = stageNum;
+
             if (Map != null)
                 Map.objectManager.ClearObjects();
             

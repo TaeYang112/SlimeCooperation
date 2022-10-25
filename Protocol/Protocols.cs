@@ -42,6 +42,7 @@
         public const byte S_NEW_OBJECT = 136;			// 오브젝트 키(int), 오브젝트 타입(byte), X(int), Y(int), width(int), height(int), 스킨 번호(int)
         public const byte S_ERROR = 137;				// ErrorCode(int)
         public const byte S_PING = 138;				    //
+        public const byte S_ALLDIE = 139;
 
         // 다른 클라이언트의 변경사항을 알려줌
         public const byte S_EXIT_ROOM_OTHER = 160;

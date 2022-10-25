@@ -15,6 +15,8 @@ namespace MultiGame.Client
         public bool RightDown { get; set; }
         public bool JumpDown { get; set; }
 
+        
+
         // 땅인지
         public bool IsGround { get; set; }
 
@@ -53,6 +55,7 @@ namespace MultiGame.Client
             MoveNum = 0;
             MoveLock = new object();
 
+
         }
 
 
@@ -88,6 +91,9 @@ namespace MultiGame.Client
 
             if (LeftDown ^ RightDown && Character.LookDirectionRight != bLookRight)
             {
+                Character.LookDirectionRight = bLookRight;
+                Character.SetDirection(bLookRight);
+
                 // 서버로 보낼 메시지 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.C_LOOK_DIRECTION);
                 generator.AddBool(bLookRight);
@@ -96,7 +102,6 @@ namespace MultiGame.Client
                 // 서버로 전송
                 GameManager.GetInstance().SendMessage(message);
 
-                Character.MoveDirectionRight = bLookRight;
             }
 
             // 이차 함수를 이용한 점프

@@ -114,6 +114,11 @@ namespace MultiGame
                                 MapStart(converter);
                             }
                             break;
+                        case Protocols.S_ALLDIE:
+                            {
+                                AllDie(converter);
+                            }
+                            break;
                         // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
                         case Protocols.S_PING:
                             {
@@ -205,7 +210,7 @@ namespace MultiGame
 
                 if (result == false) return;
 
-                client.MoveDirectionRight = bLookRight;
+                client.SetDirection(bLookRight);
             }
 
             public void Move(MessageConverter converter)
@@ -301,6 +306,11 @@ namespace MultiGame
                     case ObjectTypes.PORTAL:
                         {
                             newObject = new Portal(key, location, size);
+                        }
+                        break;
+                    case ObjectTypes.LAVA:
+                        {
+                            newObject = new Lava(key, location, size);
                         }
                         break;
                     default:
@@ -624,6 +634,8 @@ namespace MultiGame
                     // 화면에 출력
                     item.Value.isVisible = true;
 
+                    item.Value.SetDie(false);
+
                     // 충돌 판정 켬
                     item.Value.Blockable = true;
                     item.Value.Collision = true;
@@ -634,12 +646,26 @@ namespace MultiGame
 
                 // 유저 캐릭터
                 userClient.Character.isVisible = true;
+                userClient.Character.SetDie(false);
                 userClient.Character.Collision = true;
                 userClient.Character.Blockable = true;
+
                 userClient.Start();
             }
 
+            public void AllDie(MessageConverter converter)
+            {
+                ClientCharacter userCharacter = gameManager.userClient.Character;
+                userCharacter.SetDie(true);
+                gameManager.userClient.CanMove = false;
 
+                foreach(var item in gameManager.clientManager.ClientDic)
+                {
+                    ClientCharacter clientCharacter = item.Value;
+                    clientCharacter.SetSkin(clientCharacter.SkinNum + 8);
+                    clientCharacter.SetDie(true);
+                }
+            }
 
             public void AddRoomList(MessageConverter converter)
             {

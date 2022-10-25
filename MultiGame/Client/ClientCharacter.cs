@@ -13,14 +13,18 @@ namespace MultiGame
     // Client 정보를 갖는 클래스
     public class ClientCharacter : GameObject
     {
-        // 오른쪽으로 이동했으면 true 아니면 false
-        public bool MoveDirectionRight { get; set; }
-
         // 오른쪽을 보고있으면 true 아니면 false
-        private bool _LookDirectionRight;
-        public bool LookDirectionRight { get { return _LookDirectionRight; } }
+        public bool LookDirectionRight { get; set; }
 
         public bool IsReady { get; set; }
+
+        private int _skinNum = 0;
+        public int SkinNum { get { return _skinNum; } set{SetSkin(_skinNum);} }
+
+        private Image _rightImage;
+        private Image _leftImage;
+        private Image _DLeftImage;
+        private Image _DRightImage;
 
         public ClientCharacter(int key, Point Location, int skinNum)
             : base(key, Location, new Size(60,50))
@@ -28,44 +32,60 @@ namespace MultiGame
             IsReady = false;
             Collision = true;
             Blockable = true;
-
-            // 이미지 관련
-            MoveDirectionRight = true;
-            _LookDirectionRight = true;
+            LookDirectionRight = true;
 
             SetSkin(skinNum);
         }
 
         override public void SetSkin(int skinNum)
         {
+            _skinNum = skinNum;
             switch (skinNum % 8)
             {
                 case 0:
-                    _image = MultiGame.Properties.Resources.Red.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Red;
+                    _DRightImage = MultiGame.Properties.Resources.Red2;
                     break;
                 case 1:
-                    _image = MultiGame.Properties.Resources.Orange.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Orange;
+                    _DRightImage = MultiGame.Properties.Resources.Orange2;
                     break;
                 case 2:
-                    _image = MultiGame.Properties.Resources.Yellow.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Yellow;
+                    _DRightImage = MultiGame.Properties.Resources.Yellow2;
                     break;
                 case 3:
-                    _image = MultiGame.Properties.Resources.Green.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Green;
+                    _DRightImage = MultiGame.Properties.Resources.Green2;
                     break;
                 case 4:
-                    _image = MultiGame.Properties.Resources.Blue.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Blue;
+                    _DRightImage = MultiGame.Properties.Resources.Blue2;
                     break;
                 case 5:
-                    _image = MultiGame.Properties.Resources.Purple.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Purple;
+                    _DRightImage = MultiGame.Properties.Resources.Purple2;
                     break;
                 case 6:
-                    _image = MultiGame.Properties.Resources.Pink.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Pink;
+                    _DRightImage = MultiGame.Properties.Resources.Pink2;
                     break;
                 case 7:
-                    _image = MultiGame.Properties.Resources.Gray.Clone() as Image;
+                    _rightImage = MultiGame.Properties.Resources.Gray;
+                    _DRightImage = MultiGame.Properties.Resources.Gray2;
                     break;
             }
+
+            _image = _rightImage;
+
+            _leftImage = _rightImage.Clone() as Image;
+            _leftImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
+
+            _DLeftImage = _DRightImage.Clone() as Image;
+            _DLeftImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
         }
+
+
         public void GameStart()
         {
         }
@@ -74,17 +94,44 @@ namespace MultiGame
         override public void OnPaint(object obj, PaintEventArgs pe)
         {
             var e = pe.Graphics;
-            if(MoveDirectionRight != LookDirectionRight)
-            {
-                image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                _LookDirectionRight = MoveDirectionRight;
-            }
+
 
             if (isVisible == false) return;
 
             Size siz = new Size(size.Width+1, size.Height+1);
             e.DrawImage(image,new Rectangle(Location, siz ));
             
+        }
+
+        public void SetDirection(bool bRight)
+        {
+            if (bRight)
+            {
+                _image = _rightImage;
+            }
+            else
+            {
+                _image = _leftImage;
+            }
+            LookDirectionRight = bRight;
+        }
+
+        public void SetDie(bool flag)
+        {
+            if(flag)
+            {
+                if (LookDirectionRight)
+                    _image = _DRightImage;
+                else
+                    _image = _DLeftImage;
+            }
+            else
+            {
+                if (LookDirectionRight)
+                    _image = _rightImage;
+                else
+                    _image = _leftImage;
+            }
         }
 
 

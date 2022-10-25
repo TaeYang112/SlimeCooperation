@@ -16,7 +16,7 @@ namespace MultiGame.Object
             SetSkin(0);
             Collision = true;
             Blockable = true;
-            _type = ObjectTypes.FLOOR;
+            _type = ObjectTypes.LAVA;
         }
 
         override public void SetSkin(int num)
@@ -31,6 +31,16 @@ namespace MultiGame.Object
                     _image = MultiGame.Properties.Resources.Lava1;
                     break;
             }
+        }
+
+        public override void OnHit()
+        {
+            base.OnHit();
+
+            MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
+            generator.AddInt(key).AddByte(ObjectTypes.LAVA);
+            GameManager.GetInstance().SendMessage(generator.Generate());
+
         }
     }
 }

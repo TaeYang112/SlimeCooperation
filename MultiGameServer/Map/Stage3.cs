@@ -90,11 +90,10 @@ namespace MultiGameServer
             portal1.TargetLocation = new Point(10, 10);
             objectManager.AddObject(portal1);
 
-            // 땅2
+            // 용암
             tempKey = room.NextObjKey;
-            Floor Floor7 = new Floor(room, tempKey, new Point(0, 335), new Size(1440, 65));
-            Floor7.SkinNum = 2;
-            objectManager.AddObject(Floor7);
+            Lava lava = new Lava(room, tempKey, new Point(0, 335), new Size(1440, 65));
+            objectManager.AddObject(lava);
 
             // 벽5
             tempKey = room.NextObjKey;
@@ -123,13 +122,13 @@ namespace MultiGameServer
             Floor13.SkinNum = 3;
             objectManager.AddObject(Floor13);
 
-            /*
+            
             // 돌2
             tempKey = room.NextObjKey;
             Stone stone2 = new Stone(room, tempKey, new Point(150, 10), new Size(40, 75));
             stone2.weight = 1;
             objectManager.AddObject(stone2);
-            */
+            
             // 벽6
             tempKey = room.NextObjKey;
             Floor Floor11 = new Floor(room, tempKey, new Point(605, 236), new Size(125, 30));
