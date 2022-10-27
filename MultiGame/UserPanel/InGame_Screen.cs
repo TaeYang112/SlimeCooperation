@@ -43,8 +43,10 @@ namespace MultiGame.UserPanel
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
             // 배경 이미지
-            BackGroundImg = MultiGame.Properties.Resources.Background2.Clone() as Image;
+            BackGroundImg = MultiGame.Properties.Resources.Background2;
 
+            // 포탈 gif 애니메이션
+            
 
             TimerCallback tc2 = new TimerCallback(DebugTimer);
             FPSTimer = new System.Threading.Timer(tc2, null, 0, 1000);
@@ -95,8 +97,7 @@ namespace MultiGame.UserPanel
             GameManager GInst = GameManager.GetInstance();
             var g = e.Graphics;
 
-            
-            
+            ImageAnimator.UpdateFrames();
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(1440, 862)));
 
@@ -134,7 +135,11 @@ namespace MultiGame.UserPanel
             if (e.Button == MouseButtons.Left)
                 Console.WriteLine("좌표 / X : " + e.X + "    Y : " + e.Y);
             else if (e.Button == MouseButtons.Right)
-                GameManager.GetInstance().userClient.Character.Location = new Point(e.X, e.Y);
+            {
+                Point point = GameManager.GetInstance().userClient.Character.Location;
+
+                GameManager.GetInstance().userClient.Move(new Point( e.X - point.X, e.Y - point.Y), true);
+            }
         }
     }
 }

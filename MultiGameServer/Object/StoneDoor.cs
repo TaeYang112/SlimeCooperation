@@ -16,6 +16,9 @@ namespace MultiGameServer.Object
         public int MaxOffset { get; set; }
 
         private int baseY { get; set; }
+
+        public byte OpeningMode { get; set; }
+
         public StoneDoor(Room room, int key, Point Location, Size size)
             : base(room, key,Location,size)
         {
@@ -26,6 +29,8 @@ namespace MultiGameServer.Object
             baseY = Location.Y;
             TimerCallback tc = new TimerCallback(Opening);
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
+            IsStatic = false;
+            OpeningMode = StoneDoorMode.MOVE;
         }
 
         public StoneDoor(Room room, int key, Point Location, Point Location2)
@@ -33,14 +38,31 @@ namespace MultiGameServer.Object
         {
         }
 
-        public override void OnEvent()
+        public override void OnEvent(EventParam param)
         {
             Open();
         }
 
         public void Open()
         {
-            MoveTimer.Change(0, 13);
+            if(OpeningMode == StoneDoorMode.MOVE)
+            {
+                // 타이머를 이용하여 정해진 거리만큼 움직임
+                MoveTimer.Change(0, 13);
+            }
+            else
+            {
+                // 클라이언트들에게 문이 사라졌다고 알려줌
+                MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                generator.AddInt(key);
+                generator.AddByte(Type);
+                generator.AddInt(-1);
+                generator.AddByte(StoneDoorMode.BEGONE);
+                room.SendMessageToAll_InRoom(generator.Generate());
+
+                // 서버 자체적으로 충돌판정 없앰
+                Collision = false;
+            }
         }
 
         public void Opening(object o)
@@ -51,6 +73,7 @@ namespace MultiGameServer.Object
             generator.AddInt(key);
             generator.AddByte(Type);
             generator.AddInt(-1);
+            generator.AddByte(StoneDoorMode.MOVE);
             generator.AddInt(Location.X).AddInt(Location.Y);
             room.SendMessageToAll_InRoom(generator.Generate());
 

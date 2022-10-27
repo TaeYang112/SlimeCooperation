@@ -54,7 +54,6 @@ namespace MultiGame
                     }
 
                     byte protocol = converter.Protocol;
-
                     switch (protocol)
                     {
                         // 다른 클라이언트의 캐릭터 위치 수신
@@ -114,6 +113,11 @@ namespace MultiGame
                         case Protocols.S_MAP_START:
                             {
                                 MapStart(converter);
+                            }
+                            break;
+                        case Protocols.S_ALLDIE:
+                            {
+                                AllDie(converter);
                             }
                             break;
                         // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
@@ -207,7 +211,7 @@ namespace MultiGame
 
                 if (result == false) return;
 
-                client.MoveDirectionRight = bLookRight;
+                client.SetDirection(bLookRight);
             }
 
             public void Move(MessageConverter converter)
@@ -215,9 +219,28 @@ namespace MultiGame
                 // 좌표
                 int x = converter.NextInt();
                 int y = converter.NextInt();
+                int MoveNum = converter.NextInt();
 
-                // 이동
-                gameManager.userClient.Move(new Point(x, y));
+                UserClient userClient = gameManager.userClient;
+
+                lock(userClient.MoveLock)
+                {
+                    // 만약 서버로부터 새로운 이동명령이 오면
+                    if(userClient.MoveNum != MoveNum)
+                    {
+                        userClient.MoveNum = MoveNum;
+
+                        // 텔레포트
+                        userClient.Move(new Point(x, y), true);
+                    }
+                    else
+                    {
+                        // 이동
+                        userClient.Move(new Point(x, y));
+                    }
+
+                }
+
             }
 
             public void NewObject(MessageConverter converter)
@@ -231,10 +254,12 @@ namespace MultiGame
                 // 좌표
                 int x = converter.NextInt();
                 int y = converter.NextInt();
+                Point location = new Point(x, y);
 
                 // 사이즈
                 int width = converter.NextInt();
                 int height = converter.NextInt();
+                Size size = new Size(width, height);
 
                 // 스킨 번호
                 int skinNum = converter.NextInt();
@@ -245,25 +270,25 @@ namespace MultiGame
                 {
                     case ObjectTypes.FLOOR:
                         {
-                            newObject = new Floor(key, new Point(x, y), new Size(width, height));
+                            newObject = new Floor(key, location, size);
                         }
                         break;
                     case ObjectTypes.KEY_OBJECT:
                         {
-                            newObject = new KeyObject(key, new Point(x, y), new Size(width, height));
+                            newObject = new KeyObject(key, location, size);
                             objectManager.keyObjectKey = key;
                         }
                         break;
                     case ObjectTypes.DOOR:
                         {
-                            newObject = new Door(key, new Point(x, y), new Size(width, height));
+                            newObject = new Door(key, location, size);
                             objectManager.doorKey = key;
                         }
                         break;
                     case ObjectTypes.STONE:
                         {
                             int weight = converter.NextInt();
-                            Stone stone = new Stone(key, new Point(x, y), new Size(width, height));
+                            Stone stone = new Stone(key, location, size);
                             stone.weight = weight;
 
                             newObject = stone;
@@ -271,12 +296,22 @@ namespace MultiGame
                         break;
                     case ObjectTypes.BUTTON:
                         {
-                            newObject = new MultiGame.Object.Button(key, new Point(x, y), new Size(width, height));
+                            newObject = new MultiGame.Object.Button(key, location, size);
                         }
                         break;
                     case ObjectTypes.STONE_DOOR:
                         {
-                            newObject = new StoneDoor(key, new Point(x, y), new Size(width, height));
+                            newObject = new StoneDoor(key, location, size);
+                        }
+                        break;
+                    case ObjectTypes.PORTAL:
+                        {
+                            newObject = new Portal(key, location, size);
+                        }
+                        break;
+                    case ObjectTypes.LAVA:
+                        {
+                            newObject = new Lava(key, location, size);
                         }
                         break;
                     default:
@@ -349,9 +384,9 @@ namespace MultiGame
                                     break;
                                 case DoorEvent.ENTER:
                                     {
+                                        int dd = converter.NextInt();
                                         client.isVisible = false;
                                         client.Collision = false;
-
                                         // 만약 유저클라이언트일 경우 더이상 움직이지 못하게함
                                         if (clientKey == -1)
                                         {
@@ -401,29 +436,43 @@ namespace MultiGame
                         break;
                     case ObjectTypes.STONE_DOOR:
                         {
-                            int x = converter.NextInt();
-                            int y = converter.NextInt();
-                            
-                            int dy = y - gameObject.Location.Y;
-                            gameObject.Location = new Point(x, y);
-                            if (dy < 0)
+                            int OpenMode = converter.NextByte();
+
+                            if(OpenMode == StoneDoorMode.MOVE)
                             {
-                                Rectangle a = new Rectangle(new Point(x, y), gameObject.size);
+                                int x = converter.NextInt();
+                                int y = converter.NextInt();
 
-                                Size size = new Size(userClient.Character.size.Width, 1);
-                                Point location = new Point(userClient.Character.Location.X, userClient.Character.Location.Y + userClient.Character.size.Height + 1);
-                                Rectangle b = new Rectangle(location, size);
-
-                                Rectangle result = Rectangle.Intersect(a, b);
-
-                                if(result.IsEmpty == false)
+                                // 캐릭터가 돌 위에 있을경우 같이 움직임
+                                int dy = y - gameObject.Location.Y;
+                                gameObject.Location = new Point(x, y);
+                                if (dy < 0)
                                 {
-                                    userClient.Move(new Point(0, dy));
+                                    Rectangle a = new Rectangle(new Point(x, y), gameObject.size);
+
+                                    Size size = new Size(userClient.Character.size.Width, 1);
+                                    Point location = new Point(userClient.Character.Location.X, userClient.Character.Location.Y + userClient.Character.size.Height + 1);
+                                    Rectangle b = new Rectangle(location, size);
+
+                                    Rectangle result = Rectangle.Intersect(a, b);
+
+                                    if (result.IsEmpty == false)
+                                    {
+                                        userClient.Move(new Point(0, dy));
+                                    }
                                 }
-                             
+
                             }
+                            else
+                            {
+                                gameObject.isVisible = false;
+                                gameObject.Collision = false;
+                            }
+                        }
+                        break;
+                    case ObjectTypes.PORTAL:
+                        {
                             
-                            //gameObject.Location = new Point(x, y);
                         }
                         break;
                 }
@@ -586,6 +635,8 @@ namespace MultiGame
                     // 화면에 출력
                     item.Value.isVisible = true;
 
+                    item.Value.SetDie(false);
+
                     // 충돌 판정 켬
                     item.Value.Blockable = true;
                     item.Value.Collision = true;
@@ -596,12 +647,26 @@ namespace MultiGame
 
                 // 유저 캐릭터
                 userClient.Character.isVisible = true;
+                userClient.Character.SetDie(false);
                 userClient.Character.Collision = true;
                 userClient.Character.Blockable = true;
+
                 userClient.Start();
             }
 
+            public void AllDie(MessageConverter converter)
+            {
+                ClientCharacter userCharacter = gameManager.userClient.Character;
+                userCharacter.SetDie(true);
+                gameManager.userClient.CanMove = false;
 
+                foreach(var item in gameManager.clientManager.ClientDic)
+                {
+                    ClientCharacter clientCharacter = item.Value;
+                    clientCharacter.SetSkin(clientCharacter.SkinNum + 8);
+                    clientCharacter.SetDie(true);
+                }
+            }
 
             public void AddRoomList(MessageConverter converter)
             {

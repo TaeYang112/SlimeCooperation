@@ -24,8 +24,7 @@ namespace MultiGame.Object
             Blockable = true;
             _type = ObjectTypes.STONE;
 
-            _image = MultiGame.Properties.Resources.Floor1.Clone() as Image;
-            font = font = new Font(FontLibrary.Families[0], 20, FontStyle.Regular);
+            font = font = new Font(ResourceLibrary.Families[0], 20, FontStyle.Regular);
             format = new StringFormat();
             format.Alignment = StringAlignment.Center;
             format.LineAlignment = StringAlignment.Center;
@@ -42,7 +41,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Stone.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Stone;
                     break;
             }
         

@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace MultiGameServer.Object
 {
-    public class Button : GameObject
+    public class Button: GameObject
     {
         public GameObject TargetObject { get; set; }
         public Button(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
         {
             _type = ObjectTypes.BUTTON;
-            Collision = true;
+            Collision = false;
             Blockable = false;
             TargetObject = null;
         }
@@ -26,14 +26,14 @@ namespace MultiGameServer.Object
         {
         }
 
-        public override void OnEvent()
+        public override void OnEvent(EventParam param)
         {
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
             generator.AddInt(key);
             generator.AddByte(Type);
             generator.AddInt(-1);
 
-            if (TargetObject != null) TargetObject.OnEvent();
+            if (TargetObject != null) TargetObject.OnEvent(param);
 
             room.SendMessageToAll_InRoom(generator.Generate());
         }

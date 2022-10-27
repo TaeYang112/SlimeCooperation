@@ -34,6 +34,9 @@ namespace MultiGameServer
         // 충돌이 발생했을 때 false이면 통과함
         public bool Blockable { get; set; }
 
+        // 움직임이 정적인지
+        public bool IsStatic { get; set; }
+
         public GameObject(Room room, int key, Point Location, Size size)
         {
             this.key = key;
@@ -43,11 +46,12 @@ namespace MultiGameServer
             this.Blockable = false;
             this._type = ObjectTypes.GAME_OBJECT;
             this.room = room;
+            this.IsStatic = true;
             SkinNum = 0;
         }
 
         // 오브젝트와 상호작용이 일어났을 때 발생
-        virtual public void OnEvent()
+        virtual public void OnEvent(EventParam param)
         {
 
         }
@@ -56,6 +60,18 @@ namespace MultiGameServer
         virtual public void OnClose()
         {
 
+        }
+
+        public class EventParam
+        {
+            public ClientCharacter clientCharacter { get; set; }
+            private EventParam()
+            {
+            }
+            public EventParam(ClientCharacter clientChar)
+            {
+                this.clientCharacter = clientChar;
+            }
         }
     }
 }

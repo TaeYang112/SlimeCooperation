@@ -15,6 +15,8 @@ namespace MultiGame.Client
         public bool RightDown { get; set; }
         public bool JumpDown { get; set; }
 
+        
+
         // 땅인지
         public bool IsGround { get; set; }
 
@@ -29,6 +31,11 @@ namespace MultiGame.Client
         private bool GravityStarted;                // 떨어지기 시작할 때 초기화를 하기 위한 플래그 변수
         private bool isGravity;                     // 중력의 ON / OFF
 
+        // 서버와 클라이언트의 위치를 동기화 시키기 위한 번호
+        public int MoveNum { get; set; }
+
+        // 움직임 락
+        public object MoveLock { get; }
 
         public UserClient()
         {
@@ -45,6 +52,9 @@ namespace MultiGame.Client
             isGravity = false;
 
             Character = new ClientCharacter(-1, new Point(0, 0), 0);
+            MoveNum = 0;
+            MoveLock = new object();
+
 
         }
 
@@ -81,6 +91,9 @@ namespace MultiGame.Client
 
             if (LeftDown ^ RightDown && Character.LookDirectionRight != bLookRight)
             {
+                Character.LookDirectionRight = bLookRight;
+                Character.SetDirection(bLookRight);
+
                 // 서버로 보낼 메시지 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.C_LOOK_DIRECTION);
                 generator.AddBool(bLookRight);
@@ -89,7 +102,6 @@ namespace MultiGame.Client
                 // 서버로 전송
                 GameManager.GetInstance().SendMessage(message);
 
-                Character.MoveDirectionRight = bLookRight;
             }
 
             // 이차 함수를 이용한 점프
@@ -161,99 +173,120 @@ namespace MultiGame.Client
 
 
         // 캐릭터 충돌검사 후 이동
-        public void Move(Point velocity)
+        public void Move(Point velocity, bool Teleport = false)
         {
-            Point resultLoc = Character.Location;
-            Point tempLoc;
-            int dxy = 0;
-
-            // x의 대한 충돌판정
-            if (velocity.X != 0)
+            lock (MoveLock)
             {
-                tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
+                // 메시지 생성을위한 제네레이터 생성
+                MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
 
-                if (velocity.X < 0) dxy = 1;
-                else dxy = -1;
-
-                // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
-                while(tempLoc.X != Character.Location.X)
+                // 텔레포트 하는거라면
+                if (Teleport == true)
                 {
-                    // 충돌하지 않았으면
-                    if (CollisionCheck(tempLoc) == false)
-                    {
-                        // 움직이기 위해 좌표 저장
-                        resultLoc = tempLoc;
-                        break;
-                    }
-                    // 충돌했으면
-                    else
-                    {
-                        // 좌표 1칸 옮겨봄
-                        tempLoc.X += dxy;
-                    }
+                    Character.Location = new Point(Character.Location.X + velocity.X, Character.Location.Y + velocity.Y);
+
+                    // 서버로 보낼 메시지 생성
+                    generator.AddInt(Character.Location.X).AddInt(Character.Location.Y);
+                    generator.AddInt(MoveNum);
+                    generator.AddBool(true);
                 }
-            }
-
-            // y에 대한 충돌 판정
-            tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
-
-            if (velocity.Y < 0) dxy = 1;
-            else dxy = -1;
-
-
-            // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
-            while (tempLoc.Y != Character.Location.Y)
-            {
-                // 충돌하지 않았으면
-                if (CollisionCheck(tempLoc) == false)
-                {
-                    // 이동
-                    resultLoc = tempLoc;
-                    IsGround = false;
-                    if (IsJump == false) GravityStart(true);
-                    break;
-                }
-                // 충돌했으면
                 else
                 {
-                    // 좌표 1칸 옮겨봄
-                    tempLoc.Y += dxy;
+                    Point resultLoc = Character.Location;
+                    Point tempLoc;
+                    int dxy = 0;
+
+                    // x의 대한 충돌판정
+                    if (velocity.X != 0)
+                    {
+                        tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
+
+                        if (velocity.X < 0) dxy = 1;
+                        else dxy = -1;
+
+                        // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
+                        while (tempLoc.X != Character.Location.X)
+                        {
+                            // 충돌하지 않았으면
+                            if (CollisionCheck(tempLoc) == false)
+                            {
+                                // 움직이기 위해 좌표 저장
+                                resultLoc = tempLoc;
+                                break;
+                            }
+                            // 충돌했으면
+                            else
+                            {
+                                // 좌표 1칸 옮겨봄
+                                tempLoc.X += dxy;
+                            }
+                        }
+                    }
+
+                    // y에 대한 충돌 판정
+                    tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+
+                    if (velocity.Y < 0) dxy = 1;
+                    else dxy = -1;
+
+
+                    // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
+                    while (tempLoc.Y != Character.Location.Y)
+                    {
+                        // 충돌하지 않았으면
+                        if (CollisionCheck(tempLoc) == false)
+                        {
+                            // 이동
+                            resultLoc = tempLoc;
+                            IsGround = false;
+                            if (IsJump == false) GravityStart(true);
+                            break;
+                        }
+                        // 충돌했으면
+                        else
+                        {
+                            // 좌표 1칸 옮겨봄
+                            tempLoc.Y += dxy;
+                        }
+                    }
+
+                    // 이동할 곳이 없으면 ( 반복문이 while 조건에 의해 종료 )
+                    if (tempLoc.Y == Character.Location.Y)
+                    {
+                        // 만약 밑으로 가던중 충돌판정이 일어나면 
+                        if (velocity.Y > 0)
+                        {
+                            //땅위에 있다는 플래그변수 true
+                            IsGround = true;
+                            GravityStart(false);
+
+                            // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
+                            if (JumpDown == true)
+                                Jump();
+                        }
+                        // 만약 위로 가던중 충돌판정이 일어나면
+                        else if (velocity.Y < 0)
+                        {
+                            IsJump = false;
+                        }
+                    }
+
+                    // 실제 좌표를 이동시킴
+                    Character.Location = resultLoc;
+
+
+                    // 서버로 보낼 메시지 생성
+                    generator.AddInt(resultLoc.X).AddInt(resultLoc.Y);
+                    generator.AddInt(MoveNum);
+                    generator.AddBool(false);
                 }
+
+                // 서버로 보냄
+                GameManager.GetInstance().SendMessage(generator.Generate());
             }
-
-            // 이동할 곳이 없으면 ( 반복문이 while 조건에 의해 종료 )
-            if (tempLoc.Y == Character.Location.Y)
-            {
-                // 만약 밑으로 가던중 충돌판정이 일어나면 
-                if (velocity.Y > 0)
-                {
-                    //땅위에 있다는 플래그변수 true
-                    IsGround = true;
-                    GravityStart(false);
-
-                    // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
-                    if (JumpDown == true)
-                        Jump();
-                }
-                // 만약 위로 가던중 충돌판정이 일어나면
-                else if(velocity.Y < 0)
-                {
-                    IsJump = false;
-                }
-            }
-
-            // 실제 좌표를 이동시킴
-            Character.Location = resultLoc;
-
-            
-            // 서버로 보낼 메시지 생성
-            MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
-            generator.AddInt(resultLoc.X).AddInt(resultLoc.Y);
-            byte[] message = generator.Generate();
-
-            // 서버로 보냄
-            GameManager.GetInstance().SendMessage(message);
         }
+
+
 
         // 주로 키 입력을 이외의 상황에서 움직여야할 때 부자연스러움을 없애기 위해
         public void MoveExtra(Point velocity)
@@ -261,6 +294,8 @@ namespace MultiGame.Client
             if(LeftDown == false && RightDown == false)
             Move(velocity);
         }
+
+
 
         // 겹치면 true 반환
         public bool CollisionCheck(Point newLocation)
@@ -310,30 +345,48 @@ namespace MultiGame.Client
             return false;
         }
 
-        public void TryOpenDoor()
+        public void Interaction()
         {
-            int doorKey = GameManager.GetInstance().objectManager.doorKey;
-            Door door = GameManager.GetInstance().objectManager.ObjectDic[doorKey] as Door;
-
-            if (door == null) return;
-
             // 캐릭터의 충돌 박스
             Rectangle a = new Rectangle(Character.Location, Character.size);
 
-            // 문의 충돌 박스
-            Rectangle b = new Rectangle(door.Location, door.size);
-
-            // 충돌 검사 ( 겹치면 false )
-            bool result = Rectangle.Intersect(a, b).IsEmpty;
-            if (result == false)
+            foreach(var item in GameManager.GetInstance().objectManager.ObjectDic)
             {
-                // 서버로 보낼 메시지 생성
-                MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
-                generator.AddInt(door.key).AddByte(ObjectTypes.DOOR);
-                byte[] message = generator.Generate();
+                GameObject gameObject = item.Value;
+                // 문의 충돌 박스
+                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
 
-                // 서버로 전송
-                GameManager.GetInstance().SendMessage(message);
+                // 충돌 검사 ( 겹치면 false )
+                bool result = Rectangle.Intersect(a, b).IsEmpty;
+                if (result == false)
+                {
+                    switch(gameObject.type)
+                    {
+                        case ObjectTypes.DOOR:
+                            {
+                                // 서버로 보낼 메시지 생성
+                                MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
+                                generator.AddInt(gameObject.key).AddByte(ObjectTypes.DOOR);
+                                byte[] message = generator.Generate();
+
+                                // 서버로 전송
+                                GameManager.GetInstance().SendMessage(message);
+                            }
+                            break;
+                        case ObjectTypes.PORTAL:
+                            {
+                                MessageGenerator generator = new MessageGenerator(Protocols.C_OBJECT_EVENT);
+                                generator.AddInt(gameObject.key);
+                                generator.AddByte(gameObject.type);
+
+                                GameManager.GetInstance().SendMessage(generator.Generate());
+                            }
+                            break;
+                        default:
+                            continue;
+                    }
+                    return;
+                }
             }
 
         }
