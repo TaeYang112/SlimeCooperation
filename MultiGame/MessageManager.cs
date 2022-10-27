@@ -45,6 +45,7 @@ namespace MultiGame
                 while (true)
                 {
                     bool result = converter.NextMessage();
+
                     // 다음 메시지가 없으면 종료
                     if (result == false)
                     {
