@@ -420,6 +420,9 @@ namespace MultiGameServer
                 case 3:
                     _Map = new Stage3(this);
                     break;
+                case 4:
+                    _Map = new Stage4(this);
+                    break;
                 default:
                     _Map = new Stage1(this);
                     break;

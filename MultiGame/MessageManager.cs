@@ -318,6 +318,11 @@ namespace MultiGame
                             newObject = new Lava(key, location, size);
                         }
                         break;
+                    case ObjectTypes.COLOR_STONE:
+                        {
+                            newObject = new ColorStone(key, location, size);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -477,6 +482,20 @@ namespace MultiGame
                     case ObjectTypes.PORTAL:
                         {
                             
+                        }
+                        break;
+                    case ObjectTypes.COLOR_STONE:
+                        {
+                            ColorStone stone = gameObject as ColorStone;
+                            if (stone == null)
+                            {
+                                return;
+                            }
+
+                            int x = converter.NextInt();
+                            int y = converter.NextInt();
+
+                            stone.Location = new Point(x, y);
                         }
                         break;
                 }
