@@ -31,6 +31,8 @@ namespace MultiGameServer
         public bool bLeftPress { get; set; }
         public bool bRightPress { get; set; }
 
+        public bool RestarPressed { get; set; }
+
         // 서버에서 클라이언트에게 Move 명령을 내리면 MoveNum을 다시 돌려받기 전까지 오는 위치정보를 무시함
         public int MoveNum { get; set; }
 
@@ -47,6 +49,8 @@ namespace MultiGameServer
 
             bRightPress = false;
             bLeftPress = false;
+
+            RestarPressed = false;
 
             MoveNum = 0;
         }

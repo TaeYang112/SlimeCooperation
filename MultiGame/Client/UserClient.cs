@@ -89,6 +89,8 @@ namespace MultiGame.Client
                 bLookRight = true;
             }
 
+            // 만약 왼쪽과 오른쪽중 한개만 눌린상태에서 전에 보던방향과 달라진다면
+            // 즉, 전과 다른방향으로 이동한다면 다른클라이언트들에게도 바라보는 방향이 달라졌다는것을 알려야됨
             if (LeftDown ^ RightDown && Character.LookDirectionRight != bLookRight)
             {
                 Character.LookDirectionRight = bLookRight;

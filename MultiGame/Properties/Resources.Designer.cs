@@ -243,9 +243,9 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap Lava1 {
+        internal static System.Drawing.Bitmap Lava {
             get {
-                object obj = ResourceManager.GetObject("Lava1", resourceCulture);
+                object obj = ResourceManager.GetObject("Lava", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

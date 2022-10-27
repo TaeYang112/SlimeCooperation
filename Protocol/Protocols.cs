@@ -50,6 +50,7 @@
         public const byte S_LOCATION_OTHER = 162;		// 클라key(int), 좌표 x(int), 좌표 y(int)
         public const byte S_LOOK_DIRECTION_OTHER = 163;
         public const byte S_READY_OTHER = 164;
+        public const byte S_RESTART_OTHER = 165;			// 클라key(int), 누름여부 (bool)
     }
 
 }

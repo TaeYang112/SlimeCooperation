@@ -385,13 +385,32 @@ namespace MultiGameServer
             byte keyType = converter.NextByte();
             bool bPress = converter.NextBool();
 
-            if (keyType == Keyboards.RIGHT_ARROW)
+            switch(keyType)
             {
-                clientChar.bRightPress = bPress;
-            }
-            else
-            {
-                clientChar.bLeftPress = bPress;
+                case Keyboards.RIGHT_ARROW:
+                    clientChar.bRightPress = bPress;
+                    break;
+                case Keyboards.LEFT_ARROW:
+                    clientChar.bLeftPress = bPress;
+                    break;
+                case Keyboards.RESTART:
+                    {
+                        Room room = clientChar.room;
+                        room.ClientRestartPress(clientChar);
+
+                        MessageGenerator generator = new MessageGenerator(Protocols.S_RESTART_OTHER);
+                        generator.AddInt(clientChar.key);
+                        generator.AddBool(clientChar.RestarPressed);
+
+                        room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
+
+                        generator.Clear();
+                        generator.AddInt(-1);
+                        generator.AddBool(clientChar.RestarPressed);
+
+                        program.SendMessage(generator.Generate(), clientChar.key);
+                    }
+                    break;
             }
         }
        

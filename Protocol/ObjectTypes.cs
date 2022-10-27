@@ -11,6 +11,7 @@
         public const byte STONE_DOOR = 6;
         public const byte PORTAL = 7;
         public const byte LAVA = 8;
+        public const byte COLOR_STONE = 9;
     }
 
     public static class DoorEvent

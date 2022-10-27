@@ -119,6 +119,11 @@ namespace MultiGame
                                 AllDie(converter);
                             }
                             break;
+                        case Protocols.S_RESTART_OTHER:
+                            {
+                                RestartOther(converter);
+                            }
+                            break;
                         // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
                         case Protocols.S_PING:
                             {
@@ -635,6 +640,7 @@ namespace MultiGame
                     item.Value.isVisible = true;
 
                     item.Value.SetDie(false);
+                    item.Value.RestartPressed = false;
 
                     // 충돌 판정 켬
                     item.Value.Blockable = true;
@@ -649,6 +655,7 @@ namespace MultiGame
                 userClient.Character.SetDie(false);
                 userClient.Character.Collision = true;
                 userClient.Character.Blockable = true;
+                userClient.Character.RestartPressed = false;
 
                 userClient.Start();
             }
@@ -665,6 +672,29 @@ namespace MultiGame
                     clientCharacter.SetSkin(clientCharacter.SkinNum + 8);
                     clientCharacter.SetDie(true);
                 }
+            }
+
+            public void RestartOther(MessageConverter converter)
+            {
+                // 플레이어 번호
+                int key = converter.NextInt();
+
+                // 여부
+                bool bPressed = converter.NextBool();
+
+                ClientCharacter client;
+
+                if (key == -1) client = GameManager.GetInstance().userClient.Character;
+                else
+                {
+                    // 키를 이용하여 배열에서 해당 클라이언트를 찾아 client에 대입함 ( out ) 그 후, 결과를 result에 대입 ( 찾았으면 TRUE / 아니면 FALSE )
+                    bool result = gameManager.clientManager.ClientDic.TryGetValue(key, out client);
+
+                    // 해당 클라이언트가 존재하지 않을경우 리턴
+                    if (result == false) return;
+                }
+                
+                client.RestartPressed = bPressed;
             }
 
             public void AddRoomList(MessageConverter converter)

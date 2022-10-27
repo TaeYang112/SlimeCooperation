@@ -30,6 +30,9 @@ namespace MultiGameServer
         // 문안에 들어간 인원수
         public int EnteredCount { get; set; }
 
+        // 재시작 요청한 인원수
+        public int RestartPressedCount { get; set; }
+
         // 현재 몇 스테이지
         public int stageNum { get; set; }
 
@@ -45,6 +48,7 @@ namespace MultiGameServer
             roomClientDic = new ConcurrentDictionary<int, ClientCharacter>();
             bGameStart = false;
             stageNum = 1;
+            RestartPressedCount = 0;
 
             skinList = new SortedSet<int>();
             for (int i = 0; i < 8; i++)
@@ -127,6 +131,25 @@ namespace MultiGameServer
             return GetPeopleCount();
         }
 
+        public void ClientRestartPress(ClientCharacter clientChar)
+        {
+            if(clientChar.RestarPressed == false)
+            {
+                clientChar.RestarPressed = true;
+                RestartPressedCount++;
+                
+                if(RestartPressedCount >= 3)
+                {
+                    GameStart(stageNum);
+                }
+            }
+            else
+            {
+                clientChar.RestarPressed = false;
+                RestartPressedCount--;
+            }
+            Console.WriteLine(key + "번방 다시시작 : " + RestartPressedCount + "/" + 3);
+        }
 
         // 방에 있는 클라이언트가 3명이상 레디할경우 true 아니면 false 반환
         public bool IsAllReady()
@@ -380,6 +403,7 @@ namespace MultiGameServer
         public void GameStart(int stageNum)
         {
             this.stageNum = stageNum;
+            this.RestartPressedCount = 0;
 
             if (Map != null)
                 Map.objectManager.ClearObjects();
@@ -416,6 +440,7 @@ namespace MultiGameServer
             {
                 // 내부적으로 각 클라이언트 시작 위치 설정
                 item.Value.Location = Map.GetSpawnLocation(num++);
+                item.Value.RestarPressed = false;
 
                 // 맵 시작 메시지 생성
                 generator.Clear();

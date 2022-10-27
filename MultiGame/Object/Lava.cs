@@ -28,7 +28,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Lava1;
+                    _image = ResourceLibrary.Lava;
                     break;
             }
         }

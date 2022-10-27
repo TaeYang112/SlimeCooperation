@@ -185,6 +185,12 @@ namespace MultiGame
                 case Keys.Up:
                     gameManager.userClient.Interaction();
                     break;
+                case Keys.R:
+                    {
+                        generator.AddByte(Keyboards.RESTART).AddBool(true);
+                        gameManager.SendMessage(generator.Generate());
+                    }
+                    break;
                 default:
                     return base.ProcessCmdKey(ref msg, keyData);
 

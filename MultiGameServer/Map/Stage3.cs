@@ -90,10 +90,12 @@ namespace MultiGameServer
             portal1.TargetLocation = new Point(10, 10);
             objectManager.AddObject(portal1);
 
+            
             // 용암
             tempKey = room.NextObjKey;
             Lava lava = new Lava(room, tempKey, new Point(0, 335), new Size(1440, 65));
             objectManager.AddObject(lava);
+            
 
             // 벽5
             tempKey = room.NextObjKey;

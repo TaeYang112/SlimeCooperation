@@ -25,6 +25,10 @@ namespace MultiGame
         private Image _leftImage;
         private Image _DLeftImage;
         private Image _DRightImage;
+        private Font font;
+        private StringFormat format;
+
+        public bool RestartPressed { get; set; }
 
         public ClientCharacter(int key, Point Location, int skinNum)
             : base(key, Location, new Size(60,50))
@@ -33,6 +37,12 @@ namespace MultiGame
             Collision = true;
             Blockable = true;
             LookDirectionRight = true;
+            RestartPressed = false;
+
+            font = font = new Font(ResourceLibrary.Families[0], 10, FontStyle.Regular);
+            format = new StringFormat();
+            format.Alignment = StringAlignment.Center;
+            format.LineAlignment = StringAlignment.Center;
 
             SetSkin(skinNum);
         }
@@ -100,7 +110,12 @@ namespace MultiGame
 
             Size siz = new Size(size.Width+1, size.Height+1);
             e.DrawImage(image,new Rectangle(Location, siz ));
-            
+
+            if(RestartPressed == true)
+            {
+                e.DrawString("Let's", font, Brushes.Black, new RectangleF(new Point(Location.X - 10, Location.Y - 40), new Size(size.Width + 20, 20)), format);
+                e.DrawString("Restart!", font, Brushes.Black, new RectangleF(new Point(Location.X - 30, Location.Y - 20), new Size(size.Width + 60, 20)), format);
+            }
         }
 
         public void SetDirection(bool bRight)
