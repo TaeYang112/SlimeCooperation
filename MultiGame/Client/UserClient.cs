@@ -330,17 +330,34 @@ namespace MultiGame.Client
 
                 if (gameObject.Collision == false) continue;
 
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
-
-                // 만약 움직였을때 겹친다면 충돌 발생
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                // 플랫폼이 아니라면
+                if (gameObject.type != ObjectTypes.PLATFORM)
                 {
-                    gameObject.OnHit();
+                    // 대상 오브젝트의 충돌 박스
+                    Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
 
-                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
-                    if (gameObject.Blockable == true) return true;
-                    else continue;
+                    // 만약 움직였을때 겹친다면 충돌 발생
+                    if (Rectangle.Intersect(a, b).IsEmpty == false)
+                    {
+                        gameObject.OnHit();
+
+                        // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
+                        if (gameObject.Blockable == true) return true;
+                        else continue;
+                    }
+                }
+                // 플랫폼이라면
+                else
+                {
+                    //캐릭터가 플랫폼 위에 있으면서 플랫폼 밑으로 가려고 할 때
+                    if (Character.Location.Y + Character.size.Height < gameObject.Location.Y && newLocation.Y + Character.size.Height >= gameObject.Location.Y)
+                    {
+                        // 캐릭터가 플랫폼의 x1 x2 사이의 있을경우
+                        if (Character.Location.X < gameObject.Location.X + gameObject.size.Width && Character.Location.X + Character.size.Width > gameObject.Location.X)
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
 

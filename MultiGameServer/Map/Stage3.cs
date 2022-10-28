@@ -46,7 +46,7 @@ namespace MultiGameServer
 
             // 벽1
             tempKey = room.NextObjKey;
-            Floor Floor1 = new Floor(room, tempKey, new Point(203, 735), new Size(125, 30));
+            Platform Floor1 = new Platform(room, tempKey, new Point(203, 735), new Size(125, 30));
             Floor1.SkinNum = 3;
             objectManager.AddObject(Floor1);
 

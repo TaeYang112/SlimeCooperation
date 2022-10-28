@@ -324,6 +324,11 @@ namespace MultiGame
                             newObject = new ColorStone(key, location, size);
                         }
                         break;
+                    case ObjectTypes.PLATFORM:
+                        {
+                            newObject = new Platform(key, location, size);
+                        }
+                        break;
                     default:
                         break;
                 }
