@@ -153,9 +153,9 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap Floor1 {
+        internal static System.Drawing.Bitmap Grass {
             get {
-                object obj = ResourceManager.GetObject("Floor1", resourceCulture);
+                object obj = ResourceManager.GetObject("Grass", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,29 +163,9 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap Floor2 {
+        internal static System.Drawing.Bitmap Grass_Dirt {
             get {
-                object obj = ResourceManager.GetObject("Floor2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
-        /// </summary>
-        internal static System.Drawing.Bitmap Floor3 {
-            get {
-                object obj = ResourceManager.GetObject("Floor3", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
-        /// </summary>
-        internal static System.Drawing.Bitmap Floor4 {
-            get {
-                object obj = ResourceManager.GetObject("Floor4", resourceCulture);
+                object obj = ResourceManager.GetObject("Grass_Dirt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -246,6 +226,16 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Lava {
             get {
                 object obj = ResourceManager.GetObject("Lava", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Lava_Dirt {
+            get {
+                object obj = ResourceManager.GetObject("Lava_Dirt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -356,6 +346,26 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Red2 {
             get {
                 object obj = ResourceManager.GetObject("Red2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Snow {
+            get {
+                object obj = ResourceManager.GetObject("Snow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Snow_Dirt {
+            get {
+                object obj = ResourceManager.GetObject("Snow_Dirt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
