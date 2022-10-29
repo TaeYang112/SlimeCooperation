@@ -38,9 +38,14 @@ namespace MultiGameServer.Object
         {
         }
 
+        public override void OnClose()
+        {
+            base.OnClose();
+            MoveTimer.Dispose();
+        }
+
         public override void OnEvent(EventParam param)
         {
-            Open();
         }
 
         public void Open()

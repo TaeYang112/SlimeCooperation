@@ -101,7 +101,7 @@ namespace MultiGameServer
             // 버튼1
             tempKey = room.NextObjKey;
             Button Button1 = new Button(room, tempKey, new Point(1330,570), new Size(20, 10));
-            Button1.TargetObject = stoneDoor;
+            Button1.SetAction(delegate() { stoneDoor.Open(); });
             objectManager.AddObject(Button1);
 
             // 벽6

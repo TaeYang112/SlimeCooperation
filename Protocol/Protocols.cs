@@ -30,6 +30,7 @@
 
         // 클라이언트에게 정보를 알려주거나 명령
         public const byte S_OBJECT_EVENT = 132;         // 오브젝트 키(int), 타입 (byte), 건드린 클라이언트키(int)
+                                                        // Object			x(int), y(int), width(int), height(int), skin(int),isVisible(bool), Collision(bool), BlockAble(bool)
                                                         //STONE                        + x(int), y(int), 무게(int)
                                                         //DOOR						 + DoorEvent(byte)
 

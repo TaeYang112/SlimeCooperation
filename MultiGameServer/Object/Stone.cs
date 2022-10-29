@@ -38,12 +38,18 @@ namespace MultiGameServer.Object
             IsStatic = false;
 
             TimerCallback tc = new TimerCallback(CheckAndMove);
-            MoveTimer = new System.Threading.Timer(tc, null, 0, 13);
+            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         public Stone(Room room, int key, Point Location, Point Location2)
             : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y))
         {
+        }
+
+        public override void OnStart()
+        {
+            base.OnStart();
+            MoveTimer.Change(0, 13);
         }
 
         public override void OnClose()
@@ -169,6 +175,7 @@ namespace MultiGameServer.Object
                         tempLoc.X += dxy;
                     }
                 }
+                if (tempLoc.X == Location.X) Console.WriteLine("안되네");
             }
 
             // y에 대한 충돌 판정

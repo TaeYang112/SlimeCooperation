@@ -11,19 +11,26 @@ namespace MultiGameServer.Object
 {
     public class Button: GameObject
     {
-        public GameObject TargetObject { get; set; }
+        // 버튼이 눌렸을 때의 동작
+        public delegate void OnPressDelegate();
+        OnPressDelegate onPressDelegate;
+
         public Button(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
         {
             _type = ObjectTypes.BUTTON;
             Collision = false;
             Blockable = false;
-            TargetObject = null;
         }
 
         public Button(Room room, int key, Point Location, Point Location2)
             : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y))
         {
+        }
+
+        public void SetAction(OnPressDelegate action)
+        {
+            onPressDelegate = action;
         }
 
         public override void OnEvent(EventParam param)
@@ -33,7 +40,7 @@ namespace MultiGameServer.Object
             generator.AddByte(Type);
             generator.AddInt(-1);
 
-            if (TargetObject != null) TargetObject.OnEvent(param);
+            if (onPressDelegate != null) onPressDelegate();
 
             room.SendMessageToAll_InRoom(generator.Generate());
         }

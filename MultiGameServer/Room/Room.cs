@@ -509,6 +509,8 @@ namespace MultiGameServer
 
                     // 서버로 전송
                     PInst.SendMessage(generator.Generate(), item.Key);
+
+                    gameObject.OnStart();
                 }
 
                 item.Value.IsEnterDoor = false;

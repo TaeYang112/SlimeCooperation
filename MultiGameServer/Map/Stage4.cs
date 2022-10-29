@@ -1,4 +1,5 @@
-﻿using MultiGameServer.Object;
+﻿using MultiGameModule;
+using MultiGameServer.Object;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -57,7 +58,40 @@ namespace MultiGameServer
             ColorStone colorStone3 = new ColorStone(room, tempKey, new Point(900, 720), new Size(70, 70));
             colorStone3.SkinNum = randomSkin[2];
             objectManager.AddObject(colorStone3);
-            
+
+            // 버튼
+            tempKey = room.NextObjKey;
+            PressingButton pressButton = new PressingButton(room, tempKey, new Point(1100, 780), new Size(20, 10));
+            pressButton.SetAction(delegate (bool bPressed)
+            {
+                if(bPressed == true)
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(colorStone1.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(colorStone1.Location.X).AddInt(colorStone1.Location.Y);
+                    generator.AddInt(colorStone1.size.Width).AddInt(colorStone1.size.Height);
+                    generator.AddInt(colorStone1.SkinNum).AddBool(false);
+                    generator.AddBool(false).AddBool(false);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+                else
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(colorStone1.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(colorStone1.Location.X).AddInt(colorStone1.Location.Y);
+                    generator.AddInt(colorStone1.size.Width).AddInt(colorStone1.size.Height);
+                    generator.AddInt(colorStone1.SkinNum).AddBool(true);
+                    generator.AddBool(true).AddBool(true);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+            });
+            objectManager.AddObject(pressButton);
 
             // 땅
             tempKey = room.NextObjKey;

@@ -329,6 +329,11 @@ namespace MultiGame
                             newObject = new Platform(key, location, size);
                         }
                         break;
+                    case ObjectTypes.PRESSING_BUTTON:
+                        {
+                            newObject = new PressingButton(key, location, size);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -368,6 +373,28 @@ namespace MultiGame
 
                 switch (type)
                 {
+                    case ObjectTypes.GAME_OBJECT:
+                        {
+                            int x = converter.NextInt();
+                            int y = converter.NextInt();
+
+                            int width = converter.NextInt();
+                            int height = converter.NextInt();
+
+                            int skin = converter.NextInt();
+                            bool isVisible = converter.NextBool();
+                            bool collision = converter.NextBool();
+                            bool blockAble = converter.NextBool();
+
+                            gameObject.Location = new Point(x, y);
+                            gameObject.size = new Size(width, height);
+                            gameObject.SetSkin(skin);
+                            gameObject.isVisible = isVisible;
+                            gameObject.Collision = collision;
+                            gameObject.Blockable = blockAble;
+                            Console.WriteLine("냠");
+                        }
+                        break;
                     case ObjectTypes.KEY_OBJECT:
                         {
                             KeyObject keyObj = gameObject as KeyObject;
@@ -502,6 +529,15 @@ namespace MultiGame
                             int y = converter.NextInt();
 
                             stone.Location = new Point(x, y);
+                        }
+                        break;
+                    case ObjectTypes.PRESSING_BUTTON:
+                        {
+                            PressingButton pressingButton = gameObject as PressingButton;
+
+                            bool bPressed = converter.NextBool();
+
+                            pressingButton.Pressed = bPressed;
                         }
                         break;
                 }

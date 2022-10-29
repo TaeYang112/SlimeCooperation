@@ -62,9 +62,16 @@ namespace MultiGameServer
 
         }
 
+        // 맵이 시작 되었을 때 호출됨
+        virtual public void OnStart()
+        {
+
+        }
+
         public class EventParam
         {
             public ClientCharacter clientCharacter { get; set; }
+            public object[] Param { get; set; }
             private EventParam()
             {
             }

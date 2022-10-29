@@ -35,7 +35,7 @@ namespace MultiGameServer.Object
             IsStatic = false;
 
             TimerCallback tc = new TimerCallback(CheckAndMove);
-            MoveTimer = new System.Threading.Timer(tc, null, 0, 13);
+            MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         public ColorStone(Room room, int key, Point Location, Point Location2)
@@ -43,6 +43,11 @@ namespace MultiGameServer.Object
         {
         }
 
+        public override void OnStart()
+        {
+            base.OnStart();
+            MoveTimer.Change(0, 13);
+        }
         public override void OnClose()
         {
             base.OnClose();
