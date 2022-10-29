@@ -71,6 +71,8 @@ namespace MultiGame.Object
         {
             Graphics g = pe.Graphics;
 
+            if (isVisible == false) return;
+
             g.FillRectangle(tBrush1, new Rectangle(Location, size));
 
             

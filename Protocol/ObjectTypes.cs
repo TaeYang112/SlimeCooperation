@@ -13,7 +13,8 @@
         public const byte LAVA = 8;
         public const byte COLOR_STONE = 9;
         public const byte PLATFORM = 10;
-        public const byte PRESSING_BUTTON = 11; 
+        public const byte PRESSING_BUTTON = 11;
+        public const byte TIMER_BOX = 12;
     }
 
     public static class DoorEvent

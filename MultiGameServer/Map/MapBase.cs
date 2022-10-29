@@ -28,6 +28,19 @@ namespace MultiGameServer
             DesignMap();
         }
 
+        public virtual void Start()
+        {
+            foreach(var item in objectManager.ObjectDic)
+            {
+                item.Value.OnStart();
+            }
+        }
+
+        public virtual void Close()
+        {
+            objectManager.ClearObjects();
+        }
+
         protected virtual void SetSpawnLocation()
         {
             SpawnLocation[0] = new Point(0,330);

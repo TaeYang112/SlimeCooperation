@@ -9,13 +9,21 @@ using System.Threading.Tasks;
 
 namespace MultiGameServer
 {
-    class Stage4 : MapBase
+    class Stage9 : MapBase
     {
         private List<int> randomSkin;
-        public Stage4(Room room) : base(room)
+
+        private TimerBox timerbox1;
+        public Stage9(Room room) : base(room)
         {
         }
 
+        public override void Start()
+        {
+            base.Start();
+            timerbox1.TimerStart();
+
+        }
         protected override void SetSpawnLocation()
         {
             SpawnLocation[0] = new Point(0, 740);
@@ -41,38 +49,39 @@ namespace MultiGameServer
             objectManager.AddObject(rightWall);
 
             
-            // 색깔 돌1
+            // 그냥 돌
             tempKey = room.NextObjKey;
-            ColorStone colorStone1 = new ColorStone(room, tempKey, new Point(400, 720), new Size(70, 70));
-            colorStone1.SkinNum = randomSkin[0];
-            objectManager.AddObject(colorStone1);
+            Floor floor = new Floor(room, tempKey, new Point(400, 720), new Size(70, 70));
+            floor.SkinNum = 2;
+            objectManager.AddObject(floor);
 
-            // 색깔 돌2
+            // 타이머
             tempKey = room.NextObjKey;
-            ColorStone colorStone2 = new ColorStone(room, tempKey, new Point(650, 720), new Size(70, 70));
-            colorStone2.SkinNum = randomSkin[1];
-            objectManager.AddObject(colorStone2);
-
-            // 색깔 돌3
-            tempKey = room.NextObjKey;
-            ColorStone colorStone3 = new ColorStone(room, tempKey, new Point(900, 720), new Size(70, 70));
-            colorStone3.SkinNum = randomSkin[2];
-            objectManager.AddObject(colorStone3);
+            TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 720), new Size(150, 100));
+            timerBox.StartTime = 10000;
+            this.timerbox1 = timerBox;
+            objectManager.AddObject(timerBox);
 
             // 버튼
             tempKey = room.NextObjKey;
-            PressingButton pressButton = new PressingButton(room, tempKey, new Point(1100, 780), new Size(20, 10));
+            Button button = new Button(room, tempKey, new Point(650, 790), new Size(20, 10));
+            button.SetAction(delegate () { timerBox.TimerStop(); });
+            objectManager.AddObject(button);
+
+            // 누르고 있을때만 작동하는 버튼
+            tempKey = room.NextObjKey;
+            PressingButton pressButton = new PressingButton(room, tempKey, new Point(1100, 790), new Size(20, 10));
             pressButton.SetAction(delegate (bool bPressed)
             {
                 if(bPressed == true)
                 {
                     MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(colorStone1.key);
+                    generator.AddInt(floor.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(colorStone1.Location.X).AddInt(colorStone1.Location.Y);
-                    generator.AddInt(colorStone1.size.Width).AddInt(colorStone1.size.Height);
-                    generator.AddInt(colorStone1.SkinNum).AddBool(false);
+                    generator.AddInt(floor.Location.X).AddInt(floor.Location.Y);
+                    generator.AddInt(floor.size.Width).AddInt(floor.size.Height);
+                    generator.AddInt(floor.SkinNum).AddBool(false);
                     generator.AddBool(false).AddBool(false);
 
                     room.SendMessageToAll_InRoom(generator.Generate());
@@ -80,12 +89,12 @@ namespace MultiGameServer
                 else
                 {
                     MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(colorStone1.key);
+                    generator.AddInt(floor.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(colorStone1.Location.X).AddInt(colorStone1.Location.Y);
-                    generator.AddInt(colorStone1.size.Width).AddInt(colorStone1.size.Height);
-                    generator.AddInt(colorStone1.SkinNum).AddBool(true);
+                    generator.AddInt(floor.Location.X).AddInt(floor.Location.Y);
+                    generator.AddInt(floor.size.Width).AddInt(floor.size.Height);
+                    generator.AddInt(floor.SkinNum).AddBool(true);
                     generator.AddBool(true).AddBool(true);
 
                     room.SendMessageToAll_InRoom(generator.Generate());

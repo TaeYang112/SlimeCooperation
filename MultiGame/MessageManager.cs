@@ -334,6 +334,11 @@ namespace MultiGame
                             newObject = new PressingButton(key, location, size);
                         }
                         break;
+                    case ObjectTypes.TIMER_BOX:
+                        {
+                            newObject = new TimerBox(key, location, size);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -392,7 +397,6 @@ namespace MultiGame
                             gameObject.isVisible = isVisible;
                             gameObject.Collision = collision;
                             gameObject.Blockable = blockAble;
-                            Console.WriteLine("냠");
                         }
                         break;
                     case ObjectTypes.KEY_OBJECT:
@@ -538,6 +542,25 @@ namespace MultiGame
                             bool bPressed = converter.NextBool();
 
                             pressingButton.Pressed = bPressed;
+                        }
+                        break;
+                    case ObjectTypes.TIMER_BOX:
+                        {
+                            bool bStart = converter.NextBool();
+                            int time = converter.NextInt();
+
+                            TimerBox timerBox = gameObject as TimerBox;
+
+                            if(bStart)
+                            {
+                                timerBox.StartTime = time;
+                                timerBox.TimerStart();
+                            }
+                            else
+                            {
+                                timerBox.ServerTime = time;
+                                timerBox.TImerStop();
+                            }
                         }
                         break;
                 }

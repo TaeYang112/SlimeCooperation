@@ -65,7 +65,7 @@ namespace MultiGameServer
         {
             if (Map != null)
             {
-                Map.objectManager.ClearObjects();
+                Map.Close();
             }
             roomClientDic.Clear();
         }
@@ -420,11 +420,11 @@ namespace MultiGameServer
                 case 3:
                     _Map = new Stage3(this);
                     break;
-                case 4:
-                    _Map = new Stage4(this);
-                    break;
                 case 5:
                     _Map = new Stage5(this);
+                    break;
+                case 9:
+                    _Map = new Stage9(this);
                     break;
                 default:
                     _Map = new Stage1(this);
@@ -509,8 +509,6 @@ namespace MultiGameServer
 
                     // 서버로 전송
                     PInst.SendMessage(generator.Generate(), item.Key);
-
-                    gameObject.OnStart();
                 }
 
                 item.Value.IsEnterDoor = false;
@@ -518,6 +516,7 @@ namespace MultiGameServer
                 item.Value.Collision = true;
                 item.Value.GameStart();
             }
+            _Map.Start();
 
         }
 

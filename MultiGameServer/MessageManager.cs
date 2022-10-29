@@ -377,7 +377,10 @@ namespace MultiGameServer
             if (objResult == false) return;
 
             GameObject.EventParam param = new GameObject.EventParam(clientChar);
+
+ 
             gameObject.OnEvent(param);
+
         }
         
         public void ClientKeyInput(ClientCharacter clientChar, MessageConverter converter)
