@@ -101,14 +101,11 @@ namespace MultiGame.UserPanel
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(1440, 862)));
 
-            int a = 0;
             // 오브젝트
             foreach (var item in GInst.objectManager.ObjectDic)
             {
                 if (item.Value is KeyObject) continue;
                 item.Value.OnPaint(sender, e);
-                Console.WriteLine(a + " : " + item.Value.type + "     /     " + item.Key);
-                a++;
             }
 
             // 캐릭터

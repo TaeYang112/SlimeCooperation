@@ -12,6 +12,7 @@ namespace MultiGame.Object
     public class Floor : GameObject
     {
         private Image _image2;
+        private int _image2_Height = 0;
         private TextureBrush tBrush1;
         private TextureBrush tBrush2;
         bool singleImage = false;
@@ -37,6 +38,7 @@ namespace MultiGame.Object
                 case 0:
                     _image = MultiGame.Properties.Resources.Grass_Dirt;
                     _image2 = MultiGame.Properties.Resources.Grass;
+                    _image2_Height = _image2.Height;
                     break;
                     /*
                 case 1:
@@ -51,6 +53,7 @@ namespace MultiGame.Object
                 default:
                     _image = MultiGame.Properties.Resources.Grass_Dirt;
                     _image2 = MultiGame.Properties.Resources.Grass;
+                    _image2_Height = _image2.Height;
                     break;
             }
             System.Drawing.Imaging.ImageAttributes attributes = new System.Drawing.Imaging.ImageAttributes();
@@ -78,7 +81,7 @@ namespace MultiGame.Object
             
 
             if (singleImage == false)
-                g.FillRectangle(tBrush2, new Rectangle(Location, new Size(size.Width, _image2.Height)));
+                g.FillRectangle(tBrush2, new Rectangle(Location, new Size(size.Width, _image2_Height)));
 
         }
     }

@@ -80,6 +80,7 @@ namespace MultiGame.Object
             else
             {
                 result = String.Format("{0:f}", time / 1000.0f);
+                Console.WriteLine(time/1000.0f);
             }
 
             return result;
