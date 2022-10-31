@@ -243,7 +243,7 @@ namespace MultiGameServer
 
                 SendMessageToAll_InRoom(generator.Generate());
 
-                RespawnTimer.Change(1000, Timeout.Infinite);
+                RespawnTimer.Change(1500, Timeout.Infinite);
             }
         }
 
@@ -426,6 +426,9 @@ namespace MultiGameServer
                 case 9:
                     _Map = new Stage9(this);
                     break;
+                case 10:
+                    _Map = new Stage10(this);
+                    break;
                 default:
                     _Map = new Stage1(this);
                     break;
@@ -501,6 +504,16 @@ namespace MultiGameServer
                                 Stone stone = gameObject as Stone;
 
                                 generator.AddInt(stone.weight);
+                            }
+                            break;
+                        case ObjectTypes.TIMER_BOARD:
+                            {
+                                TimerBoard timeBoard = gameObject as TimerBoard;
+
+                                generator.AddInt(timeBoard.MinTime);
+                                generator.AddInt(timeBoard.MaxTime);
+                                generator.AddInt(timeBoard.StartTime);
+                                generator.AddInt(timeBoard.TimerCount);
                             }
                             break;
                         default:

@@ -15,12 +15,15 @@ namespace MultiGameServer.Object
         public delegate void OnPressDelegate();
         OnPressDelegate onPressDelegate;
 
+        public bool Pressed { get; set; }
+
         public Button(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
         {
             _type = ObjectTypes.BUTTON;
             Collision = false;
             Blockable = false;
+            Pressed = false;
         }
 
         public Button(Room room, int key, Point Location, Point Location2)
@@ -35,6 +38,11 @@ namespace MultiGameServer.Object
 
         public override void OnEvent(EventParam param)
         {
+            if (Pressed == true) return;
+            Pressed = true;
+
+            Console.WriteLine("전송");
+
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
             generator.AddInt(key);
             generator.AddByte(Type);

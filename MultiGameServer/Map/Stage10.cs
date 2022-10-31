@@ -9,12 +9,15 @@ using System.Threading.Tasks;
 
 namespace MultiGameServer
 {
-    class Stage9 : MapBase
+    class Stage10 : MapBase
     {
         private List<int> randomSkin;
 
         private TimerBox timerbox1;
-        public Stage9(Room room) : base(room)
+        private TimerBox timerbox2;
+        private TimerBox timerbox3;
+        private TimerBoard timerBoard;
+        public Stage10(Room room) : base(room)
         {
         }
 
@@ -22,6 +25,9 @@ namespace MultiGameServer
         {
             base.Start();
             timerbox1.TimerStart();
+            timerbox2.TimerStart();
+            timerbox3.TimerStart();
+            timerBoard.TimerStart();
 
         }
         protected override void SetSpawnLocation()
@@ -48,60 +54,62 @@ namespace MultiGameServer
             rightWall.SkinNum = -1;
             objectManager.AddObject(rightWall);
 
-            
-            // 그냥 돌
-            tempKey = room.NextObjKey;
-            Platform platform = new Platform(room, tempKey, new Point(400, 720), new Size(70, 70));
-            platform.SkinNum = 2;
-            objectManager.AddObject(platform);
 
             // 타이머
             tempKey = room.NextObjKey;
-            TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 720), new Size(150, 100));
+            TimerBox timerBox = new TimerBox(room, tempKey, new Point(450, 720), new Size(150, 100));
             timerBox.StartTime = 10000;
             this.timerbox1 = timerBox;
-            timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
+            timerBox.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(); });
             objectManager.AddObject(timerBox);
 
             // 버튼
             tempKey = room.NextObjKey;
-            Button button = new Button(room, tempKey, new Point(650, 790), new Size(20, 10));
+            Button button = new Button(room, tempKey, new Point(450, 790), new Size(20, 10));
             button.SetAction(delegate () { timerBox.TimerStop(); });
             objectManager.AddObject(button);
 
-            // 누르고 있을때만 작동하는 버튼
+
+
+            // 타이머
             tempKey = room.NextObjKey;
-            PressingButton pressButton = new PressingButton(room, tempKey, new Point(1100, 790), new Size(20, 10));
-            pressButton.SetAction(delegate (bool bPressed)
-            {
-                if(bPressed == true)
-                {
-                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(platform.key);
-                    generator.AddByte(ObjectTypes.GAME_OBJECT);
-                    generator.AddInt(-1);
-                    generator.AddInt(platform.Location.X).AddInt(platform.Location.Y);
-                    generator.AddInt(platform.size.Width).AddInt(platform.size.Height);
-                    generator.AddInt(platform.SkinNum).AddBool(false);
-                    generator.AddBool(false).AddBool(false);
+            TimerBox timerBox2 = new TimerBox(room, tempKey, new Point(650, 720), new Size(150, 100));
+            timerBox2.StartTime = 10000;
+            this.timerbox2 = timerBox2;
+            timerBox2.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(); });
+            objectManager.AddObject(timerBox2);
 
-                    room.SendMessageToAll_InRoom(generator.Generate());
-                }
-                else
-                {
-                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(platform.key);
-                    generator.AddByte(ObjectTypes.GAME_OBJECT);
-                    generator.AddInt(-1);
-                    generator.AddInt(platform.Location.X).AddInt(platform.Location.Y);
-                    generator.AddInt(platform.size.Width).AddInt(platform.size.Height);
-                    generator.AddInt(platform.SkinNum).AddBool(true);
-                    generator.AddBool(true).AddBool(true);
+            // 버튼
+            tempKey = room.NextObjKey;
+            Button button2 = new Button(room, tempKey, new Point(650, 790), new Size(20, 10));
+            button2.SetAction(delegate () { timerBox2.TimerStop(); ; });
+            objectManager.AddObject(button2);
 
-                    room.SendMessageToAll_InRoom(generator.Generate());
-                }
-            });
-            objectManager.AddObject(pressButton);
+
+
+            // 타이머
+            tempKey = room.NextObjKey;
+            TimerBox timerBox3 = new TimerBox(room, tempKey, new Point(850, 720), new Size(150, 100));
+            timerBox3.StartTime = 10000;
+            this.timerbox3 = timerBox3;
+            timerBox3.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(); });
+            objectManager.AddObject(timerBox3);
+
+            // 버튼
+            tempKey = room.NextObjKey;
+            Button button3 = new Button(room, tempKey, new Point(850, 790), new Size(20, 10));
+            button3.SetAction(delegate () { timerBox3.TimerStop(); });
+            objectManager.AddObject(button3);
+
+
+            // 타이머 보드
+            tempKey = room.NextObjKey;
+            TimerBoard timerBoard = new TimerBoard(room, tempKey, new Point(650, 0), new Size(300, 100),3);
+            timerBoard.StartTime = 30000;
+            timerBoard.MinTime = 0;
+            timerBoard.MaxTime = 500;
+            this.timerBoard = timerBoard;
+            objectManager.AddObject(timerBoard);
 
             // 땅
             tempKey = room.NextObjKey;

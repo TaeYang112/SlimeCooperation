@@ -9,41 +9,40 @@ using System.Threading.Tasks;
 
 namespace MultiGameServer.Object
 {
-    public class TimerBox : GameObject
+    public class TimerBoard : GameObject
     {
         private System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
-
-        public int StartTime { get; set; }
-
-        private System.Threading.Timer timer;
 
         public delegate void TimerStopDelegate();
 
         private TimerStopDelegate timerStopAction = null;
 
-        public int Time { get { return Convert.ToInt32(Math.Max(0, StartTime - st.ElapsedMilliseconds)); } }
-        
+        public int StartTime { get; set; }
+        public int MinTime { get; set; }
+        public int MaxTime { get; set; }
 
-        public TimerBox(Room room, int key, Point Location, Size size)
+        private int _timerCount = 0;
+        public int TimerCount { get { return _timerCount; } }
+
+        public int Time { get { return Convert.ToInt32(Math.Max(0, StartTime - st.ElapsedMilliseconds)); } }
+
+        public TimerBoard(Room room, int key, Point Location, Size size, int timerCount)
             : base(room, key, Location, size)
         {
-            _type = ObjectTypes.TIMER_BOX;
+            _type = ObjectTypes.TIMER_BOARD;
             Collision = false;
             Blockable = false;
-
-            System.Threading.TimerCallback tc = new System.Threading.TimerCallback(TimerStop);
-            timer = new System.Threading.Timer(tc);
+            _timerCount = timerCount;
         }
 
-        public TimerBox(Room room, int key, Point Location, Point Location2)
-            : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y))
+        public TimerBoard(Room room, int key, Point Location, Point Location2, int timerCount)
+            : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y), timerCount)
         {
         }
 
         public override void OnClose()
         {
             base.OnClose();
-            timer.Dispose();
             st.Stop();
         }
 
@@ -57,7 +56,6 @@ namespace MultiGameServer.Object
             timerStopAction = action;
         }
 
-
         public void TimerStart()
         {
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
@@ -67,15 +65,12 @@ namespace MultiGameServer.Object
 
             room.SendMessageToAll_InRoom(generator.Generate());
             st.Start();
-
-            timer.Change(StartTime, Timeout.Infinite);
         }
 
 
-        public void TimerStop(object o = null)
+        public void TimerStop()
         {
-            timer.Change(Timeout.Infinite, Timeout.Infinite);
-            st.Stop();
+            _timerCount--;
 
             if(timerStopAction != null)
                 timerStopAction();
@@ -83,7 +78,7 @@ namespace MultiGameServer.Object
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
             generator.AddInt(key).AddByte(Type).AddInt(-1);
 
-            generator.AddBool(false).AddInt(Convert.ToInt32(Math.Max(0,StartTime - st.ElapsedMilliseconds)));
+            generator.AddBool(false).AddInt(Convert.ToInt32(Math.Max(0,st.ElapsedMilliseconds)));
 
             room.SendMessageToAll_InRoom(generator.Generate());
             

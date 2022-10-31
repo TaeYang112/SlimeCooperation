@@ -339,6 +339,21 @@ namespace MultiGame
                             newObject = new TimerBox(key, location, size);
                         }
                         break;
+                    case ObjectTypes.TIMER_BOARD:
+                        {
+                            int minTime = converter.NextInt();
+                            int maxTime = converter.NextInt();
+                            int startTime = converter.NextInt();
+                            int timerCount = converter.NextInt();
+                            
+                            TimerBoard timerBoard = new TimerBoard(key, location, size, timerCount);
+                            timerBoard.MinTime = minTime;
+                            timerBoard.MaxTime = maxTime;
+                            timerBoard.StartTime = startTime;
+
+                            newObject = timerBoard;
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -560,6 +575,25 @@ namespace MultiGame
                             {
                                 timerBox.ServerTime = time;
                                 timerBox.TImerStop();
+                            }
+                        }
+                        break;
+                    case ObjectTypes.TIMER_BOARD:
+                        {
+                            bool bStart = converter.NextBool();
+                            int time = converter.NextInt();
+
+                            TimerBoard timerBoard = gameObject as TimerBoard;
+
+                            if (bStart)
+                            {
+                                timerBoard.StartTime = time;
+                                timerBoard.TimerStart();
+                            }
+                            else
+                            {
+                                timerBoard.ServerTime += time;
+                                timerBoard.TImerStop();
                             }
                         }
                         break;
