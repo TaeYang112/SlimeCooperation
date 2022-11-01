@@ -38,7 +38,7 @@ namespace MultiGame.Object
 
             st = new System.Diagnostics.Stopwatch();
 
-            font = new Font(ResourceLibrary.Families[0], 18, FontStyle.Regular);
+            font = new Font(ResourceLibrary.Families[0], 15, FontStyle.Regular);
             format = new StringFormat();
             format.Alignment = StringAlignment.Center;
             format.LineAlignment = StringAlignment.Center;
@@ -63,14 +63,12 @@ namespace MultiGame.Object
             if (isVisible == false) return;
             var e = pe.Graphics;
 
-            string time;
-
             long temp = StartTime - st.ElapsedMilliseconds * _timerCount - ServerTime;
-            time = TimeToString(temp);
 
+            string str = TimeToString(MinTime) + " ▷ " + TimeToString(temp) + " ▷ " + TimeToString(MaxTime);
 
             e.FillRectangle(Brushes.White, new Rectangle(Location, size));
-            e.DrawString(time, font, Brushes.Black, new RectangleF(new Point(Location.X + 4, Location.Y), size), format);
+            e.DrawString(str, font, Brushes.Black, new RectangleF(new Point(Location.X + 4, Location.Y), size), format);
         }
 
         private string TimeToString(long time)
@@ -96,7 +94,6 @@ namespace MultiGame.Object
 
         public void TImerStop()
         {
-            Console.WriteLine(  "종료");
             _timerCount--;
             
             // 더이상 남은 타이머가 없다면 종료시킴

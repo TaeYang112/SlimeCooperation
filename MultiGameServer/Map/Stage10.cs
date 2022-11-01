@@ -60,7 +60,7 @@ namespace MultiGameServer
             TimerBox timerBox = new TimerBox(room, tempKey, new Point(450, 720), new Size(150, 100));
             timerBox.StartTime = 10000;
             this.timerbox1 = timerBox;
-            timerBox.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(); });
+            timerBox.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(timerBox.StartTime - timerBox.Time); });
             objectManager.AddObject(timerBox);
 
             // 버튼
@@ -76,7 +76,7 @@ namespace MultiGameServer
             TimerBox timerBox2 = new TimerBox(room, tempKey, new Point(650, 720), new Size(150, 100));
             timerBox2.StartTime = 10000;
             this.timerbox2 = timerBox2;
-            timerBox2.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(); });
+            timerBox2.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(timerBox2.StartTime - timerbox2.Time); });
             objectManager.AddObject(timerBox2);
 
             // 버튼
@@ -92,7 +92,7 @@ namespace MultiGameServer
             TimerBox timerBox3 = new TimerBox(room, tempKey, new Point(850, 720), new Size(150, 100));
             timerBox3.StartTime = 10000;
             this.timerbox3 = timerBox3;
-            timerBox3.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(); });
+            timerBox3.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(timerBox3.StartTime - timerbox3.Time); });
             objectManager.AddObject(timerBox3);
 
             // 버튼
@@ -104,10 +104,11 @@ namespace MultiGameServer
 
             // 타이머 보드
             tempKey = room.NextObjKey;
-            TimerBoard timerBoard = new TimerBoard(room, tempKey, new Point(650, 0), new Size(300, 100),3);
+            TimerBoard timerBoard = new TimerBoard(room, tempKey, new Point(650, 0), new Size(400, 100),3);
             timerBoard.StartTime = 30000;
             timerBoard.MinTime = 0;
-            timerBoard.MaxTime = 500;
+            timerBoard.MaxTime = 1000;
+            timerBoard.SetTimerNotMatchAction(delegate () { room.AllDie(); });
             this.timerBoard = timerBoard;
             objectManager.AddObject(timerBoard);
 

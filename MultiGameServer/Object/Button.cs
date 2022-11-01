@@ -41,8 +41,6 @@ namespace MultiGameServer.Object
             if (Pressed == true) return;
             Pressed = true;
 
-            Console.WriteLine("전송");
-
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
             generator.AddInt(key);
             generator.AddByte(Type);

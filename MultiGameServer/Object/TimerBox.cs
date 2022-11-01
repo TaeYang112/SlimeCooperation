@@ -74,6 +74,8 @@ namespace MultiGameServer.Object
 
         public void TimerStop(object o = null)
         {
+            if (st.IsRunning == false) return;
+
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             st.Stop();
 
