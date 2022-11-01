@@ -51,15 +51,16 @@ namespace MultiGameServer
             
             // 그냥 돌
             tempKey = room.NextObjKey;
-            Floor floor = new Floor(room, tempKey, new Point(400, 720), new Size(70, 70));
-            floor.SkinNum = 2;
-            objectManager.AddObject(floor);
+            Platform platform = new Platform(room, tempKey, new Point(400, 720), new Size(70, 70));
+            platform.SkinNum = 2;
+            objectManager.AddObject(platform);
 
             // 타이머
             tempKey = room.NextObjKey;
             TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 720), new Size(150, 100));
             timerBox.StartTime = 10000;
             this.timerbox1 = timerBox;
+            timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
             objectManager.AddObject(timerBox);
 
             // 버튼
@@ -76,12 +77,12 @@ namespace MultiGameServer
                 if(bPressed == true)
                 {
                     MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(floor.key);
+                    generator.AddInt(platform.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(floor.Location.X).AddInt(floor.Location.Y);
-                    generator.AddInt(floor.size.Width).AddInt(floor.size.Height);
-                    generator.AddInt(floor.SkinNum).AddBool(false);
+                    generator.AddInt(platform.Location.X).AddInt(platform.Location.Y);
+                    generator.AddInt(platform.size.Width).AddInt(platform.size.Height);
+                    generator.AddInt(platform.SkinNum).AddBool(false);
                     generator.AddBool(false).AddBool(false);
 
                     room.SendMessageToAll_InRoom(generator.Generate());
@@ -89,12 +90,12 @@ namespace MultiGameServer
                 else
                 {
                     MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(floor.key);
+                    generator.AddInt(platform.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(floor.Location.X).AddInt(floor.Location.Y);
-                    generator.AddInt(floor.size.Width).AddInt(floor.size.Height);
-                    generator.AddInt(floor.SkinNum).AddBool(true);
+                    generator.AddInt(platform.Location.X).AddInt(platform.Location.Y);
+                    generator.AddInt(platform.size.Width).AddInt(platform.size.Height);
+                    generator.AddInt(platform.SkinNum).AddBool(true);
                     generator.AddBool(true).AddBool(true);
 
                     room.SendMessageToAll_InRoom(generator.Generate());

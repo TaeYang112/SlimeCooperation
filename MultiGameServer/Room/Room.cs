@@ -148,7 +148,6 @@ namespace MultiGameServer
                 clientChar.RestarPressed = false;
                 RestartPressedCount--;
             }
-            Console.WriteLine(key + "번방 다시시작 : " + RestartPressedCount + "/" + 3);
         }
 
         // 방에 있는 클라이언트가 3명이상 레디할경우 true 아니면 false 반환
@@ -162,7 +161,6 @@ namespace MultiGameServer
                     count++;
                 }
             }
-            Console.WriteLine("[INFO] " + key + "번 방 "+ count + "/3 READY");
             // 준비한 캐릭터가 3명 이상일경우 true
             if (count >= 1)
             {
@@ -243,7 +241,7 @@ namespace MultiGameServer
 
                 SendMessageToAll_InRoom(generator.Generate());
 
-                RespawnTimer.Change(1000, Timeout.Infinite);
+                RespawnTimer.Change(1500, Timeout.Infinite);
             }
         }
 
@@ -402,6 +400,7 @@ namespace MultiGameServer
 
         public void GameStart(int stageNum)
         {
+            Console.WriteLine(key + "번방 "+ stageNum + "번맵 시작");
             this.stageNum = stageNum;
             this.RestartPressedCount = 0;
 
@@ -425,6 +424,9 @@ namespace MultiGameServer
                     break;
                 case 9:
                     _Map = new Stage9(this);
+                    break;
+                case 10:
+                    _Map = new Stage10(this);
                     break;
                 default:
                     _Map = new Stage1(this);
@@ -501,6 +503,16 @@ namespace MultiGameServer
                                 Stone stone = gameObject as Stone;
 
                                 generator.AddInt(stone.weight);
+                            }
+                            break;
+                        case ObjectTypes.TIMER_BOARD:
+                            {
+                                TimerBoard timeBoard = gameObject as TimerBoard;
+
+                                generator.AddInt(timeBoard.MinTime);
+                                generator.AddInt(timeBoard.MaxTime);
+                                generator.AddInt(timeBoard.StartTime);
+                                generator.AddInt(timeBoard.TimerCount);
                             }
                             break;
                         default:

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MultiGameServer.Object
@@ -14,6 +15,14 @@ namespace MultiGameServer.Object
 
         public int StartTime { get; set; }
 
+        private System.Threading.Timer timer;
+
+        public delegate void TimerStopDelegate();
+
+        private TimerStopDelegate timerStopAction = null;
+
+        public int Time { get { return Convert.ToInt32(Math.Max(0, StartTime - st.ElapsedMilliseconds)); } }
+        
 
         public TimerBox(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
@@ -22,6 +31,8 @@ namespace MultiGameServer.Object
             Collision = false;
             Blockable = false;
 
+            System.Threading.TimerCallback tc = new System.Threading.TimerCallback(TimerStop);
+            timer = new System.Threading.Timer(tc);
         }
 
         public TimerBox(Room room, int key, Point Location, Point Location2)
@@ -29,12 +40,23 @@ namespace MultiGameServer.Object
         {
         }
 
-        
+        public override void OnClose()
+        {
+            base.OnClose();
+            timer.Dispose();
+            st.Stop();
+        }
 
         public override void OnEvent(EventParam param)
         {
 
         }
+
+        public void SetTimerStopAction(TimerStopDelegate action)
+        {
+            timerStopAction = action;
+        }
+
 
         public void TimerStart()
         {
@@ -45,11 +67,21 @@ namespace MultiGameServer.Object
 
             room.SendMessageToAll_InRoom(generator.Generate());
             st.Start();
+
+            timer.Change(StartTime, Timeout.Infinite);
         }
 
-        public void TimerStop()
+
+        public void TimerStop(object o = null)
         {
+            if (st.IsRunning == false) return;
+
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
             st.Stop();
+
+            if(timerStopAction != null)
+                timerStopAction();
+
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
             generator.AddInt(key).AddByte(Type).AddInt(-1);
 
