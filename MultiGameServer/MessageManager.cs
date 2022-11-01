@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MultiGameServer
@@ -239,6 +240,7 @@ namespace MultiGameServer
                         generator.AddInt(room.GetPeopleCount());
 
                         program.SendMessage(generator.Generate(), clientChar.key);
+                        generator.Clear();
                     }
                 }
             }

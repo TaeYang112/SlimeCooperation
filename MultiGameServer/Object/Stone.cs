@@ -175,7 +175,6 @@ namespace MultiGameServer.Object
                         tempLoc.X += dxy;
                     }
                 }
-                if (tempLoc.X == Location.X) Console.WriteLine("안되네");
             }
 
             // y에 대한 충돌 판정

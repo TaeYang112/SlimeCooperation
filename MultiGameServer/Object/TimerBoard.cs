@@ -15,6 +15,7 @@ namespace MultiGameServer.Object
 
         private TimerEventDelegate timerStopAction = null;
         private TimerEventDelegate timerNotMatchAction = null;
+        private TimerEventDelegate timerMatchAction = null;
 
         public int StartTime { get; set; }
         public int MinTime { get; set; }
@@ -48,6 +49,10 @@ namespace MultiGameServer.Object
         {
             timerNotMatchAction = action;
         }
+        public void SetTimerMatchAction(TimerEventDelegate action)
+        {
+            timerMatchAction = action;
+        }
 
         public void TimerStart()
         {
@@ -70,10 +75,18 @@ namespace MultiGameServer.Object
                 if (timerStopAction != null)
                     timerStopAction();
 
-                if (timerNotMatchAction != null && (StartTime - currentTIme > MaxTime || StartTime - currentTIme < MinTime))
+                // 타이머 시간이 Min < < Max 가 아닐경우
+                if (StartTime - currentTIme > MaxTime || StartTime - currentTIme < MinTime)
                 {
-                    timerNotMatchAction();
+                    if(timerNotMatchAction != null) 
+                        timerNotMatchAction();
                 }
+                else
+                {
+                    if (timerMatchAction != null)
+                        timerMatchAction();
+                }
+                
             }
 
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);

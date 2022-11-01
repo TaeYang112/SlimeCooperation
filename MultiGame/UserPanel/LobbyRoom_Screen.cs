@@ -68,7 +68,6 @@ namespace MultiGame.UserPanel
         public void SetRoomTitle(string RoomCode, string title)
         {
             roomTitle_lbl.Text = $"{RoomCode}번방 {title}";
-            Console.WriteLine(roomTitle_lbl.Text);
         }
     }
 }
