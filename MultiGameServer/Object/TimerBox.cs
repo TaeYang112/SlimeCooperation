@@ -30,6 +30,7 @@ namespace MultiGameServer.Object
             _type = ObjectTypes.TIMER_BOX;
             Collision = false;
             Blockable = false;
+            IsStatic = true;
 
             System.Threading.TimerCallback tc = new System.Threading.TimerCallback(TimerStop);
             timer = new System.Threading.Timer(tc);

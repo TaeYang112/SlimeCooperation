@@ -20,6 +20,7 @@ namespace MultiGame.Object
             SetSkin(0);
             Collision = false;
             Blockable = false;
+            
             _open = false;
             _type = ObjectTypes.DOOR;
         }

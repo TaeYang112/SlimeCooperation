@@ -11,10 +11,6 @@ namespace MultiGame.Object
 {
     public class Platform : GameObject
     {
-        private Image _image2;
-        private TextureBrush tBrush1;
-        private TextureBrush tBrush2;
-        bool singleImage = false;
 
         public Platform(int key, Point Location, Size size):
             base(key,Location,size)
@@ -27,7 +23,6 @@ namespace MultiGame.Object
 
         override public void SetSkin(int num)
         {
-            singleImage = false;
             isVisible = true;
             switch(num)
             {
@@ -35,35 +30,15 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Grass_Dirt;
-                    _image2 = MultiGame.Properties.Resources.Grass;
+                    _image = MultiGame.Properties.Resources.Log;
                     break;
-                    /*
                 case 1:
-                    _image = MultiGame.Properties.Resources.Snow_Dirt;
-                    _image2 = MultiGame.Properties.Resources.Snow;
+                    _image = MultiGame.Properties.Resources.Platform_snow;
                     break;
-                case 2:
-                    _image = MultiGame.Properties.Resources.Lava_Dirt;
-                    singleImage = true;
-                    break;
-                    */
                 default:
-                    _image = MultiGame.Properties.Resources.Grass_Dirt;
-                    _image2 = MultiGame.Properties.Resources.Grass;
+                    _image = MultiGame.Properties.Resources.Log;
                     break;
             }
-            System.Drawing.Imaging.ImageAttributes attributes = new System.Drawing.Imaging.ImageAttributes();
-           // attributes.
-            tBrush1 = new TextureBrush(_image);
-            tBrush2 = new TextureBrush(_image2);
-            tBrush2.Transform = new System.Drawing.Drawing2D.Matrix(
-          1.0f,
-          0.0f,
-          0.0f,
-          1.0f,
-          0.0f,
-          Location.Y);
 
         }
         
@@ -71,13 +46,7 @@ namespace MultiGame.Object
         {
             Graphics g = pe.Graphics;
 
-            g.FillRectangle(tBrush1, new Rectangle(Location, size));
-
-            
-
-            if (singleImage == false)
-                g.FillRectangle(tBrush2, new Rectangle(Location, new Size(size.Width, _image2.Height)));
-
+            base.OnPaint(obj, pe);
         }
     }
 }

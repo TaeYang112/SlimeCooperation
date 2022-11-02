@@ -422,11 +422,14 @@ namespace MultiGameServer
                 case 5:
                     _Map = new Stage5(this);
                     break;
+                case 8:
+                    _Map = new Stage8(this);
+                    break;
                 case 9:
                     _Map = new Stage9(this);
                     break;
-                case 10:
-                    _Map = new Stage10(this);
+                case 6:
+                    _Map = new Stage6(this);
                     break;
                 default:
                     _Map = new Stage1(this);
@@ -455,6 +458,7 @@ namespace MultiGameServer
                 generator.Protocol = Protocols.S_MAP_START;
                 generator.AddInt(item.Value.Location.X);
                 generator.AddInt(item.Value.Location.Y);
+                generator.AddInt(_Map.Skin);
 
                 // 전송
                 PInst.SendMessage(generator.Generate(), item.Key);

@@ -73,9 +73,19 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap Background2 {
+        internal static System.Drawing.Bitmap BackGround2 {
             get {
-                object obj = ResourceManager.GetObject("Background2", resourceCulture);
+                object obj = ResourceManager.GetObject("BackGround2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap BackGround3 {
+            get {
+                object obj = ResourceManager.GetObject("BackGround3", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -116,6 +126,16 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap ButtonPressed {
             get {
                 object obj = ResourceManager.GetObject("ButtonPressed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap dirt_snow {
+            get {
+                object obj = ResourceManager.GetObject("dirt_snow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -243,6 +263,16 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap Log {
+            get {
+                object obj = ResourceManager.GetObject("Log", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap MainMenu {
             get {
                 object obj = ResourceManager.GetObject("MainMenu", resourceCulture);
@@ -286,6 +316,16 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Pink2 {
             get {
                 object obj = ResourceManager.GetObject("Pink2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Platform_snow {
+            get {
+                object obj = ResourceManager.GetObject("Platform_snow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -353,19 +393,9 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap Snow {
+        internal static System.Drawing.Bitmap snow {
             get {
-                object obj = ResourceManager.GetObject("Snow", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
-        /// </summary>
-        internal static System.Drawing.Bitmap Snow_Dirt {
-            get {
-                object obj = ResourceManager.GetObject("Snow_Dirt", resourceCulture);
+                object obj = ResourceManager.GetObject("snow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -376,6 +406,26 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Stone {
             get {
                 object obj = ResourceManager.GetObject("Stone", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap TimeBoard {
+            get {
+                object obj = ResourceManager.GetObject("TimeBoard", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap TimeBox {
+            get {
+                object obj = ResourceManager.GetObject("TimeBox", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

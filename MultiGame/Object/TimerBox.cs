@@ -44,6 +44,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
+                    _image = MultiGame.Properties.Resources.TimeBox;
                     break;
             }
         
@@ -65,7 +66,7 @@ namespace MultiGame.Object
                 time = TimeToString(ServerTime);
             }
 
-            e.FillRectangle(Brushes.White, new Rectangle(Location, size));
+            e.DrawImage(_image, new Rectangle(Location, size));
             e.DrawString(time, font, Brushes.Black, new RectangleF(new Point(Location.X + 4, Location.Y), size), format);
         }
 
@@ -80,7 +81,6 @@ namespace MultiGame.Object
             else
             {
                 result = String.Format("{0:f}", time / 1000.0f);
-                Console.WriteLine(time/1000.0f);
             }
 
             return result;

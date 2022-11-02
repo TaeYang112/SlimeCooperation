@@ -53,6 +53,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
+                    _image = MultiGame.Properties.Resources.TimeBoard;
                     break;
             }
         
@@ -67,7 +68,7 @@ namespace MultiGame.Object
 
             string str = TimeToString(MinTime) + " ▷ " + TimeToString(temp) + " ▷ " + TimeToString(MaxTime);
 
-            e.FillRectangle(Brushes.White, new Rectangle(Location, size));
+            e.DrawImage(_image, new Rectangle(Location, size));
             e.DrawString(str, font, Brushes.Black, new RectangleF(new Point(Location.X + 4, Location.Y), size), format);
         }
 

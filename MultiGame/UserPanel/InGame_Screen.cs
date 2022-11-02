@@ -42,34 +42,44 @@ namespace MultiGame.UserPanel
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-            // 배경 이미지
-            BackGroundImg = MultiGame.Properties.Resources.Background2;
-
-            // 포탈 gif 애니메이션
-            
-
             TimerCallback tc2 = new TimerCallback(DebugTimer);
             FPSTimer = new System.Threading.Timer(tc2, null, 0, 1000);
             FPS = 0;
         }
 
-    public void DebugTimer(object c)
-    {
-        Console.WriteLine(FPS + "FPS.");
-        FPS = 0;
-    }
-
-    public void StartUpdateScreen(bool bStart)
+        public void DebugTimer(object c)
         {
-            if(bStart == true)
+            Console.WriteLine(FPS + "FPS.");
+            FPS = 0;
+        }
+
+        public void SetBackGround(int num)
+        {
+            switch(num)
             {
-                UpdateTimer.Change(0,13);
-            }
-            else
-            {
-                UpdateTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                case 0:
+                    BackGroundImg = MultiGame.Properties.Resources.BackGround1;
+                    break;
+                case 1:
+                    BackGroundImg = MultiGame.Properties.Resources.BackGround2;
+                    break;
+                case 2:
+                    BackGroundImg = MultiGame.Properties.Resources.BackGround3;
+                    break;
             }
         }
+
+        public void StartUpdateScreen(bool bStart)
+            {
+                if(bStart == true)
+                {
+                    UpdateTimer.Change(0,13);
+                }
+                else
+                {
+                    UpdateTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                }
+            }
 
         // 화면 다시그리기
         public void Update(object temp)

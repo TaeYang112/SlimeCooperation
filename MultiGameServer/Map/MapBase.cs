@@ -15,7 +15,8 @@ namespace MultiGameServer
 
         public ObjectManager objectManager { get; set; }
 
-       
+        protected int _skin = 0;
+        public int Skin { get { return _skin; } }
 
         public MapBase(Room room)
         {

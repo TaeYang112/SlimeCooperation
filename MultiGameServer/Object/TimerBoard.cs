@@ -26,6 +26,7 @@ namespace MultiGameServer.Object
         private int _timerCount = 0;
         public int TimerCount { get { return _timerCount; } }
 
+        private object lockObj = new object();
         public TimerBoard(Room room, int key, Point Location, Size size, int timerCount)
             : base(room, key, Location, size)
         {
@@ -33,6 +34,7 @@ namespace MultiGameServer.Object
             Collision = false;
             Blockable = false;
             _timerCount = timerCount;
+            IsStatic = true;
         }
 
         public TimerBoard(Room room, int key, Point Location, Point Location2, int timerCount)
@@ -67,35 +69,38 @@ namespace MultiGameServer.Object
 
         public void TimerStop(long stoppedTime)
         {
-            _timerCount--;
-            currentTIme += (int)stoppedTime;
-
-            if (_timerCount == 0)
+            lock (lockObj)
             {
-                if (timerStopAction != null)
-                    timerStopAction();
+                _timerCount--;
+                currentTIme += (int)stoppedTime;
 
-                // 타이머 시간이 Min < < Max 가 아닐경우
-                if (StartTime - currentTIme > MaxTime || StartTime - currentTIme < MinTime)
+                if (_timerCount == 0)
                 {
-                    if(timerNotMatchAction != null) 
-                        timerNotMatchAction();
+                    if (timerStopAction != null)
+                        timerStopAction();
+
+                    // 타이머 시간이 Min < < Max 가 아닐경우
+                    if (StartTime - currentTIme > MaxTime || StartTime - currentTIme < MinTime)
+                    {
+                        if (timerNotMatchAction != null)
+                            timerNotMatchAction();
+                    }
+                    else
+                    {
+                        if (timerMatchAction != null)
+                            timerMatchAction();
+                    }
+
                 }
-                else
-                {
-                    if (timerMatchAction != null)
-                        timerMatchAction();
-                }
-                
+
+                MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                generator.AddInt(key).AddByte(Type).AddInt(-1);
+
+                generator.AddBool(false).AddInt(Convert.ToInt32(Math.Max(0, stoppedTime)));
+
+                room.SendMessageToAll_InRoom(generator.Generate());
+
             }
-
-            MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-            generator.AddInt(key).AddByte(Type).AddInt(-1);
-
-            generator.AddBool(false).AddInt(Convert.ToInt32(Math.Max(0,stoppedTime)));
-
-            room.SendMessageToAll_InRoom(generator.Generate());
-            
         }
     }
 }

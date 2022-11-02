@@ -722,6 +722,9 @@ namespace MultiGame
                 int x = converter.NextInt();
                 int y = converter.NextInt();
 
+                // 스킨
+                int skin = converter.NextInt();
+
                 Console.WriteLine("시작");
 
                 UserClient userClient = gameManager.userClient;
@@ -733,23 +736,35 @@ namespace MultiGame
                 // 좌표 설정
                 userClient.Character.Location = new Point(x, y);
 
-                // 게임이 처음 시작하는 거라면 ( 첫번째 맵을 플레이하는거라면 )
-                if (gameManager.IsGameStart == false)
+                gameManager.form1.Invoke(new MethodInvoker(delegate ()
                 {
-                    // 시작 플래그 변수 변경
-                    gameManager.IsGameStart = true;
-
-                    // 인게임 화면으로 변경
-                    gameManager.form1.Invoke(new MethodInvoker(delegate ()
+                    // 게임이 처음 시작하는 거라면 ( 첫번째 맵을 플레이하는거라면 )
+                    if (gameManager.IsGameStart == false)
                     {
+                        // 시작 플래그 변수 변경
+                        gameManager.IsGameStart = true;
+
+                        // 인게임 화면으로 변경
+                   
                         InGame_Screen inGame_Screen = new InGame_Screen(gameManager.form1);
                         gameManager.form1.ActiveControl = null;
                         inGame_Screen.StartUpdateScreen(true);
-
+                        inGame_Screen.SetBackGround(skin);
                         gameManager.form1.ChangeScreen(inGame_Screen);
-                    }));
-                }
+                    
+                    }
+                    else
+                    {
+                        // 형변환
+                        InGame_Screen inGame_Screen = gameManager.form1.Controls[0] as InGame_Screen;
 
+                        // 방찾기 화면이 아닌경우 리턴
+                        if (inGame_Screen == null) return;
+
+                        inGame_Screen.SetBackGround(skin);
+                    }
+                    
+                }));
 
                 // 각 캐릭터들 설정
                 foreach (var item in gameManager.clientManager.ClientDic)

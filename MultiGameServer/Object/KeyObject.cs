@@ -20,6 +20,7 @@ namespace MultiGameServer.Object
             ownerKey = -1;
             Collision = true;
             Blockable = false;
+            IsStatic = true;
         }
 
         public KeyObject(Room room, int key, Point Location, Point Location2)

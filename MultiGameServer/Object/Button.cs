@@ -24,6 +24,7 @@ namespace MultiGameServer.Object
             Collision = false;
             Blockable = false;
             Pressed = false;
+            IsStatic = true;
         }
 
         public Button(Room room, int key, Point Location, Point Location2)

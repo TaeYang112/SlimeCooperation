@@ -19,6 +19,7 @@ namespace MultiGameServer.Object
             Collision = true;
             Blockable = false;
             TargetLocation = new Point(0, 0);
+            IsStatic = true;
         }
 
         public Portal(Room room, int key, Point Location, Point Location2)

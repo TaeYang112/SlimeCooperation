@@ -17,6 +17,7 @@ namespace MultiGameServer.Object
             _type = ObjectTypes.FLOOR;
             Collision = true;
             Blockable = true;
+            IsStatic = true;
         }
 
         public Floor(Room room, int key, Point Location, Point Location2)

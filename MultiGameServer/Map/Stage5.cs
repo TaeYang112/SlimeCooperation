@@ -12,7 +12,7 @@ namespace MultiGameServer
     {
         public Stage5(Room room) : base(room)
         {
-
+            _skin = 1;
         }
         protected override void SetSpawnLocation() // 플레이어 시작 좌표
         {
@@ -39,8 +39,8 @@ namespace MultiGameServer
 
             // 땅
             tempKey = room.NextObjKey;
-            Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(1440, 865));
-            Floor.SkinNum = 2;
+            Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(960, 865));
+            Floor.SkinNum = 1;
             objectManager.AddObject(Floor);
 
             tempKey = room.NextObjKey;
@@ -48,104 +48,87 @@ namespace MultiGameServer
             Floor2.SkinNum = 1;
             objectManager.AddObject(Floor2);
 
+            // 중간 바닥
             tempKey = room.NextObjKey;
-            Floor Floor3 = new Floor(room, tempKey, new Point(0, 480), new Size(350, 40));
-            Floor3.SkinNum = 2;
+            Floor Floor3 = new Floor(room, tempKey, new Point(210, 480), new Size(795, 40));
+            Floor3.SkinNum = 1;
             objectManager.AddObject(Floor3);
 
-            tempKey = room.NextObjKey;
-            Floor Floor4 = new Floor(room, tempKey, new Point(340, 480), new Size(350, 40));
-            Floor4.SkinNum = 2;
-            objectManager.AddObject(Floor4);
 
+            // 오른쪽 계단
             tempKey = room.NextObjKey;
-            Floor Floor12 = new Floor(room, tempKey, new Point(680, 480), new Size(350, 40));
-            Floor12.SkinNum = 2;
-            objectManager.AddObject(Floor12);
-
-            tempKey = room.NextObjKey;
-            Floor Floor5 = new Floor(room, tempKey, new Point(960, 745), new Size(474, 55));
+            Floor Floor5 = new Floor(room, tempKey, new Point(960, 745), new Size(50, 120));
             Floor5.SkinNum = 1;
             objectManager.AddObject(Floor5);
 
             tempKey = room.NextObjKey;
-            Floor Floor6 = new Floor(room, tempKey, new Point(1010, 690), new Size(424, 55));
+            Floor Floor6 = new Floor(room, tempKey, new Point(1010, 690), new Size(50, 175));
             Floor6.SkinNum = 1;
             objectManager.AddObject(Floor6);
 
             tempKey = room.NextObjKey;
-            Floor Floor7 = new Floor(room, tempKey, new Point(1060, 635), new Size(374, 55));
+            Floor Floor7 = new Floor(room, tempKey, new Point(1060, 635), new Size(50, 230));
             Floor7.SkinNum = 1;
             objectManager.AddObject(Floor7);
 
             tempKey = room.NextObjKey;
-            Floor Floor8 = new Floor(room, tempKey, new Point(1110, 580), new Size(324, 55));
+            Floor Floor8 = new Floor(room, tempKey, new Point(1110, 580), new Size(50, 285));
             Floor8.SkinNum = 1;
             objectManager.AddObject(Floor8);
 
             tempKey = room.NextObjKey;
-            Floor Floor9 = new Floor(room, tempKey, new Point(1160, 525), new Size(274, 55));
+            Floor Floor9 = new Floor(room, tempKey, new Point(1160, 525), new Size(280, 340));
             Floor9.SkinNum = 1;
             objectManager.AddObject(Floor9);
 
+            // 열쇠 있는쪽 바닥
             tempKey = room.NextObjKey;
             Floor Floor13 = new Floor(room, tempKey, new Point(475, 310), new Size(400, 40));
-            Floor13.SkinNum = 2;
+            Floor13.SkinNum = 1;
             objectManager.AddObject(Floor13);
 
+            // 열쇠 있는 쪽 기둥
             tempKey = room.NextObjKey;
             Floor Floor14 = new Floor(room, tempKey, new Point(435, 180), new Size(40,170));
             Floor14.SkinNum = 1;
             objectManager.AddObject(Floor14);
 
+            // 왼쪽 계단
             tempKey = room.NextObjKey;
-            Floor Floor15 = new Floor(room, tempKey, new Point(0, 240), new Size(55, 240));
+            Floor Floor15 = new Floor(room, tempKey, new Point(0, 240), new Size(55, 280));
             Floor15.SkinNum = 1;
             objectManager.AddObject(Floor15);
 
             tempKey = room.NextObjKey;
-            Floor Floor16 = new Floor(room, tempKey, new Point(55, 280), new Size(55, 200));
+            Floor Floor16 = new Floor(room, tempKey, new Point(55, 280), new Size(55, 240));
             Floor16.SkinNum = 1;
             objectManager.AddObject(Floor16);
 
             tempKey = room.NextObjKey;
-            Floor Floor17 = new Floor(room, tempKey, new Point(110, 320), new Size(55, 160));
+            Floor Floor17 = new Floor(room, tempKey, new Point(110, 320), new Size(55, 200));
             Floor17.SkinNum = 1;
             objectManager.AddObject(Floor17);
 
             tempKey = room.NextObjKey;
-            Floor Floor18 = new Floor(room, tempKey, new Point(165, 360), new Size(55, 120));
+            Floor Floor18 = new Floor(room, tempKey, new Point(165, 360), new Size(55, 160));
             Floor18.SkinNum = 1;
             objectManager.AddObject(Floor18);
 
-            tempKey = room.NextObjKey;
-            Floor Floor19 = new Floor(room, tempKey, new Point(150, 175), new Size(350, 40));
-            Floor19.SkinNum = 2;
-            objectManager.AddObject(Floor19);
 
+            // 문 있는 땅
             tempKey = room.NextObjKey;
-            Floor Floor20 = new Floor(room, tempKey, new Point(490, 175), new Size(350, 40));
-            Floor20.SkinNum = 2;
+            Floor Floor20 = new Floor(room, tempKey, new Point(200, 175), new Size(1240, 40));
+            Floor20.SkinNum = 1;
             objectManager.AddObject(Floor20);
 
             tempKey = room.NextObjKey;
-            Floor Floor21 = new Floor(room, tempKey, new Point(830, 175), new Size(350, 40));
-            Floor21.SkinNum = 2;
-            objectManager.AddObject(Floor21);
-
-            tempKey = room.NextObjKey;
-            Floor Floor22 = new Floor(room, tempKey, new Point(1070, 175), new Size(350, 40));
-            Floor22.SkinNum = 2;
-            objectManager.AddObject(Floor22);
-
-            tempKey = room.NextObjKey;
             Stone stone1 = new Stone(room, tempKey, new Point(680, 414), new Size(40, 65));
-            stone1.weight = 2;
+            stone1.weight = 3;
             objectManager.AddObject(stone1);
 
             // 문
             tempKey = room.NextObjKey;
-            Door door = new Door(room, tempKey, new Point(1323, 87), new Size(70, 90));
+            Door door = new Door(room, tempKey, new Point(1323, 87), new Size(70, 88));
             objectManager.AddObject(door);
 
             // 열쇠

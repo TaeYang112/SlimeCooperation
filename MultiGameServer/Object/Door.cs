@@ -18,6 +18,7 @@ namespace MultiGameServer.Object
             _type = ObjectTypes.DOOR;
             Collision = true;
             Blockable = false;
+            IsStatic = true;
         }
 
         public Door(Room room, int key, Point Location, Point Location2)

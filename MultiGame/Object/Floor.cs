@@ -40,16 +40,15 @@ namespace MultiGame.Object
                     _image2 = MultiGame.Properties.Resources.Grass;
                     _image2_Height = _image2.Height;
                     break;
-                    /*
                 case 1:
-                    _image = MultiGame.Properties.Resources.Snow_Dirt;
-                    _image2 = MultiGame.Properties.Resources.Snow;
+                    _image = MultiGame.Properties.Resources.dirt_snow;
+                    _image2 = MultiGame.Properties.Resources.snow;
+                    _image2_Height = _image2.Height;
                     break;
                 case 2:
                     _image = MultiGame.Properties.Resources.Lava_Dirt;
                     singleImage = true;
                     break;
-                    */
                 default:
                     _image = MultiGame.Properties.Resources.Grass_Dirt;
                     _image2 = MultiGame.Properties.Resources.Grass;
@@ -77,7 +76,7 @@ namespace MultiGame.Object
             if (isVisible == false) return;
 
             g.FillRectangle(tBrush1, new Rectangle(Location, size));
-
+            
             
 
             if (singleImage == false)

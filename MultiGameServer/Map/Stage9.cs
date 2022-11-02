@@ -52,7 +52,6 @@ namespace MultiGameServer
             // 그냥 돌
             tempKey = room.NextObjKey;
             Platform platform = new Platform(room, tempKey, new Point(400, 720), new Size(70, 70));
-            platform.SkinNum = 2;
             objectManager.AddObject(platform);
 
             // 타이머

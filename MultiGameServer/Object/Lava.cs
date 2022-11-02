@@ -17,6 +17,7 @@ namespace MultiGameServer.Object
             _type = ObjectTypes.LAVA;
             Collision = true;
             Blockable = true;
+            IsStatic = true;
         }
 
         public Lava(Room room, int key, Point Location, Point Location2)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MultiGameServer
 {
-    class Stage10 : MapBase
+    class Stage6 : MapBase
     {
         private List<int> randomSkin;
 
@@ -17,8 +17,9 @@ namespace MultiGameServer
         private TimerBox timerbox2;
         private TimerBox timerbox3;
         private TimerBoard timerBoard;
-        public Stage10(Room room) : base(room)
+        public Stage6(Room room) : base(room)
         {
+            _skin = 1;
         }
 
         public override void Start()
@@ -57,21 +58,26 @@ namespace MultiGameServer
             // 문 박는 벽
             tempKey = room.NextObjKey;
             Floor floor = new Floor(room, tempKey, new Point(1300, 400), new Size(50, 400));
+            floor.SkinNum = 1;
             objectManager.AddObject(floor);
 
             // 타이머
             tempKey = room.NextObjKey;
-            TimerBox timerBox = new TimerBox(room, tempKey, new Point(450, 720), new Size(150, 100));
+            TimerBox timerBox = new TimerBox(room, tempKey, new Point(450, 650), new Size(150, 80));
             timerBox.StartTime = 10000;
             this.timerbox1 = timerBox;
-            timerBox.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(timerBox.StartTime - timerBox.Time); 
-                if (timerBox.Time == 0) room.AllDie();
+            timerBox.SetTimerStopAction(delegate () {
+                if (timerBox.Time == 0) 
+                    room.AllDie();
+                else
+                    this.timerBoard.TimerStop(timerBox.StartTime - timerBox.Time); 
+                
             });
             objectManager.AddObject(timerBox);
 
             // 버튼
             tempKey = room.NextObjKey;
-            Button button = new Button(room, tempKey, new Point(450, 790), new Size(20, 10));
+            Button button = new Button(room, tempKey, new Point(515, 790), new Size(20, 10));
             button.SetAction(delegate () { timerBox.TimerStop(); });
             objectManager.AddObject(button);
 
@@ -79,17 +85,21 @@ namespace MultiGameServer
 
             // 타이머
             tempKey = room.NextObjKey;
-            TimerBox timerBox2 = new TimerBox(room, tempKey, new Point(650, 720), new Size(150, 100));
+            TimerBox timerBox2 = new TimerBox(room, tempKey, new Point(650, 650), new Size(150, 80));
             timerBox2.StartTime = 10000;
             this.timerbox2 = timerBox2;
-            timerBox2.SetTimerStopAction(delegate () { this.timerBoard.TimerStop(timerBox2.StartTime - timerbox2.Time);
-                if (timerbox2.Time == 0) room.AllDie();
+            timerBox2.SetTimerStopAction(delegate () {
+                if (timerbox2.Time == 0) 
+                    room.AllDie();
+                else
+                    this.timerBoard.TimerStop(timerBox2.StartTime - timerbox2.Time);
+                
             });
             objectManager.AddObject(timerBox2);
 
             // 버튼
             tempKey = room.NextObjKey;
-            Button button2 = new Button(room, tempKey, new Point(650, 790), new Size(20, 10));
+            Button button2 = new Button(room, tempKey, new Point(715, 790), new Size(20, 10));
             button2.SetAction(delegate () { timerBox2.TimerStop(); ; });
             objectManager.AddObject(button2);
 
@@ -97,25 +107,28 @@ namespace MultiGameServer
 
             // 타이머
             tempKey = room.NextObjKey;
-            TimerBox timerBox3 = new TimerBox(room, tempKey, new Point(850, 720), new Size(150, 100));
+            TimerBox timerBox3 = new TimerBox(room, tempKey, new Point(850, 650), new Size(150, 80));
             timerBox3.StartTime = 10000;
             this.timerbox3 = timerBox3;
             timerBox3.SetTimerStopAction(delegate () {
-                this.timerBoard.TimerStop(timerBox3.StartTime - timerbox3.Time);
-                if (timerbox3.Time == 0) room.AllDie();
+                if (timerbox3.Time == 0)
+                    room.AllDie();
+                else
+                    this.timerBoard.TimerStop(timerBox3.StartTime - timerbox3.Time);
+                
             });
             objectManager.AddObject(timerBox3);
 
             // 버튼
             tempKey = room.NextObjKey;
-            Button button3 = new Button(room, tempKey, new Point(850, 790), new Size(20, 10));
+            Button button3 = new Button(room, tempKey, new Point(915, 790), new Size(20, 10));
             button3.SetAction(delegate () { timerBox3.TimerStop(); });
             objectManager.AddObject(button3);
 
 
             // 타이머 보드
             tempKey = room.NextObjKey;
-            TimerBoard timerBoard = new TimerBoard(room, tempKey, new Point(650, 0), new Size(400, 100),3);
+            TimerBoard timerBoard = new TimerBoard(room, tempKey, new Point(520, 0), new Size(400, 100),3);
             timerBoard.StartTime = 30000;
             timerBoard.MinTime = 0;
             timerBoard.MaxTime = 1000;
@@ -136,6 +149,12 @@ namespace MultiGameServer
             this.timerBoard = timerBoard;
             objectManager.AddObject(timerBoard);
 
+            // 열쇠
+            tempKey = room.NextObjKey;
+            KeyObject keyObj = new KeyObject(room, tempKey, new Point(390, 730), new Size(35, 50));
+            objectManager.AddObject(keyObj);
+
+
             // 문
             tempKey = room.NextObjKey;
             Door door = new Door(room, tempKey, new Point(1350, 710), new Size(70, 90));
@@ -146,7 +165,7 @@ namespace MultiGameServer
             // 땅
             tempKey = room.NextObjKey;
             Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(1440, 865));
-            Floor.SkinNum = 2;
+            Floor.SkinNum = 1;
             objectManager.AddObject(Floor);
 
             

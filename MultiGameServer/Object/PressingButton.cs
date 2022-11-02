@@ -23,6 +23,7 @@ namespace MultiGameServer.Object
             Collision = false;
             Blockable = false;
             Pressed = false;
+            IsStatic = true;
 
             onPressDelegate = null;
 
