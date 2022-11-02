@@ -236,7 +236,7 @@ namespace MultiGame
                         userClient.MoveNum = MoveNum;
 
                         // 텔레포트
-                        userClient.Move(new Point(x, y), true);
+                        userClient.TeleportByVelocity(new Point(x, y));
                     }
                     else
                     {
@@ -722,6 +722,9 @@ namespace MultiGame
                 int x = converter.NextInt();
                 int y = converter.NextInt();
 
+                // 이동 번호
+                int moveNum = converter.NextInt();
+
                 // 스킨
                 int skin = converter.NextInt();
 
@@ -733,8 +736,8 @@ namespace MultiGame
                 // 모든 오브젝트 제거
                 gameManager.objectManager.ClearObjects();
 
-                // 좌표 설정
-                userClient.Character.Location = new Point(x, y);
+                
+
 
                 gameManager.form1.Invoke(new MethodInvoker(delegate ()
                 {
@@ -791,6 +794,15 @@ namespace MultiGame
                 userClient.Character.RestartPressed = false;
 
                 userClient.Start();
+
+                // 좌표 설정
+                lock (userClient.MoveLock)
+                {
+                    userClient.MoveNum = moveNum;
+
+                    // 텔레포트
+                    userClient.TeleportByLocation(new Point(x, y));
+                }
             }
 
             public void AllDie(MessageConverter converter)

@@ -46,14 +46,14 @@ namespace MultiGameServer
 
             // 돌1
             tempKey = room.NextObjKey;
-            Stone stone1 = new Stone(room, tempKey, new Point(185, 649), new Size(40, 65));
+            Stone stone1 = new Stone(room, tempKey, new Point(185, 622), new Size(40, 65));
             stone1.weight = 2;
             objectManager.AddObject(stone1);
 
             // 벽1
             tempKey = room.NextObjKey;
-            Platform platform1 = new Platform(room, tempKey, new Point(130, 715), new Size(125, 30));
-            objectManager.AddObject(platform1);
+            Floor floor1 = new Floor(room, tempKey, new Point(130, 690), new Size(125, 30));
+            objectManager.AddObject(floor1);
 
             // 벽2
             tempKey = room.NextObjKey;
@@ -79,7 +79,7 @@ namespace MultiGameServer
             // 돌2
             tempKey = room.NextObjKey;
             Stone stone2 = new Stone(room, tempKey, new Point(1265, 479), new Size(60, 100));
-            stone2.weight = 1;
+            stone2.weight = 3;
             objectManager.AddObject(stone2);
 
             // 돌3
@@ -141,7 +141,7 @@ namespace MultiGameServer
 
             // 문
             tempKey = room.NextObjKey;
-            Door door = new Door(room, tempKey, new Point(10, 172), new Size(70, 90));
+            Door door = new Door(room, tempKey, new Point(10, 170), new Size(70, 90));
             objectManager.AddObject(door);
 
             // 열쇠

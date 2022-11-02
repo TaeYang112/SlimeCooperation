@@ -71,7 +71,7 @@ namespace MultiGame.UserPanel
             this.roomList_GridView.AllowUserToDeleteRows = false;
             this.roomList_GridView.AllowUserToResizeColumns = false;
             this.roomList_GridView.AllowUserToResizeRows = false;
-            this.roomList_GridView.BackgroundColor = System.Drawing.SystemColors.ScrollBar;
+            this.roomList_GridView.BackgroundColor = System.Drawing.SystemColors.HighlightText;
             this.roomList_GridView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -156,6 +156,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.findToMain_btn);
             this.Name = "FindRoom_Screen";
             this.Size = new System.Drawing.Size(1440, 862);
+            this.Load += new System.EventHandler(this.FindRoom_Screen_Load);
             ((System.ComponentModel.ISupportInitialize)(this.roomList_GridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

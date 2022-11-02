@@ -452,17 +452,19 @@ namespace MultiGameServer
                 // 내부적으로 각 클라이언트 시작 위치 설정
                 item.Value.Location = Map.GetSpawnLocation(num++);
                 item.Value.RestarPressed = false;
+                item.Value.MoveNum++;
 
                 // 맵 시작 메시지 생성
                 generator.Clear();
                 generator.Protocol = Protocols.S_MAP_START;
                 generator.AddInt(item.Value.Location.X);
                 generator.AddInt(item.Value.Location.Y);
+                generator.AddInt(item.Value.MoveNum);
                 generator.AddInt(_Map.Skin);
 
                 // 전송
                 PInst.SendMessage(generator.Generate(), item.Key);
-
+                /*
                 // 클라이언트들의 시작 위치를 알려줌
                 foreach (var item2 in roomClientDic)
                 {
@@ -483,7 +485,7 @@ namespace MultiGameServer
                     }
                         
                 }
-
+                */
                 generator.Clear();
                 generator.Protocol = Protocols.S_NEW_OBJECT;
 

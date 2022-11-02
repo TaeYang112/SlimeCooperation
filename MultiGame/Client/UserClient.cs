@@ -173,115 +173,137 @@ namespace MultiGame.Client
             IsJump = true;
         }
 
-
-        // 캐릭터 충돌검사 후 이동
-        public void Move(Point velocity, bool Teleport = false)
+        // 캐럭터 충돌검사 없이 이동
+        public void TeleportByVelocity(Point velocity)
         {
             lock (MoveLock)
             {
                 // 메시지 생성을위한 제네레이터 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
 
-                // 텔레포트 하는거라면
-                if (Teleport == true)
+                Character.Location = new Point(Character.Location.X + velocity.X, Character.Location.Y + velocity.Y);
+
+                // 서버로 보낼 메시지 생성
+                generator.AddInt(Character.Location.X).AddInt(Character.Location.Y);
+                generator.AddInt(MoveNum);
+                generator.AddBool(true);
+            }
+        }
+
+        // 캐럭터 충돌검사 없이 이동
+        public void TeleportByLocation(Point newLocation)
+        {
+            lock (MoveLock)
+            {
+                // 메시지 생성을위한 제네레이터 생성
+                MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
+
+                Character.Location = newLocation;
+
+                // 서버로 보낼 메시지 생성
+                generator.AddInt(Character.Location.X).AddInt(Character.Location.Y);
+                generator.AddInt(MoveNum);
+                generator.AddBool(true);
+            }
+        }
+
+
+        // 캐릭터 충돌검사 후 이동
+        public void Move(Point velocity)
+        {
+            lock (MoveLock)
+            {
+                // 메시지 생성을위한 제네레이터 생성
+                MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
+
+                Point resultLoc = Character.Location;
+                Point tempLoc;
+                int dxy = 0;
+
+                // x의 대한 충돌판정
+                if (velocity.X != 0)
                 {
-                    Character.Location = new Point(Character.Location.X + velocity.X, Character.Location.Y + velocity.Y);
+                    tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
 
-                    // 서버로 보낼 메시지 생성
-                    generator.AddInt(Character.Location.X).AddInt(Character.Location.Y);
-                    generator.AddInt(MoveNum);
-                    generator.AddBool(true);
-                }
-                else
-                {
-                    Point resultLoc = Character.Location;
-                    Point tempLoc;
-                    int dxy = 0;
-
-                    // x의 대한 충돌판정
-                    if (velocity.X != 0)
-                    {
-                        tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
-
-                        if (velocity.X < 0) dxy = 1;
-                        else dxy = -1;
-
-                        // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
-                        while (tempLoc.X != Character.Location.X)
-                        {
-                            // 충돌하지 않았으면
-                            if (CollisionCheck(tempLoc) == false)
-                            {
-                                // 움직이기 위해 좌표 저장
-                                resultLoc = tempLoc;
-                                break;
-                            }
-                            // 충돌했으면
-                            else
-                            {
-                                // 좌표 1칸 옮겨봄
-                                tempLoc.X += dxy;
-                            }
-                        }
-                    }
-
-                    // y에 대한 충돌 판정
-                    tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
-
-                    if (velocity.Y < 0) dxy = 1;
+                    if (velocity.X < 0) dxy = 1;
                     else dxy = -1;
 
-
                     // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
-                    while (tempLoc.Y != Character.Location.Y)
+                    while (tempLoc.X != Character.Location.X)
                     {
                         // 충돌하지 않았으면
                         if (CollisionCheck(tempLoc) == false)
                         {
-                            // 이동
+                            // 움직이기 위해 좌표 저장
                             resultLoc = tempLoc;
-                            IsGround = false;
-                            if (IsJump == false) GravityStart(true);
                             break;
                         }
                         // 충돌했으면
                         else
                         {
                             // 좌표 1칸 옮겨봄
-                            tempLoc.Y += dxy;
+                            tempLoc.X += dxy;
                         }
                     }
-
-                    // 이동할 곳이 없으면 ( 반복문이 while 조건에 의해 종료 )
-                    if (tempLoc.Y == Character.Location.Y)
-                    {
-                        // 만약 밑으로 가던중 충돌판정이 일어나면 
-                        if (velocity.Y > 0)
-                        {
-                            //땅위에 있다는 플래그변수 true
-                            IsGround = true;
-                            GravityStart(false);
-
-                            // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
-                            if (JumpDown == true)
-                                Jump();
-                        }
-                        // 만약 위로 가던중 충돌판정이 일어나면
-                        else if (velocity.Y < 0)
-                        {
-                            IsJump = false;
-                        }
-                    }
-
-                    // 실제 좌표를 이동시킴
-                    Character.Location = resultLoc;
-
-
-                    // 서버로 보낼 메시지 생성
-                    generator.AddInt(resultLoc.X).AddInt(resultLoc.Y);
-                    generator.AddInt(MoveNum);
-                    generator.AddBool(false);
                 }
+
+                // y에 대한 충돌 판정
+                tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+
+                if (velocity.Y < 0) dxy = 1;
+                else dxy = -1;
+
+
+                // 만약 이동하려는곳에 다른 오브젝트가 있으면 좌표 1씩 옮겨서 체크해봄
+                while (tempLoc.Y != Character.Location.Y)
+                {
+                    // 충돌하지 않았으면
+                    if (CollisionCheck(tempLoc) == false)
+                    {
+                        // 이동
+                        resultLoc = tempLoc;
+                        IsGround = false;
+                        if (IsJump == false) GravityStart(true);
+                        break;
+                    }
+                    // 충돌했으면
+                    else
+                    {
+                        // 좌표 1칸 옮겨봄
+                        tempLoc.Y += dxy;
+                    }
+                }
+
+                // 이동할 곳이 없으면 ( 반복문이 while 조건에 의해 종료 )
+                if (tempLoc.Y == Character.Location.Y)
+                {
+                    // 만약 밑으로 가던중 충돌판정이 일어나면 
+                    if (velocity.Y > 0)
+                    {
+                        //땅위에 있다는 플래그변수 true
+                        IsGround = true;
+                        GravityStart(false);
+
+                        // 땅에 도착했을 때 점프버튼을 누르고있다면 다시 점프
+                        if (JumpDown == true)
+                            Jump();
+                    }
+                    // 만약 위로 가던중 충돌판정이 일어나면
+                    else if (velocity.Y < 0)
+                    {
+                        IsJump = false;
+                    }
+                }
+
+                // 실제 좌표를 이동시킴
+                Character.Location = resultLoc;
+
+
+                // 서버로 보낼 메시지 생성
+                generator.AddInt(resultLoc.X).AddInt(resultLoc.Y);
+                generator.AddInt(MoveNum);
+                generator.AddBool(false);
+                
 
                 // 서버로 보냄
                 GameManager.GetInstance().SendMessage(generator.Generate());

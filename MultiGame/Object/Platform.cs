@@ -33,7 +33,7 @@ namespace MultiGame.Object
                     _image = MultiGame.Properties.Resources.Log;
                     break;
                 case 1:
-                    _image = MultiGame.Properties.Resources.Platform_snow;
+                    _image = MultiGame.Properties.Resources.Log_Snow;
                     break;
                 default:
                     _image = MultiGame.Properties.Resources.Log;

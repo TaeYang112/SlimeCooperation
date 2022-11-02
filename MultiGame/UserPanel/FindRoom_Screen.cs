@@ -20,6 +20,11 @@ namespace MultiGame.UserPanel
             this.form = form;
         }
 
+        private void FindRoom_Screen_Load(object sender, EventArgs e)
+        {
+            roomList_GridView.DefaultCellStyle.Font = new Font(ResourceLibrary.Families[0], 20, FontStyle.Regular);
+        }
+
         private void enterRoom_btn_Click(object sender, EventArgs e)
         {
             if (roomList_GridView.SelectedRows.Count == 0)
@@ -63,5 +68,7 @@ namespace MultiGame.UserPanel
             // 서버로 입장 요청
             GameManager.GetInstance().SendMessage(generator.Generate());
         }
+
+        
     }
 }

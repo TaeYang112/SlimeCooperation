@@ -146,9 +146,7 @@ namespace MultiGame.UserPanel
                 Console.WriteLine("좌표 / X : " + e.X + "    Y : " + e.Y);
             else if (e.Button == MouseButtons.Right)
             {
-                Point point = GameManager.GetInstance().userClient.Character.Location;
-
-                GameManager.GetInstance().userClient.Move(new Point( e.X - point.X, e.Y - point.Y), true);
+                GameManager.GetInstance().userClient.TeleportByLocation(new Point(e.X, e.Y));
             }
         }
     }

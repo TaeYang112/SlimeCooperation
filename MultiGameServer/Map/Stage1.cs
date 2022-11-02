@@ -62,7 +62,7 @@ namespace MultiGameServer
             // 거대 돌
             tempKey = room.NextObjKey;
             Stone stone = new Stone(room, tempKey, new Point(170, 400), new Point(270, 799));
-            stone.weight = 2;
+            stone.weight = 3;
             objectManager.AddObject(stone);
         }
 

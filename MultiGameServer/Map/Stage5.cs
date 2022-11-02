@@ -10,6 +10,7 @@ namespace MultiGameServer
 {
     class Stage5 : MapBase
     {
+        private TimerBox timerBox1 = null;
         public Stage5(Room room) : base(room)
         {
             _skin = 1;
@@ -19,6 +20,12 @@ namespace MultiGameServer
             SpawnLocation[0] = new Point(0, 740);
             SpawnLocation[1] = new Point(100, 740);
             SpawnLocation[2] = new Point(200, 740);
+        }
+
+        public override void Start()
+        {
+            base.Start();
+            timerBox1.TimerStart();
         }
 
         protected override void DesignMap()
@@ -125,6 +132,16 @@ namespace MultiGameServer
             Stone stone1 = new Stone(room, tempKey, new Point(680, 414), new Size(40, 65));
             stone1.weight = 3;
             objectManager.AddObject(stone1);
+
+            // 타이머
+            tempKey = room.NextObjKey;
+            TimerBox timerBox = new TimerBox(room, tempKey, new Point(645, 0), new Size(150, 80));
+            timerBox.StartTime = 30000;
+            this.timerBox1 = timerBox;
+            timerBox.SetTimerStopAction(delegate () {
+                    room.AllDie();
+            });
+            objectManager.AddObject(timerBox);
 
             // 문
             tempKey = room.NextObjKey;
