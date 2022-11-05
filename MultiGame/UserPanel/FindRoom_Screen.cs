@@ -18,11 +18,15 @@ namespace MultiGame.UserPanel
         {
             InitializeComponent();
             this.form = form;
+
+            findToMain_btn.Font = new Font(ResourceLibrary.Families[0], 15, FontStyle.Regular);
+            enterRoom_btn.Font = new Font(ResourceLibrary.Families[0], 20, FontStyle.Regular);
+            roomList_GridView.DefaultCellStyle.Font= new Font(ResourceLibrary.Families[1], 16, FontStyle.Regular);
+            roomList_GridView.ColumnHeadersDefaultCellStyle.Font= new Font(ResourceLibrary.Families[1], 16, FontStyle.Regular);
         }
 
         private void FindRoom_Screen_Load(object sender, EventArgs e)
         {
-            roomList_GridView.DefaultCellStyle.Font = new Font(ResourceLibrary.Families[0], 20, FontStyle.Regular);
         }
 
         private void enterRoom_btn_Click(object sender, EventArgs e)
@@ -59,6 +63,7 @@ namespace MultiGame.UserPanel
 
         private void roomList_GridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (roomList_GridView.RowCount == 0) return;
             int roomKey = int.Parse(roomList_GridView.SelectedRows[0].Cells[0].Value.ToString());
 
             // 메시지 생성

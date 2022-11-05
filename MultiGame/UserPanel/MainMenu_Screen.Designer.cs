@@ -29,37 +29,77 @@ namespace MultiGame.UserPanel
         /// </summary>
         private void InitializeComponent()
         {
-            this.makeRoom_btn = new System.Windows.Forms.Label();
-            this.findRoom_btn = new System.Windows.Forms.Label();
-            this.exitGame_btn = new System.Windows.Forms.Label();
+            this.findRoom_btn = new System.Windows.Forms.Button();
+            this.makeRoom_btn = new System.Windows.Forms.Button();
+            this.exitGame_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // makeRoom_btn
-            // 
-            this.makeRoom_btn.BackColor = System.Drawing.Color.Transparent;
-            this.makeRoom_btn.Location = new System.Drawing.Point(583, 419);
-            this.makeRoom_btn.Name = "makeRoom_btn";
-            this.makeRoom_btn.Size = new System.Drawing.Size(253, 51);
-            this.makeRoom_btn.TabIndex = 3;
-            this.makeRoom_btn.Click += new System.EventHandler(this.makeRoom_btn_Click);
             // 
             // findRoom_btn
             // 
+            this.findRoom_btn.AutoSize = true;
             this.findRoom_btn.BackColor = System.Drawing.Color.Transparent;
-            this.findRoom_btn.Location = new System.Drawing.Point(583, 531);
+            this.findRoom_btn.FlatAppearance.BorderSize = 0;
+            this.findRoom_btn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.findRoom_btn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.findRoom_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.findRoom_btn.Font = new System.Drawing.Font("맑은 고딕", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.findRoom_btn.ForeColor = System.Drawing.Color.White;
+            this.findRoom_btn.Location = new System.Drawing.Point(565, 535);
             this.findRoom_btn.Name = "findRoom_btn";
-            this.findRoom_btn.Size = new System.Drawing.Size(253, 51);
-            this.findRoom_btn.TabIndex = 4;
+            this.findRoom_btn.Size = new System.Drawing.Size(310, 66);
+            this.findRoom_btn.TabIndex = 6;
+            this.findRoom_btn.TabStop = false;
+            this.findRoom_btn.Text = "J O I N";
+            this.findRoom_btn.UseCompatibleTextRendering = true;
+            this.findRoom_btn.UseVisualStyleBackColor = false;
             this.findRoom_btn.Click += new System.EventHandler(this.findRoom_btn_Click);
+            this.findRoom_btn.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
+            this.findRoom_btn.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
+            // 
+            // makeRoom_btn
+            // 
+            this.makeRoom_btn.AutoSize = true;
+            this.makeRoom_btn.BackColor = System.Drawing.Color.Transparent;
+            this.makeRoom_btn.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.makeRoom_btn.FlatAppearance.BorderSize = 0;
+            this.makeRoom_btn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.makeRoom_btn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.makeRoom_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.makeRoom_btn.Font = new System.Drawing.Font("맑은 고딕", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.makeRoom_btn.ForeColor = System.Drawing.Color.White;
+            this.makeRoom_btn.Location = new System.Drawing.Point(565, 433);
+            this.makeRoom_btn.Name = "makeRoom_btn";
+            this.makeRoom_btn.Size = new System.Drawing.Size(310, 66);
+            this.makeRoom_btn.TabIndex = 5;
+            this.makeRoom_btn.TabStop = false;
+            this.makeRoom_btn.Text = "M A K E";
+            this.makeRoom_btn.UseCompatibleTextRendering = true;
+            this.makeRoom_btn.UseVisualStyleBackColor = true;
+            this.makeRoom_btn.Click += new System.EventHandler(this.makeRoom_btn_Click);
+            this.makeRoom_btn.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
+            this.makeRoom_btn.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
             // 
             // exitGame_btn
             // 
+            this.exitGame_btn.AutoSize = true;
             this.exitGame_btn.BackColor = System.Drawing.Color.Transparent;
-            this.exitGame_btn.Location = new System.Drawing.Point(592, 640);
+            this.exitGame_btn.FlatAppearance.BorderSize = 0;
+            this.exitGame_btn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.exitGame_btn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.exitGame_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.exitGame_btn.Font = new System.Drawing.Font("맑은 고딕", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.exitGame_btn.ForeColor = System.Drawing.Color.White;
+            this.exitGame_btn.Location = new System.Drawing.Point(565, 637);
             this.exitGame_btn.Name = "exitGame_btn";
-            this.exitGame_btn.Size = new System.Drawing.Size(253, 51);
-            this.exitGame_btn.TabIndex = 5;
+            this.exitGame_btn.Size = new System.Drawing.Size(310, 66);
+            this.exitGame_btn.TabIndex = 7;
+            this.exitGame_btn.TabStop = false;
+            this.exitGame_btn.Text = "E X I T";
+            this.exitGame_btn.UseCompatibleTextRendering = true;
+            this.exitGame_btn.UseVisualStyleBackColor = false;
             this.exitGame_btn.Click += new System.EventHandler(this.exitGame_btn_Click);
+            this.exitGame_btn.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
+            this.exitGame_btn.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
             // 
             // MainMenu_Screen
             // 
@@ -68,18 +108,21 @@ namespace MultiGame.UserPanel
             this.BackgroundImage = global::MultiGame.Properties.Resources.MainMenu;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.Controls.Add(this.exitGame_btn);
-            this.Controls.Add(this.findRoom_btn);
             this.Controls.Add(this.makeRoom_btn);
+            this.Controls.Add(this.findRoom_btn);
             this.DoubleBuffered = true;
             this.Name = "MainMenu_Screen";
             this.Size = new System.Drawing.Size(1440, 862);
+            this.Load += new System.EventHandler(this.MainMenu_Screen_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Label makeRoom_btn;
-        private System.Windows.Forms.Label findRoom_btn;
-        private System.Windows.Forms.Label exitGame_btn;
+
+        private System.Windows.Forms.Button findRoom_btn;
+        private System.Windows.Forms.Button makeRoom_btn;
+        private System.Windows.Forms.Button exitGame_btn;
     }
 }

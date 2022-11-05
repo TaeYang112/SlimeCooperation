@@ -30,6 +30,9 @@ namespace MultiGame.Object
                 case 0:
                     _image = ResourceLibrary.Lava;
                     break;
+                case 1:
+                    _image = ResourceLibrary.FallingLava;
+                    break;
             }
         }
 

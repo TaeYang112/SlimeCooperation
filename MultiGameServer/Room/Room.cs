@@ -162,7 +162,7 @@ namespace MultiGameServer
                 }
             }
             // 준비한 캐릭터가 3명 이상일경우 true
-            if (count >= 1)
+            if (count >= 3)
             {
                 return true;
             }
@@ -418,6 +418,9 @@ namespace MultiGameServer
                     break;
                 case 3:
                     _Map = new Stage3(this);
+                    break;
+                case 4:
+                    _Map = new Stage4(this);
                     break;
                 case 5:
                     _Map = new Stage5(this);

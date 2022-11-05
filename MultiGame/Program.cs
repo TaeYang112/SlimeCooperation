@@ -13,8 +13,9 @@ namespace MultiGame
         {
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.SetCompatibleTextRenderingDefault(true);
+            Form1 form1 = new Form1();
+            Application.Run(form1);
         }
     }
 }

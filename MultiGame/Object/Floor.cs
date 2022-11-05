@@ -47,7 +47,8 @@ namespace MultiGame.Object
                     break;
                 case 2:
                     _image = MultiGame.Properties.Resources.Lava_Dirt;
-                    singleImage = true;
+                    _image2 = MultiGame.Properties.Resources.Lava_Grass;
+                    _image2_Height = _image2.Height;
                     break;
                 default:
                     _image = MultiGame.Properties.Resources.Grass_Dirt;

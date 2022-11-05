@@ -102,6 +102,11 @@ namespace MultiGameServer
             });
             objectManager.AddObject(pressButton);
 
+            tempKey = room.NextObjKey;
+            Lava lava = new Lava(room, tempKey, new Point(800, 300), new Size(96, 408));
+            lava.SkinNum = 1;
+            objectManager.AddObject(lava);
+
             // 땅
             tempKey = room.NextObjKey;
             Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(1440, 865));

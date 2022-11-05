@@ -625,7 +625,16 @@ namespace MultiGame
                 // 게임이 시작하지 않았다면 로비 업데이트 
                 if (gameManager.IsGameStart == false)
                 {
-                    gameManager.form1.UpdateLobby();
+                    // 형변환
+                    LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls[0] as LobbyRoom_Screen;
+
+                    // 방찾기 화면이 아닌경우 리턴
+                    if (lobbyRoom_Screen == null) return;
+
+                    lobbyRoom_Screen.Invoke(new MethodInvoker(delegate ()
+                    {
+                        lobbyRoom_Screen.UpdateLobby();
+                    }));
                 }
 
             }
@@ -657,11 +666,10 @@ namespace MultiGame
                     // 방 제목
                     lobbyRoom.SetRoomTitle(roomCode.ToString(), roomTItle);
 
+                    lobbyRoom.UpdateLobby();
+
                     // 화면 전환
                     form.ChangeScreen(lobbyRoom);
-
-                    // 로비 화면 갱신
-                    form.UpdateLobby();
                 }));
             }
 
@@ -685,9 +693,15 @@ namespace MultiGame
                 clientCharacter.SetSkin(skinNum);
 
 
-                gameManager.form1.Invoke(new MethodInvoker(delegate ()
+                // 형변환
+                LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls[0] as LobbyRoom_Screen;
+
+                // 방찾기 화면이 아닌경우 리턴
+                if (lobbyRoom_Screen == null) return;
+
+                lobbyRoom_Screen.Invoke(new MethodInvoker(delegate ()
                 {
-                    gameManager.form1.UpdateLobby();
+                    lobbyRoom_Screen.UpdateLobby();
                 }));
             }
 
@@ -709,10 +723,16 @@ namespace MultiGame
 
                 clientCharacter.IsReady = bReady;
 
-                gameManager.form1.Invoke(new MethodInvoker(delegate ()
-                {
-                    gameManager.form1.UpdateLobby();
-                }));
+                // 형변환
+                LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls[0] as LobbyRoom_Screen;
+
+                // 방찾기 화면이 아닌경우 리턴
+                if (lobbyRoom_Screen == null) return;
+
+                lobbyRoom_Screen.Invoke(new MethodInvoker(delegate ()
+               {
+                   lobbyRoom_Screen.UpdateLobby();
+               }));
             }
 
 

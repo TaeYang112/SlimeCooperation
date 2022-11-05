@@ -20,10 +20,18 @@ namespace MultiGame.UserPanel
             this.form = form;
 
             makeRoom_btn.Parent = this;
+
+            makeRoom_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
+            findRoom_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
+            exitGame_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
+
+            this.ActiveControl = null;
         }
 
         private void makeRoom_btn_Click(object sender, EventArgs e)
         {
+            ActiveControl = null;
+
             // 방제목 입력하는 폼을 띄움
             MakeRoom_Form makeRoom_Form = new MakeRoom_Form();
             DialogResult result = makeRoom_Form.ShowDialog();
@@ -52,9 +60,34 @@ namespace MultiGame.UserPanel
 
         private void exitGame_btn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("종료", "게임을 종료합니다.", MessageBoxButtons.OK);
-            Application.Exit();
+            
+            DialogResult result = MessageBox.Show("게임을 종료하시겠습니까?", "종료", MessageBoxButtons.OKCancel);
+
+            if(result == DialogResult.OK)
+                Application.Exit();
         }
 
+        private void btn_MouseLeave(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            if (button == null) return;
+
+             button.ForeColor = Color.White;
+            button.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
+        }
+
+        private void btn_MouseEnter(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            if (button == null) return;
+          
+            button.ForeColor = Color.Black;
+            button.Font = new Font(ResourceLibrary.Families[0], 35, FontStyle.Regular);
+        }
+
+        private void MainMenu_Screen_Load(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

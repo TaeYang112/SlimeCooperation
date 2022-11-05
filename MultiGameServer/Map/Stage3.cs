@@ -67,7 +67,7 @@ namespace MultiGameServer
             // 돌1
             tempKey = room.NextObjKey;
             Stone stone1 = new Stone(room, tempKey, new Point(1145, 428), new Size(60, 220));
-            stone1.weight = 1;
+            stone1.weight = 3;
             objectManager.AddObject(stone1);
 
             // 포탈
@@ -102,7 +102,7 @@ namespace MultiGameServer
             // 돌2
             tempKey = room.NextObjKey;
             Stone stone2 = new Stone(room, tempKey, new Point(150, 22), new Size(40, 75));
-            stone2.weight = 1;
+            stone2.weight = 3;
             objectManager.AddObject(stone2);
             
             // 벽6

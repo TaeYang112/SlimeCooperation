@@ -11,7 +11,6 @@ namespace MultiGame.Object
 {
     public class ColorStone : GameObject
     {
-        private Brush brush;
 
         public ColorStone(int key, Point Location, Size size) :
             base(key, Location, size)
@@ -20,7 +19,6 @@ namespace MultiGame.Object
             Collision = true;
             Blockable = true;
             _type = ObjectTypes.COLOR_STONE;
-            brush = Brushes.Red;
         }
 
         public override void SetSkin(int skinNum)
@@ -32,28 +30,28 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    brush = Brushes.Red;
+                    _image = MultiGame.Properties.Resources.Red_Stone;
                     break;
                 case 1:
-                    brush = Brushes.Orange;
+                    _image = MultiGame.Properties.Resources.Orange_Stone;
                     break;
                 case 2:
-                    brush = Brushes.Yellow;
+                    _image = MultiGame.Properties.Resources.Yellow_Stone;
                     break;
                 case 3:
-                    brush = Brushes.Green;
+                    _image = MultiGame.Properties.Resources.Green_Stone;
                     break;
                 case 4:
-                    brush = Brushes.Blue;
+                    _image = MultiGame.Properties.Resources.Blue_Stone;
                     break;
                 case 5:
-                    brush = Brushes.Purple;
+                    _image = MultiGame.Properties.Resources.Purple_Stone;
                     break;
                 case 6:
-                    brush = Brushes.Pink;
+                    _image = MultiGame.Properties.Resources.Pink_Stone;
                     break;
                 case 7:
-                    brush = Brushes.Gray;
+                    _image = MultiGame.Properties.Resources.Gray_Stone;
 
                     break;
             }
@@ -61,10 +59,7 @@ namespace MultiGame.Object
         }
         public override void OnPaint(object obj, PaintEventArgs pe)
         {
-            if (isVisible == false) return;
-            Graphics g= pe.Graphics;
-
-            g.FillRectangle(brush, new Rectangle(Location, size));
+            base.OnPaint(obj, pe);
         }
 
 

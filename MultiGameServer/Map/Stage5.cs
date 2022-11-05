@@ -57,7 +57,7 @@ namespace MultiGameServer
 
             // 중간 바닥
             tempKey = room.NextObjKey;
-            Floor Floor3 = new Floor(room, tempKey, new Point(210, 480), new Size(795, 40));
+            Floor Floor3 = new Floor(room, tempKey, new Point(220, 480), new Size(795, 40));
             Floor3.SkinNum = 1;
             objectManager.AddObject(Floor3);
 
@@ -136,7 +136,7 @@ namespace MultiGameServer
             // 타이머
             tempKey = room.NextObjKey;
             TimerBox timerBox = new TimerBox(room, tempKey, new Point(645, 0), new Size(150, 80));
-            timerBox.StartTime = 30000;
+            timerBox.StartTime = 40000;
             this.timerBox1 = timerBox;
             timerBox.SetTimerStopAction(delegate () {
                     room.AllDie();

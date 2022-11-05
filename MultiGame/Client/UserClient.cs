@@ -178,6 +178,10 @@ namespace MultiGame.Client
         {
             lock (MoveLock)
             {
+                JumpTime = 0;
+                dy = 0;
+                IsJump = false;
+
                 // 메시지 생성을위한 제네레이터 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
 
@@ -195,6 +199,10 @@ namespace MultiGame.Client
         {
             lock (MoveLock)
             {
+                JumpTime = 0;
+                dy = 0;
+                IsJump = false;
+
                 // 메시지 생성을위한 제네레이터 생성
                 MessageGenerator generator = new MessageGenerator(Protocols.C_LOCATION);
 
