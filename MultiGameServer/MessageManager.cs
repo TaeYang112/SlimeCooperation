@@ -214,7 +214,8 @@ namespace MultiGameServer
                 if (room.IsAllReady() == true)
                 {
                     // 게임시작
-                    room.GameStart(1);
+                    room.GameStart();
+                    room.MapChange(1);
 
                     // 방찾기 중인 클라이언트들의 방목록에서 시작한 방을 제거
                     program.SendDelRoomInfo(room);
@@ -233,7 +234,7 @@ namespace MultiGameServer
                 foreach (var item in program.roomManager.RoomDic)
                 {
                     Room room = item.Value;
-                    if (item.Value.bGameStart == false)
+                    if (item.Value.IsGameStart == false)
                     {
                         generator.AddInt(room.key);
                         generator.AddString(room.RoomTitle);

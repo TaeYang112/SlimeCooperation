@@ -38,10 +38,14 @@ namespace MultiGameServer.Object
         {
         }
 
+        ~StoneDoor()
+        {
+            MoveTimer.Dispose();
+        }
+
         public override void OnClose()
         {
             base.OnClose();
-            MoveTimer.Dispose();
         }
 
         public override void OnEvent(EventParam param)

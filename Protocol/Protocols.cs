@@ -44,6 +44,8 @@
         public const byte S_ERROR = 137;				// ErrorCode(int)
         public const byte S_PING = 138;				    //
         public const byte S_ALLDIE = 139;
+        public const byte S_GAMEOVER = 140;
+        public const byte S_GAMECLEAR = 141;
 
         // 다른 클라이언트의 변경사항을 알려줌
         public const byte S_EXIT_ROOM_OTHER = 160;
@@ -52,6 +54,7 @@
         public const byte S_LOOK_DIRECTION_OTHER = 163;
         public const byte S_READY_OTHER = 164;
         public const byte S_RESTART_OTHER = 165;			// 클라key(int), 누름여부 (bool)
+        
     }
 
 }

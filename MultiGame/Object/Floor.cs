@@ -26,6 +26,12 @@ namespace MultiGame.Object
             _type = ObjectTypes.FLOOR;
         }
 
+        ~Floor()
+        {
+            _image.Dispose();
+            _image2.Dispose();
+        }
+
         override public void SetSkin(int num)
         {
             singleImage = false;

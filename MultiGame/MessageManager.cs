@@ -98,6 +98,7 @@ namespace MultiGame
                                 EnterRoom(converter);
                             }
                             break;
+                        // 다른 플레이어 방 입장
                         case Protocols.S_ENTER_ROOM_OTHER:
                             {
                                 EnterRoomOther(converter);
@@ -115,14 +116,26 @@ namespace MultiGame
                                 MapStart(converter);
                             }
                             break;
+                        // 죽음
                         case Protocols.S_ALLDIE:
                             {
                                 AllDie(converter);
                             }
                             break;
+                        // 다른플레이어가 restart 버튼 누름
                         case Protocols.S_RESTART_OTHER:
                             {
                                 RestartOther(converter);
+                            }
+                            break;
+                        case Protocols.S_GAMECLEAR:
+                            {
+                                GameClear(converter);
+                            }
+                            break;
+                        case Protocols.S_GAMEOVER:
+                            {
+                                GameOver(converter);
                             }
                             break;
                         // 클라이언트가 접속중인지 확인하기 위해 서버가 보내는 메시지
@@ -768,8 +781,8 @@ namespace MultiGame
                         gameManager.IsGameStart = true;
 
                         // 인게임 화면으로 변경
-                   
                         InGame_Screen inGame_Screen = new InGame_Screen(gameManager.form1);
+
                         gameManager.form1.ActiveControl = null;
                         inGame_Screen.StartUpdateScreen(true);
                         inGame_Screen.SetBackGround(skin);
@@ -860,6 +873,69 @@ namespace MultiGame
                 }
                 
                 client.RestartPressed = bPressed;
+            }
+
+            public void GameClear(MessageConverter converter)
+            {
+                int rank = converter.NextInt();
+                int time = converter.NextInt();
+
+                int count = converter.NextInt();
+
+                gameManager.userClient.CanMove = false;
+                gameManager.userClient.Character.IsReady = false;
+                gameManager.IsGameStart = false;
+
+                List<string> titles = new List<string>();
+                List<int> times = new List<int>();
+
+                // 전체 게임 기록
+                for(int i =0; i<count; i++)
+                {
+                    titles.Add(converter.NextString());
+                    times.Add(converter.NextInt());
+                }
+
+                GameClear_Form gameClear_Form = new GameClear_Form();
+                gameClear_Form.UpdateResult(time, rank);
+                gameClear_Form.UpdateScoreBoard(titles, times);
+
+                Form1 form = gameManager.form1;
+
+                form.Invoke(new MethodInvoker(delegate ()
+                {
+                    gameClear_Form.ShowDialog();
+
+                    MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
+
+                    // 화면 전환
+                    form.ChangeScreen(mainMenu_Screen);
+                }));
+
+                gameManager.clientManager.ClientDic.Clear();
+            }
+
+            public void GameOver(MessageConverter converter)
+            {
+                gameManager.userClient.CanMove = false;
+                gameManager.userClient.Character.IsReady = false;
+                gameManager.IsGameStart = false;
+
+                Form1 form = gameManager.form1;
+                
+                Form gameOverForm = new GameOver_Form();
+
+                form.Invoke(new MethodInvoker(delegate ()
+                {
+                    gameOverForm.ShowDialog();
+
+                    MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
+
+                    // 화면 전환
+                    form.ChangeScreen(mainMenu_Screen);
+                }));
+
+                gameManager.clientManager.ClientDic.Clear();
             }
 
             public void AddRoomList(MessageConverter converter)

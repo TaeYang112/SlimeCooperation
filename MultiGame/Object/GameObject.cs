@@ -65,6 +65,7 @@ namespace MultiGame
         virtual public void SetSkin(int skinNum)
         {
         }
+
     }
 }
         

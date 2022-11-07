@@ -44,6 +44,13 @@ namespace MultiGame.Object
             format.LineAlignment = StringAlignment.Center;
         }
 
+        ~TimerBoard()
+        {
+            _image.Dispose();
+            font.Dispose();
+            format.Dispose();
+        }
+
         public override void SetSkin(int skinNum)
         {
             isVisible = true;

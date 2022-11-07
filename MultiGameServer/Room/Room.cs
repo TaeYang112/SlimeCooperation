@@ -16,16 +16,19 @@ namespace MultiGameServer
         public int key { get; }
 
         private int _nextObjKey = 0;
+
+        private RoomManager roomManager;
+
         public int NextObjKey { get { return _nextObjKey++; } }
         public ConcurrentDictionary<int, ClientCharacter> roomClientDic { get; }
-        public SortedSet<int> skinList;
+        private SortedSet<int> skinList;
 
         private MapBase _Map;
         public MapBase Map { get { return _Map; } }
 
         public string RoomTitle { get; set; }
 
-        public bool bGameStart { get; set; }
+        public bool IsGameStart { get; set; }
 
         // 문안에 들어간 인원수
         public int EnteredCount { get; set; }
@@ -41,12 +44,16 @@ namespace MultiGameServer
         // 죽고 부활 타이머
         private System.Threading.Timer RespawnTimer;
 
-        public Room(int key, string RoomTitle)
+        private System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+
+        public Room(int key, string RoomTitle, RoomManager roomManager)
         {
             this.key = key;
             this.RoomTitle = RoomTitle;
+            this.roomManager = roomManager;
+
             roomClientDic = new ConcurrentDictionary<int, ClientCharacter>();
-            bGameStart = false;
+            IsGameStart = false;
             stageNum = 1;
             RestartPressedCount = 0;
 
@@ -59,6 +66,11 @@ namespace MultiGameServer
 
             TimerCallback tc = new TimerCallback(Respawn);
             RespawnTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
+        }
+
+        ~Room()
+        {
+            RespawnTimer.Dispose();
         }
 
         public void Close()
@@ -140,7 +152,7 @@ namespace MultiGameServer
                 
                 if(RestartPressedCount >= 3)
                 {
-                    GameStart(stageNum);
+                    MapChange(stageNum);
                 }
             }
             else
@@ -175,6 +187,7 @@ namespace MultiGameServer
         // 문에 들어감, 문에 들어간 캐릭터 수 반환
         public int EnterDoor(ClientCharacter clientChar, bool flag)
         {
+            return 3;
             // 문에 들어감
             if (flag == true)
             {
@@ -247,158 +260,59 @@ namespace MultiGameServer
 
         private void Respawn(object o)
         {
-            GameStart(stageNum);
+            MapChange(stageNum);
             IsAllDie = false;
         }
 
-        public Point CharacterLocationValidCheck(Point velocity, ClientCharacter character)
+        public void GameClear()
         {
-            Point resultLoc = character.Location;
-            Point tempLoc;
-            int dxy = 0;
+            st.Stop();
+            int rank = roomManager.Registertime(RoomTitle, st.ElapsedMilliseconds);
 
-            // x의 대한 충돌판정
-            if (velocity.X != 0)
+            // 게임을 클리어했다는 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.S_GAMECLEAR);
+            generator.AddInt(rank);
+            generator.AddInt(Convert.ToInt32(st.ElapsedMilliseconds));
+
+            // 역대 점수를 보여주기 위한 메시지 전송 과정
+            List<KeyValuePair<string, long>> list = roomManager.TimeList;
+
+            generator.AddInt(list.Count);
+            foreach(var item in list)
             {
-                tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
+                // 팀 이름
+                generator.AddString(item.Key);
 
-                if (velocity.X < 0) dxy = 1;
-                else dxy = -1;
-
-                while (true)
-                {
-                    if (CharacterCollisionCheck(character, tempLoc) == false)
-                    {
-                        resultLoc = tempLoc;
-                        break;
-                    }
-                    tempLoc.X += dxy;
-                }
+                // 시간
+                generator.AddInt(Convert.ToInt32(item.Value));
             }
 
-            // y에 대한 충돌 판정
-            if(velocity.Y != 0)
-            {
-                tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+            SendMessageToAll_InRoom(generator.Generate());
 
-                if (velocity.Y < 0) dxy = 1;
-                else dxy = -1;
-
-                while (true)
-                {
-                    if (CharacterCollisionCheck(character, tempLoc) == false)
-                    {
-                        resultLoc = tempLoc;
-                        break;
-                    }
-                    tempLoc.Y += dxy;
-                }
-            }
-            
-
-
-            return resultLoc;
+            roomManager.RemoveRoom(this);
         }
 
-        // 겹치면 true 반환
-        public bool CharacterCollisionCheck(GameObject target, Point newLocation)
+        public void NextGame()
         {
-            // 대상의 충돌 박스
-            Rectangle a = new Rectangle(newLocation, target.size);
-
-            // 모든 캐릭터와 부딪히는지 체크함
-            foreach (var item in roomClientDic)
+            stageNum++;
+            if (stageNum > 8)
             {
-                ClientCharacter otherClient = item.Value;
-
-                if (otherClient == target) continue;
-
-                // 충돌이 꺼져있으면 무시
-                if (otherClient.Collision == false) continue;
-
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    return true;
-                }
+                GameClear();
             }
-            // 맵의 모든 오브젝트와 부딪히는지 체크함
-            foreach (var item in Map.objectManager.ObjectDic)
+            else
             {
-                GameObject gameObject = item.Value;
-
-                if (gameObject == target) continue;
-                if (gameObject.Collision == false || gameObject.IsStatic == true) continue;
-
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
-                // 만약 움직였을때 겹친다면 충돌 발생
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
-                    if (gameObject.Blockable == true)
-                    {
-                        return true;
-                    }
-                    else continue;
-                }
+                MapChange(stageNum);
             }
+        }
+        public void GameStart()
+        {
+            IsGameStart = true;
 
-            return false;
+            // 게임 클리어 시간을 기록하는 타이머 ON
+            st.Start();
         }
 
-        // 겹치면 true 반환
-        public bool CollisionCheck(GameObject target, Point newLocation)
-        {
-            // 대상의 충돌 박스
-            Rectangle a = new Rectangle(newLocation, target.size);
-
-            // 모든 캐릭터와 부딪히는지 체크함
-            foreach (var item in roomClientDic)
-            {
-                ClientCharacter otherClient = item.Value;
-
-                if (otherClient == target) continue;
-
-                // 충돌이 꺼져있으면 무시
-                if (otherClient.Collision == false) continue;
-
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
-
-                // 만약 움직였을때 겹친다면 리턴
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    return true;
-                }
-            }
-            // 맵의 모든 오브젝트와 부딪히는지 체크함
-            foreach (var item in Map.objectManager.ObjectDic)
-            {
-                GameObject gameObject = item.Value;
-
-                if (gameObject == target) continue;
-
-                if (gameObject.Collision == false) continue;
-
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
-                // 만약 움직였을때 겹친다면 충돌 발생
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
-                {
-                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
-                    if (gameObject.Blockable == true) return true;
-                    else continue;
-                }
-            }
-            
-            return false;
-        }
-
-        public void GameStart(int stageNum)
+        public void MapChange(int stageNum)
         {
             Console.WriteLine(key + "번방 "+ stageNum + "번맵 시작");
             this.stageNum = stageNum;
@@ -439,8 +353,6 @@ namespace MultiGameServer
                     break;
             }
             
-            bGameStart = true;
-
             EnteredCount = 0;
 
             // 프로그램 인스턴스
@@ -541,10 +453,7 @@ namespace MultiGameServer
 
         }
 
-        public void NextGame()
-        {
-            GameStart(++stageNum);
-        }
+
 
         // 방 안의 모든 클라이언트들에게 메시지 전송 ( senderKey로 예외 클라이언트 설정 )
         public void SendMessageToAll_InRoom(byte[] message, int senderKey = -1)
@@ -557,5 +466,154 @@ namespace MultiGameServer
             }
 
         }
+
+        public Point CharacterLocationValidCheck(Point velocity, ClientCharacter character)
+        {
+            Point resultLoc = character.Location;
+            Point tempLoc;
+            int dxy = 0;
+
+            // x의 대한 충돌판정
+            if (velocity.X != 0)
+            {
+                tempLoc = new Point(resultLoc.X + velocity.X, resultLoc.Y);
+
+                if (velocity.X < 0) dxy = 1;
+                else dxy = -1;
+
+                while (true)
+                {
+                    if (CharacterCollisionCheck(character, tempLoc) == false)
+                    {
+                        resultLoc = tempLoc;
+                        break;
+                    }
+                    tempLoc.X += dxy;
+                }
+            }
+
+            // y에 대한 충돌 판정
+            if (velocity.Y != 0)
+            {
+                tempLoc = new Point(resultLoc.X, resultLoc.Y + velocity.Y);
+
+                if (velocity.Y < 0) dxy = 1;
+                else dxy = -1;
+
+                while (true)
+                {
+                    if (CharacterCollisionCheck(character, tempLoc) == false)
+                    {
+                        resultLoc = tempLoc;
+                        break;
+                    }
+                    tempLoc.Y += dxy;
+                }
+            }
+
+
+
+            return resultLoc;
+        }
+
+        // 겹치면 true 반환
+        public bool CharacterCollisionCheck(GameObject target, Point newLocation)
+        {
+            // 대상의 충돌 박스
+            Rectangle a = new Rectangle(newLocation, target.size);
+
+            // 모든 캐릭터와 부딪히는지 체크함
+            foreach (var item in roomClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient == target) continue;
+
+                // 충돌이 꺼져있으면 무시
+                if (otherClient.Collision == false) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return true;
+                }
+            }
+            // 맵의 모든 오브젝트와 부딪히는지 체크함
+            foreach (var item in Map.objectManager.ObjectDic)
+            {
+                GameObject gameObject = item.Value;
+
+                if (gameObject == target) continue;
+                if (gameObject.Collision == false || gameObject.IsStatic == true) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
+                // 만약 움직였을때 겹친다면 충돌 발생
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
+                    if (gameObject.Blockable == true)
+                    {
+                        return true;
+                    }
+                    else continue;
+                }
+            }
+
+            return false;
+        }
+
+        // 겹치면 true 반환
+        public bool CollisionCheck(GameObject target, Point newLocation)
+        {
+            // 대상의 충돌 박스
+            Rectangle a = new Rectangle(newLocation, target.size);
+
+            // 모든 캐릭터와 부딪히는지 체크함
+            foreach (var item in roomClientDic)
+            {
+                ClientCharacter otherClient = item.Value;
+
+                if (otherClient == target) continue;
+
+                // 충돌이 꺼져있으면 무시
+                if (otherClient.Collision == false) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(otherClient.Location, otherClient.size);
+
+                // 만약 움직였을때 겹친다면 리턴
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    return true;
+                }
+            }
+            // 맵의 모든 오브젝트와 부딪히는지 체크함
+            foreach (var item in Map.objectManager.ObjectDic)
+            {
+                GameObject gameObject = item.Value;
+
+                if (gameObject == target) continue;
+
+                if (gameObject.Collision == false) continue;
+
+                // 대상 오브젝트의 충돌 박스
+                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
+                // 만약 움직였을때 겹친다면 충돌 발생
+                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                {
+                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
+                    if (gameObject.Blockable == true) return true;
+                    else continue;
+                }
+            }
+
+            return false;
+        }
+
+
     }
 }

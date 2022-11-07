@@ -46,6 +46,11 @@ namespace MultiGameServer.Object
         {
         }
 
+        ~Stone()
+        {
+            MoveTimer.Dispose();
+        }
+
         public override void OnStart()
         {
             base.OnStart();
@@ -55,7 +60,6 @@ namespace MultiGameServer.Object
         public override void OnClose()
         {
             base.OnClose();
-            MoveTimer.Dispose();
         }
 
         public void CheckAndMove(object obj)

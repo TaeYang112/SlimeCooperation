@@ -35,6 +35,13 @@ namespace MultiGame.Object
             format.LineAlignment = StringAlignment.Center;
         }
 
+        ~TimerBox()
+        {
+            font.Dispose();
+            format.Dispose();
+            _image.Dispose();
+        }
+
         public override void SetSkin(int skinNum)
         {
             isVisible = true;

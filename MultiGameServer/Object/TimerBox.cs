@@ -41,11 +41,16 @@ namespace MultiGameServer.Object
         {
         }
 
+        ~TimerBox()
+        {
+            timer.Dispose();
+            st.Stop();
+        }
+
         public override void OnClose()
         {
             base.OnClose();
-            timer.Dispose();
-            st.Stop();
+            
         }
 
         public override void OnEvent(EventParam param)

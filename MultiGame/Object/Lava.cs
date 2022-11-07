@@ -19,6 +19,10 @@ namespace MultiGame.Object
             _type = ObjectTypes.LAVA;
         }
 
+        ~Lava()
+        {
+        }
+
         override public void SetSkin(int num)
         {
             isVisible = true;

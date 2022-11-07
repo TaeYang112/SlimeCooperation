@@ -32,6 +32,13 @@ namespace MultiGame.Object
             weight = 0;
         }
 
+        ~Stone()
+        {
+            font.Dispose();
+            format.Dispose();
+            _image.Dispose();
+        }
+
         public override void SetSkin(int skinNum)
         {
             isVisible = true;

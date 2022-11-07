@@ -43,15 +43,15 @@ namespace MultiGameServer.Object
         {
         }
 
+        ~ColorStone()
+        {
+            MoveTimer.Dispose();
+        }
+
         public override void OnStart()
         {
             base.OnStart();
             MoveTimer.Change(0, 13);
-        }
-        public override void OnClose()
-        {
-            base.OnClose();
-            MoveTimer.Dispose();
         }
 
         public void CheckAndMove(object obj)

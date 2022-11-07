@@ -93,6 +93,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MakeRoom_Form";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MakeRoom_Form";
             this.Load += new System.EventHandler(this.MakeRoom_Form_Load);

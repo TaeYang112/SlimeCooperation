@@ -19,6 +19,11 @@ namespace MultiGame.Object
             _type = ObjectTypes.STONE_DOOR;
         }
 
+        ~StoneDoor()
+        {
+            _image.Dispose();
+        }
+
         override public void SetSkin(int num)
         {
             isVisible = true;

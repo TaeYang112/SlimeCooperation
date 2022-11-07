@@ -31,6 +31,13 @@ namespace MultiGame.Object
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite); 
         }
 
+        ~KeyObject()
+        {
+            _image.Dispose();
+            MoveTimer.Dispose();
+        }
+
+
         override public void SetSkin(int num)
         {
             isVisible = true;

@@ -33,6 +33,15 @@ namespace MultiGame
             }
         }
 
+        private Bitmap _portal_r;
+        public static Bitmap Portal2
+        {
+            get
+            {
+                return inst._portal_r;
+            }
+        }
+
         private Bitmap _lava;
         public static Bitmap Lava
         {
@@ -56,6 +65,9 @@ namespace MultiGame
             AddFontFromMemory();
 
             _portal = MultiGame.Properties.Resources.portal_2;
+            ImageAnimator.Animate(_portal, null);
+
+            _portal_r = MultiGame.Properties.Resources.portal_2;
             ImageAnimator.Animate(_portal, null);
 
             _lava = MultiGame.Properties.Resources.Lava;

@@ -44,6 +44,8 @@ namespace MultiGame.UserPanel
 
                 GameManager.GetInstance().SendMessage(generator.Generate());
             }
+            
+            
         }
 
         private void findRoom_btn_Click(object sender, EventArgs e)

@@ -25,6 +25,11 @@ namespace MultiGame.Object
             _type = ObjectTypes.DOOR;
         }
 
+        ~Door()
+        {
+            _image.Dispose();
+        }
+
         public override void SetSkin(int skinNum)
         {
             isVisible = true;

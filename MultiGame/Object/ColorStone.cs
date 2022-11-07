@@ -21,6 +21,11 @@ namespace MultiGame.Object
             _type = ObjectTypes.COLOR_STONE;
         }
 
+        ~ColorStone()
+        {
+            _image.Dispose();
+        }
+
         public override void SetSkin(int skinNum)
         {
             isVisible = true;

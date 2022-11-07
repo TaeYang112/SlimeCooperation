@@ -36,10 +36,13 @@ namespace MultiGameServer.Object
         {
         }
 
+        ~PressingButton()
+        {
+            PressCheckTimer.Dispose();
+        }
         public override void OnClose()
         {
             base.OnClose();
-            PressCheckTimer.Dispose();
         }
         public override void OnEvent(EventParam param)
         {

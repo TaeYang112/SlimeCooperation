@@ -23,8 +23,15 @@ namespace MultiGame.Object
             _type = ObjectTypes.BUTTON;
             Pressed = false;
 
-            PressedImage = MultiGame.Properties.Resources.ButtonPressed.Clone() as Image;
+            PressedImage = MultiGame.Properties.Resources.ButtonPressed;
         }
+
+        ~Button()
+        {
+            _image.Dispose();
+            PressedImage.Dispose();
+        }
+        
 
         public override void SetSkin(int skinNum)
         {
@@ -35,7 +42,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Button.Clone() as Image;
+                    _image = MultiGame.Properties.Resources.Button;
                     break;
             }
         

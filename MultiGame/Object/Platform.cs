@@ -21,6 +21,11 @@ namespace MultiGame.Object
             _type = ObjectTypes.PLATFORM;
         }
 
+        ~Platform()
+        {
+            _image.Dispose();
+        }
+
         override public void SetSkin(int num)
         {
             isVisible = true;

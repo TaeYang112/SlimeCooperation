@@ -31,6 +31,8 @@ namespace MultiGame.UserPanel
             InitializeComponent();
             this.form = form;
 
+            Console.WriteLine("시ㄴㅇ라ㅣㅁ언라ㅣ너라ㅣ");
+
             // 60프레임 화면 업데이트
             TimerCallback tc = new TimerCallback(Update);
             UpdateTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
@@ -45,6 +47,14 @@ namespace MultiGame.UserPanel
             TimerCallback tc2 = new TimerCallback(DebugTimer);
             FPSTimer = new System.Threading.Timer(tc2, null, 0, 1000);
             FPS = 0;
+
+            Disposed += new EventHandler(CustomDispose);
+        }
+
+        public void CustomDispose(object o, EventArgs e)
+        {
+            FPSTimer.Dispose();
+            UpdateTimer.Dispose();
         }
 
         public void DebugTimer(object c)
@@ -94,7 +104,7 @@ namespace MultiGame.UserPanel
 
         ~InGame_Screen()
         {
-            UpdateTimer.Dispose();
+            
         }
 
         private void InGame_Screen_Load(object sender, EventArgs e)

@@ -21,6 +21,11 @@ namespace MultiGame.Object
             _type = ObjectTypes.PORTAL;
         }
 
+        
+       ~Portal()
+        {
+        }
+
         public override void SetSkin(int skinNum)
         {
             isVisible = true;
@@ -31,6 +36,9 @@ namespace MultiGame.Object
                     break;
                 case 0:
                     _image = ResourceLibrary.Portal;
+                    break;
+                case 1:
+                    _image = ResourceLibrary.Portal2;
                     break;
             }
         
@@ -47,9 +55,6 @@ namespace MultiGame.Object
         public override void OnHit()
         {
              base.OnHit();
-
-            
-            
         }
 
     }

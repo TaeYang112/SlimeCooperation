@@ -75,7 +75,11 @@ namespace MultiGameServer
                                     {
                                         stageNum = int.Parse(command[2]);
                                     }
-                                    room.GameStart(stageNum);
+
+                                    if(room.IsGameStart == false ) 
+                                        room.GameStart();
+                                    room.MapChange(stageNum);
+
                                     Console.WriteLine("[INFO] " + roomKey + "번 방을 시작하였습니다.");
                                }
                                else throw new Exception("[ERROR] 올바르지 않은 매개변수 개수입니다.");
@@ -83,6 +87,25 @@ namespace MultiGameServer
 
                             }
                         break;
+                        case "/gameclear":
+                            {
+                                if (command.Length == 2)
+                                {
+                                    int roomKey = int.Parse(command[1]);
+                                    Room room;
+                                    bool result = program.roomManager.RoomDic.TryGetValue(roomKey, out room);
+                                    if (result == false)
+                                    {
+                                        throw new Exception("[ERROR] 존재하지 않은 방입니다.");
+                                    }
+
+                                    room.GameClear();
+
+                                    Console.WriteLine("[INFO] " + roomKey + "번 방을 클리어 시켰습니다.");
+                                }
+                                else throw new Exception("[ERROR] 올바르지 않은 매개변수 개수입니다.");
+                            }
+                            break;
                     default:
                         Console.WriteLine("[ERROR] 알수없는 명령어입니다.");
                         break;
@@ -287,7 +310,7 @@ namespace MultiGameServer
                 generator.AddInt(clientChar.key);
 
                 // 방이 대기상태일 때
-                if (room.bGameStart == false)
+                if (room.IsGameStart == false)
                 {
                     // 만약 방에 남은 인원이 없으면
                     if (peopleCount < 1)
@@ -308,9 +331,21 @@ namespace MultiGameServer
                     }
 
                 }
-                // 게임이 시작한 상태
+                // 게임이 시작한 상태 ( 3명미만은 게임 오버 )
                 else
                 {
+                    // 나간 플레이어 알려줌
+                    room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
+
+                    
+                    // 게임오버를 알려줌
+                    MessageGenerator generator2 = new MessageGenerator(Protocols.S_GAMEOVER);
+                    room.SendMessageToAll_InRoom(generator2.Generate(), clientChar.key);
+
+                    // 방 삭제
+                    roomManager.RemoveRoom(room);
+                    
+                    /*
                     // 만약 방에 남은 인원이 없으면
                     if (peopleCount < 1)
                     {
@@ -320,8 +355,9 @@ namespace MultiGameServer
                     else
                     {
                         // 방 안의 다른 플레이어들한테 알려줌
-                        room.SendMessageToAll_InRoom(generator.Generate(), clientChar.key);
+                        
                     }
+                    */
                 }
             }
 
