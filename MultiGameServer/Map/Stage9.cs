@@ -11,6 +11,10 @@ namespace MultiGameServer
 {
     class Stage9 : MapBase
     {
+
+        private bool Button1Pressed = false;
+        private bool Button2Pressed = false;
+        private List<GameObject> actionObjList = new List<GameObject>();
         public Stage9(Room room) : base(room)
         {
             _skin = 2;
@@ -117,17 +121,23 @@ namespace MultiGameServer
 
             tempKey = room.NextObjKey;
             PressingButton button1 = new PressingButton(room, tempKey, new Point(140, 790), new Size(20, 10));
-            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            button1.SetAction(delegate (bool bPressed) {
+                Button1Pressed = bPressed;
+                MapAction();
+            });
             objectManager.AddObject(button1);
 
             tempKey = room.NextObjKey;
             PressingButton button2 = new PressingButton(room, tempKey, new Point(450, 790), new Size(20, 10));
-            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            button2.SetAction(delegate (bool bPressed) {
+                Button2Pressed = bPressed;
+                MapAction();
+            });
             objectManager.AddObject(button2);
 
             tempKey = room.NextObjKey;
             Button button3 = new Button(room, tempKey, new Point(1270, 160), new Size(20, 10));
-            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            //button.SetAction(delegate () { timerBox.TimerStop(); });
             objectManager.AddObject(button3);
 
 
@@ -154,6 +164,49 @@ namespace MultiGameServer
             Door door = new Door(room, tempKey, new Point(900, 710), new Size(70, 90));
             objectManager.AddObject(door);
 
+
+            actionObjList.Add(platform11);
+            actionObjList.Add(platform12);
+            actionObjList.Add(lava2);
         }
+
+        // 두개의 버튼을 동시에 누를때만 사라짐
+        public void MapAction()
+        {
+            Console.WriteLine(Button2Pressed);
+            if (Button1Pressed && Button2Pressed)
+            {
+                foreach (var obj in actionObjList)
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(obj.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
+                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
+                    generator.AddInt(obj.SkinNum).AddBool(false);
+                    generator.AddBool(false).AddBool(false);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+            }
+            else if(!Button1Pressed && !Button2Pressed)
+            {
+                foreach (var obj in actionObjList)
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(obj.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
+                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
+                    generator.AddInt(obj.SkinNum).AddBool(true);
+                    generator.AddBool(true).AddBool(true);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+            }
+        }
+
     }
 }

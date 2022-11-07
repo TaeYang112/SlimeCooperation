@@ -54,7 +54,7 @@ namespace MultiGameServer.Object
 
             room.SendMessageToAll_InRoom(generator.Generate());
 
-            PressCheckTimer.Change(100, 100);
+            PressCheckTimer.Change(50, 50);
             if (onPressDelegate != null) onPressDelegate(true);
         }
 

@@ -408,10 +408,9 @@ namespace MultiGameServer
                 generator.Protocol = Protocols.S_NEW_OBJECT;
 
                 // 맵에 있는 오브젝트들을 알려줌
-                foreach(var objectPair in Map.objectManager.ObjectDic)
+                foreach(var objectPair in Map.objectManager.ObjectDic.OrderBy(x=>x.Key))
                 {
                     GameObject gameObject = objectPair.Value;
-
                     generator.Clear();
                     generator.AddInt(objectPair.Key);
                     generator.AddByte(gameObject.Type);
@@ -603,14 +602,30 @@ namespace MultiGameServer
 
                 if (gameObject.Collision == false) continue;
 
-                // 대상 오브젝트의 충돌 박스
-                Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
-                // 만약 움직였을때 겹친다면 충돌 발생
-                if (Rectangle.Intersect(a, b).IsEmpty == false)
+                if (gameObject.Type != ObjectTypes.PLATFORM)
                 {
-                    // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
-                    if (gameObject.Blockable == true) return true;
-                    else continue;
+                    // 대상 오브젝트의 충돌 박스
+                    Rectangle b = new Rectangle(gameObject.Location, gameObject.size);
+
+                    // 만약 움직였을때 겹친다면 충돌 발생
+                    if (Rectangle.Intersect(a, b).IsEmpty == false)
+                    {
+                        // 해당 오브젝트가 길을 막을 수 있으면 true반환하여 이동 제한
+                        if (gameObject.Blockable == true) return true;
+                        else continue;
+                    }
+                }
+                else
+                {
+                    //캐릭터가 플랫폼 위에 있으면서 플랫폼 밑으로 가려고 할 때
+                    if (target.Location.Y + target.size.Height < gameObject.Location.Y && newLocation.Y + target.size.Height >= gameObject.Location.Y)
+                    {
+                        // 캐릭터가 플랫폼의 x1 x2 사이의 있을경우
+                        if (target.Location.X < gameObject.Location.X + gameObject.size.Width && target.Location.X + target.size.Width > gameObject.Location.X)
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
 

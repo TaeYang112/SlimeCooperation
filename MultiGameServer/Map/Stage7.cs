@@ -120,35 +120,17 @@ namespace MultiGameServer
             tempKey = room.NextObjKey;
             Platform platform13 = new Platform(room, tempKey, new Point(225, 165), new Size(125, 30));
             objectManager.AddObject(platform13);
-
-            // 돌1
-            tempKey = room.NextObjKey;
-            Stone stone1 = new Stone(room, tempKey, new Point(270, 99), new Size(40, 65));
-            stone1.weight = 1;
-            objectManager.AddObject(stone1);
-
+          
 
             // 돌 바닥2
             tempKey = room.NextObjKey;
             Platform platform14 = new Platform(room, tempKey, new Point(636, 165), new Size(125, 30));
             objectManager.AddObject(platform14);
 
-            // 돌2
-            tempKey = room.NextObjKey;
-            Stone stone2 = new Stone(room, tempKey, new Point(680, 99), new Size(40, 65));
-            stone2.weight = 1;
-            objectManager.AddObject(stone2);
-
             // 돌 바닥3
             tempKey = room.NextObjKey;
             Platform Platform15 = new Platform(room, tempKey, new Point(1075, 165), new Size(125, 30));
             objectManager.AddObject(Platform15);
-
-            // 돌3
-            tempKey = room.NextObjKey;
-            Stone stone3 = new Stone(room, tempKey, new Point(1118, 99), new Size(40, 65));
-            stone3.weight = 1;
-            objectManager.AddObject(stone3);
 
             // 벽16
             tempKey = room.NextObjKey;
@@ -220,6 +202,26 @@ namespace MultiGameServer
             Platform Platform29 = new Platform(room, tempKey, new Point(1300, 220), new Size(125, 30));
             objectManager.AddObject(Platform29);
 
+
+            // 돌1
+            tempKey = room.NextObjKey;
+            Stone stone1 = new Stone(room, tempKey, new Point(270, 99), new Size(40, 65));
+            stone1.weight = 1;
+            objectManager.AddObject(stone1);
+
+            // 돌2
+            tempKey = room.NextObjKey;
+            Stone stone2 = new Stone(room, tempKey, new Point(680, 99), new Size(40, 65));
+            stone2.weight = 1;
+            objectManager.AddObject(stone2);
+
+            // 돌3
+            tempKey = room.NextObjKey;
+            Stone stone3 = new Stone(room, tempKey, new Point(1118, 99), new Size(40, 65));
+            stone3.weight = 1;
+            objectManager.AddObject(stone3);
+
+
             // 열쇠
             tempKey = room.NextObjKey;
             KeyObject KeyObject = new KeyObject(room, tempKey, new Point(1070, 750), new Size(35, 50));
@@ -232,6 +234,9 @@ namespace MultiGameServer
             this.timerbox1 = timerBox;
             timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
             objectManager.AddObject(timerBox);
+
+
+
         }
     }
 }
