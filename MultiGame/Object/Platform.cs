@@ -30,13 +30,13 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Log;
+                    _image =new Bitmap(MultiGame.Properties.Resources.Log, size);
                     break;
                 case 1:
-                    _image = MultiGame.Properties.Resources.Log_Snow;
+                    _image =new Bitmap(MultiGame.Properties.Resources.Log_Snow, size);
                     break;
                 default:
-                    _image = MultiGame.Properties.Resources.Log;
+                    _image =new Bitmap(MultiGame.Properties.Resources.Log, size);
                     break;
             }
 

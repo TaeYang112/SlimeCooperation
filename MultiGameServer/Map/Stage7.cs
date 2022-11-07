@@ -11,6 +11,7 @@ namespace MultiGameServer
 {
     class Stage7 : MapBase
     {
+        private List<int> randomSkin;
         private TimerBox timerbox1;
         public Stage7(Room room) : base(room)
         {
@@ -25,6 +26,7 @@ namespace MultiGameServer
 
         protected override void DesignMap()
         {
+            InitRandomSkin();
             int tempKey;
 
             // 맵 바깥 벽 (왼)
@@ -205,20 +207,20 @@ namespace MultiGameServer
 
             // 돌1
             tempKey = room.NextObjKey;
-            Stone stone1 = new Stone(room, tempKey, new Point(270, 99), new Size(40, 65));
-            stone1.weight = 1;
+            ColorStone stone1 = new ColorStone(room, tempKey, new Point(270, 99), new Size(40, 65));
+            stone1.SkinNum = randomSkin[0];
             objectManager.AddObject(stone1);
 
             // 돌2
             tempKey = room.NextObjKey;
-            Stone stone2 = new Stone(room, tempKey, new Point(680, 99), new Size(40, 65));
-            stone2.weight = 1;
+            ColorStone stone2 = new ColorStone(room, tempKey, new Point(680, 99), new Size(40, 65));
+            stone2.SkinNum = randomSkin[1];
             objectManager.AddObject(stone2);
 
             // 돌3
             tempKey = room.NextObjKey;
-            Stone stone3 = new Stone(room, tempKey, new Point(1118, 99), new Size(40, 65));
-            stone3.weight = 1;
+            ColorStone stone3 = new ColorStone(room, tempKey, new Point(1118, 99), new Size(40, 65));
+            stone3.SkinNum = randomSkin[2];
             objectManager.AddObject(stone3);
 
 
@@ -236,6 +238,34 @@ namespace MultiGameServer
             objectManager.AddObject(timerBox);
 
 
+
+        }
+
+        private void InitRandomSkin()
+        {
+            randomSkin = new List<int>(new int[] { 0, 0, 0 });
+
+            List<int> skinArr = new List<int>();
+            int i = 0;
+            foreach (var item in room.roomClientDic)
+            {
+                skinArr.Add(item.Value.SkinNum);
+                i++;
+            }
+
+            Random rand = new Random(); //랜덤선언
+
+            for (int j = 0; j < 2; j++)
+            {
+                //선언 및 초기화 부분//
+                int num = rand.Next(skinArr.Count);
+
+                randomSkin[j] = skinArr[num];
+
+                if (skinArr.Count > 1)
+                    skinArr.RemoveAt(num);
+            }
+            randomSkin[2] = skinArr[0];
 
         }
     }

@@ -65,7 +65,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Key;
+                    _image = new Bitmap(MultiGame.Properties.Resources.Key, size);
                     break;
             }
         }

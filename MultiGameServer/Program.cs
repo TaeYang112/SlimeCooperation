@@ -87,7 +87,7 @@ namespace MultiGameServer
 
                             }
                         break;
-                        case "/gameclear":
+                        case "/c":
                             {
                                 if (command.Length == 2)
                                 {

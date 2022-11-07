@@ -78,7 +78,7 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.TimeBoard;
+                    _image = new Bitmap(MultiGame.Properties.Resources.TimeBoard, size);
                     break;
             }
         

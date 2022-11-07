@@ -173,7 +173,6 @@ namespace MultiGameServer
         // 두개의 버튼을 동시에 누를때만 사라짐
         public void MapAction()
         {
-            Console.WriteLine(Button2Pressed);
             if (Button1Pressed && Button2Pressed)
             {
                 foreach (var obj in actionObjList)

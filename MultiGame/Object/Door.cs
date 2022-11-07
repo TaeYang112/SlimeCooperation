@@ -34,10 +34,10 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = MultiGame.Properties.Resources.Door;
+                    _image = new Bitmap(MultiGame.Properties.Resources.Door, size);
                     break;
                 case 1:
-                    _image = MultiGame.Properties.Resources.DoorOpened;
+                    _image = new Bitmap(MultiGame.Properties.Resources.DoorOpened, size);
                     break;
             }
         }
