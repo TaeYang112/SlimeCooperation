@@ -30,7 +30,7 @@ namespace MultiGame.UserPanel
             score_GridView.DefaultCellStyle.Font = new Font(ResourceLibrary.Families[1], 16, FontStyle.Regular);
 
             TimerCallback tc = new TimerCallback(timer2_Tick);
-            timer2 = new System.Threading.Timer(tc);
+            timer2 = new System.Threading.Timer(tc,null,Timeout.Infinite, Timeout.Infinite);
         }
 
         ~GameClear_Form()

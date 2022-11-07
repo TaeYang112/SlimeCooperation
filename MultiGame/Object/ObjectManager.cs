@@ -19,6 +19,10 @@ namespace MultiGame
         // 게임 내의 문의 킷값
         public int doorKey { get; set; }
 
+        // 락 오브젝트
+        private object _lockObj = new object();
+        public object LockObj { get { return _lockObj; } }
+
         public ObjectManager()
         {
             ObjectDic = new ConcurrentDictionary<int, GameObject>();
@@ -51,9 +55,17 @@ namespace MultiGame
 
         public void ClearObjects()
         {
-            ObjectDic.Clear();
-            doorKey = -1;
-            keyObjectKey = -1;
+            lock (LockObj)
+            {
+                foreach (var item in ObjectDic)
+                {
+                    item.Value.Dispose();
+                }
+
+                ObjectDic.Clear();
+                doorKey = -1;
+                keyObjectKey = -1;
+            }
         }
     }
 }

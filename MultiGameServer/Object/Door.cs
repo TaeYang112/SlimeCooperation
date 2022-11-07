@@ -25,6 +25,7 @@ namespace MultiGameServer.Object
             : this(room, key, Location, new Size(Location2.X - Location.X, Location2.Y - Location.Y))
         {
         }
+ 
 
         public override void OnEvent(EventParam param)
         {

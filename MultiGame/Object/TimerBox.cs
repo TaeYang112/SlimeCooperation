@@ -11,6 +11,9 @@ namespace MultiGame.Object
 {
     public class TimerBox : GameObject
     {
+        // dispose 중복 호출 방지
+        bool _disposed = false;
+
         private Font font;
         private StringFormat format;
 
@@ -35,11 +38,26 @@ namespace MultiGame.Object
             format.LineAlignment = StringAlignment.Center;
         }
 
-        ~TimerBox()
+        // dispose 패턴
+        protected override void Dispose(bool disposing)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // 관리 메모리 해제
+            }
+
+            // 비관리 메모리 해제
             font.Dispose();
             format.Dispose();
-            _image.Dispose();
+
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
 
         public override void SetSkin(int skinNum)

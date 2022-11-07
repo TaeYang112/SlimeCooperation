@@ -11,6 +11,8 @@ namespace MultiGameServer.Object
 {
     public class Stone : GameObject
     {
+        private bool _disposed = false;
+
         public int weight { get; set; }
 
         private float GravityTime;                  // 중력 계산에 필요한 변수 ( 2차 함수 그래프의 x에 해당 )
@@ -46,10 +48,25 @@ namespace MultiGameServer.Object
         {
         }
 
-        ~Stone()
+
+        protected override void Dispose(bool disposing)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+
+            }
             MoveTimer.Dispose();
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
+
+        
 
         public override void OnStart()
         {
@@ -57,10 +74,6 @@ namespace MultiGameServer.Object
             MoveTimer.Change(0, 13);
         }
 
-        public override void OnClose()
-        {
-            base.OnClose();
-        }
 
         public void CheckAndMove(object obj)
         {

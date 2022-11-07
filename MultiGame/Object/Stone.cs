@@ -11,6 +11,8 @@ namespace MultiGame.Object
 {
     public class Stone : GameObject
     {
+        // dispose 중복 호출 방지
+        bool _disposed = false;
 
         public int weight {get;set;}
         private Font font;
@@ -32,11 +34,26 @@ namespace MultiGame.Object
             weight = 0;
         }
 
-        ~Stone()
+        // dispose 패턴
+        protected override void Dispose(bool disposing)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // 관리 메모리 해제
+            }
+
+            // 비관리 메모리 해제
+
+            _disposed = true;
             font.Dispose();
             format.Dispose();
-            _image.Dispose();
+
+            base.Dispose(disposing);
         }
 
         public override void SetSkin(int skinNum)

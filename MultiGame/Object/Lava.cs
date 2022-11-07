@@ -19,9 +19,8 @@ namespace MultiGame.Object
             _type = ObjectTypes.LAVA;
         }
 
-        ~Lava()
-        {
-        }
+        protected override void Dispose(bool disposing)
+        { }
 
         override public void SetSkin(int num)
         {

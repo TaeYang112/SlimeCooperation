@@ -121,29 +121,33 @@ namespace MultiGame.UserPanel
             // 배경
             g.DrawImage(BackGroundImg, new Rectangle(new Point(0,0), new Size(1440, 862)));
 
-            // 오브젝트
-            foreach (var item in GInst.objectManager.ObjectDic)
+            lock(GInst.objectManager.LockObj)
             {
-                if (item.Value is KeyObject) continue;
-                item.Value.OnPaint(sender, e);
-            }
+                // 오브젝트
+                foreach (var item in GInst.objectManager.ObjectDic)
+                {
+                    if (item.Value is KeyObject) continue;
+                    item.Value.OnPaint(sender, e);
+                }
 
-            // 캐릭터
-            foreach (var item in GInst.clientManager.ClientDic)
-            {
-                item.Value.OnPaint(sender, e);
-            }
+                // 캐릭터
+                foreach (var item in GInst.clientManager.ClientDic)
+                {
+                    item.Value.OnPaint(sender, e);
+                }
 
-            // 유저 캐릭터
-            GInst.userClient.Character.OnPaint(sender,e);
+                // 유저 캐릭터
+                GInst.userClient.Character.OnPaint(sender, e);
 
-            // 열쇠
-            int keyObjectKey = GInst.objectManager.keyObjectKey;
-            GameObject keyObject;
-            bool result = GInst.objectManager.ObjectDic.TryGetValue(keyObjectKey, out keyObject);
-            if(result)
-            {
-                keyObject.OnPaint(sender, e);
+                // 열쇠
+                int keyObjectKey = GInst.objectManager.keyObjectKey;
+                GameObject keyObject;
+                bool result = GInst.objectManager.ObjectDic.TryGetValue(keyObjectKey, out keyObject);
+                if (result)
+                {
+                    keyObject.OnPaint(sender, e);
+                }
+
             }
             
             FPS++;

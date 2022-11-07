@@ -9,8 +9,10 @@ using System.Windows.Forms;
 
 namespace MultiGame
 {
-    public class GameObject
+    public class GameObject : IDisposable
     {
+        private bool _disposed = false;
+
         // 오브젝트를 구분하는 키
         public int key { get; set; }
 
@@ -45,6 +47,32 @@ namespace MultiGame
             this.Blockable = false;
             this.isVisible = true;
             this._type = ObjectTypes.GAME_OBJECT;
+        }
+
+        ~GameObject() => Dispose(false);
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // dispose 패턴
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // 관리 메모리 해제
+            }
+
+            // 비관리 메모리 해제
+            _image.Dispose();
+            _disposed = true;
         }
 
         // 플레이어와 겹쳤을 때 호출됨

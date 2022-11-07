@@ -26,13 +26,6 @@ namespace MultiGame.Object
             PressedImage = MultiGame.Properties.Resources.ButtonPressed;
         }
 
-        ~Button()
-        {
-            _image.Dispose();
-            PressedImage.Dispose();
-        }
-        
-
         public override void SetSkin(int skinNum)
         {
             isVisible = true;

@@ -11,6 +11,9 @@ namespace MultiGame.Object
 {
     public class PressingButton : GameObject
     {
+        // dispose 중복 호출 방지
+        bool _disposed = false;
+
         public bool Pressed { get; set; }
 
         private Image PressedImage;
@@ -26,10 +29,25 @@ namespace MultiGame.Object
             PressedImage = MultiGame.Properties.Resources.ButtonPressed;
         }
 
-        ~PressingButton()
+        // dispose 패턴
+        protected override void Dispose(bool disposing)
         {
-            _image.Dispose();
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // 관리 메모리 해제
+            }
+
+            // 비관리 메모리 해제
             PressedImage.Dispose();
+
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
 
         public override void SetSkin(int skinNum)

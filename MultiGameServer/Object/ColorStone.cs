@@ -11,6 +11,7 @@ namespace MultiGameServer.Object
 {
     public class ColorStone : GameObject
     {
+        private bool _disposed = false;
 
         private float GravityTime;                  // 중력 계산에 필요한 변수 ( 2차 함수 그래프의 x에 해당 )
         private float GravityPower;                 // 중력 파워
@@ -43,10 +44,23 @@ namespace MultiGameServer.Object
         {
         }
 
-        ~ColorStone()
+        protected override void Dispose(bool disposing)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+            
+            }
             MoveTimer.Dispose();
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
+
 
         public override void OnStart()
         {

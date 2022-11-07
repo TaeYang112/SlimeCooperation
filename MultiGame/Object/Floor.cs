@@ -11,11 +11,13 @@ namespace MultiGame.Object
 {
     public class Floor : GameObject
     {
+        // dispose 중복 호출 방지
+        bool _disposed = false;
+
         private Image _image2;
         private int _image2_Height = 0;
         private TextureBrush tBrush1;
         private TextureBrush tBrush2;
-        bool singleImage = false;
 
         public Floor(int key, Point Location, Size size):
             base(key,Location,size)
@@ -26,15 +28,31 @@ namespace MultiGame.Object
             _type = ObjectTypes.FLOOR;
         }
 
-        ~Floor()
+        // dispose 패턴
+        protected override void Dispose(bool disposing)
         {
-            _image.Dispose();
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // 관리 메모리 해제
+            }
+
+            // 비관리 메모리 해제
             _image2.Dispose();
+            tBrush1.Dispose();
+            tBrush2.Dispose();
+
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
 
         override public void SetSkin(int num)
         {
-            singleImage = false;
             isVisible = true;
             switch(num)
             {
@@ -82,12 +100,11 @@ namespace MultiGame.Object
 
             if (isVisible == false) return;
 
+            // 흙
             g.FillRectangle(tBrush1, new Rectangle(Location, size));
             
-            
-
-            if (singleImage == false)
-                g.FillRectangle(tBrush2, new Rectangle(Location, new Size(size.Width, _image2_Height)));
+            // 잔디
+            g.FillRectangle(tBrush2, new Rectangle(Location, new Size(size.Width, _image2_Height)));
 
         }
     }

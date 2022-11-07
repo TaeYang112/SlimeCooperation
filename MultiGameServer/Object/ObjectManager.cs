@@ -39,9 +39,10 @@ namespace MultiGameServer
 
         public void ClearObjects()
         {
+            // 비관리 메모리 해제
             foreach(var item in ObjectDic)
             {
-                item.Value.OnClose();
+                item.Value.Dispose();
             }
             ObjectDic.Clear();
         }

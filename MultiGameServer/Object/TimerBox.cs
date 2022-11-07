@@ -11,6 +11,8 @@ namespace MultiGameServer.Object
 {
     public class TimerBox : GameObject
     {
+        private bool _disposed = false;
+
         private System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
 
         public int StartTime { get; set; }
@@ -41,17 +43,23 @@ namespace MultiGameServer.Object
         {
         }
 
-        ~TimerBox()
+        protected override void Dispose(bool disposing)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+
+            }
             timer.Dispose();
-            st.Stop();
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
 
-        public override void OnClose()
-        {
-            base.OnClose();
-            
-        }
 
         public override void OnEvent(EventParam param)
         {

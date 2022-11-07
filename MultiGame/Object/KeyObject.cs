@@ -11,6 +11,9 @@ namespace MultiGame.Object
 {
     public class KeyObject : GameObject
     {
+        // dispose 중복 호출 방지
+        bool _disposed = false;
+
         // 열쇠 소유자 
         private ClientCharacter _owner;
         public ClientCharacter owner { get { return _owner; } }
@@ -31,10 +34,25 @@ namespace MultiGame.Object
             MoveTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite); 
         }
 
-        ~KeyObject()
+        // dispose 패턴
+        protected override void Dispose(bool disposing)
         {
-            _image.Dispose();
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // 관리 메모리 해제
+            }
+
+            // 비관리 메모리 해제
             MoveTimer.Dispose();
+
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
 
 

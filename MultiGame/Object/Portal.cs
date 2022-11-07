@@ -21,10 +21,12 @@ namespace MultiGame.Object
             _type = ObjectTypes.PORTAL;
         }
 
-        
-       ~Portal()
+        // dispose 패턴
+        // Portal의 이미지 Dispose 방지
+        protected override void Dispose(bool disposing)
         {
         }
+
 
         public override void SetSkin(int skinNum)
         {

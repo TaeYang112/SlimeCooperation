@@ -11,6 +11,8 @@ namespace MultiGameServer.Object
 {
     public class StoneDoor : GameObject
     {
+        private bool _disposed = false;
+
         private System.Threading.Timer MoveTimer;
 
         public int MaxOffset { get; set; }
@@ -38,14 +40,21 @@ namespace MultiGameServer.Object
         {
         }
 
-        ~StoneDoor()
+        protected override void Dispose(bool disposing)
         {
-            MoveTimer.Dispose();
-        }
+            if (_disposed)
+            {
+                return;
+            }
 
-        public override void OnClose()
-        {
-            base.OnClose();
+            if (disposing)
+            {
+
+            }
+            MoveTimer.Dispose();
+            _disposed = true;
+
+            base.Dispose(disposing);
         }
 
         public override void OnEvent(EventParam param)

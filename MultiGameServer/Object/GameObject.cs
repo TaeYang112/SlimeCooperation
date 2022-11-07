@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace MultiGameServer
 {
-    public class GameObject
+    public class GameObject : IDisposable
     {
+        // Dispose 체크 플래그 변수
+        private bool _disposed = false;
+
         // 오브젝트를 구분하는 키
         public int key { get; set; }
 
@@ -50,14 +53,31 @@ namespace MultiGameServer
             SkinNum = 0;
         }
 
-        // 오브젝트와 상호작용이 일어났을 때 발생
-        virtual public void OnEvent(EventParam param)
-        {
+        ~GameObject() => Dispose(false);
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        // 맵이나 방이 종료되었을 때 호출됨
-        virtual public void OnClose()
+        // 가상 Dispose 메서드
+        protected virtual void Dispose(bool isDisposing)
+        {
+            // Dispose 는 한 번만 수행되도록 합니다.
+            if (_disposed)
+                return;
+
+            if (isDisposing)
+            {
+                // 해당 구문에 관리 리소스 정리합니다.
+
+            }
+            _disposed = true;
+        }
+
+        // 오브젝트와 상호작용이 일어났을 때 발생
+        virtual public void OnEvent(EventParam param)
         {
 
         }
@@ -67,6 +87,8 @@ namespace MultiGameServer
         {
 
         }
+
+        
 
         public class EventParam
         {
