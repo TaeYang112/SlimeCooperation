@@ -187,7 +187,6 @@ namespace MultiGameServer
         // 문에 들어감, 문에 들어간 캐릭터 수 반환
         public int EnterDoor(ClientCharacter clientChar, bool flag)
         {
-            return 3;
             // 문에 들어감
             if (flag == true)
             {
