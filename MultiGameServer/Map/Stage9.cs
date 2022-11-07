@@ -11,19 +11,11 @@ namespace MultiGameServer
 {
     class Stage9 : MapBase
     {
-        private List<int> randomSkin;
-
-        private TimerBox timerbox1;
         public Stage9(Room room) : base(room)
         {
+            _skin = 2;
         }
 
-        public override void Start()
-        {
-            base.Start();
-            timerbox1.TimerStart();
-
-        }
         protected override void SetSpawnLocation()
         {
             SpawnLocation[0] = new Point(0, 740);
@@ -33,7 +25,6 @@ namespace MultiGameServer
 
         protected override void DesignMap()
         {
-            InitRandomSkin();
             int tempKey;
 
             // 맵 바깥 벽 (왼)
@@ -48,99 +39,120 @@ namespace MultiGameServer
             rightWall.SkinNum = -1;
             objectManager.AddObject(rightWall);
 
-            
-            // 그냥 돌
-            tempKey = room.NextObjKey;
-            Platform platform = new Platform(room, tempKey, new Point(400, 720), new Size(70, 70));
-            objectManager.AddObject(platform);
-
-            // 타이머
-            tempKey = room.NextObjKey;
-            TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 720), new Size(150, 100));
-            timerBox.StartTime = 10000;
-            this.timerbox1 = timerBox;
-            timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
-            objectManager.AddObject(timerBox);
-
-            // 버튼
-            tempKey = room.NextObjKey;
-            Button button = new Button(room, tempKey, new Point(650, 790), new Size(20, 10));
-            button.SetAction(delegate () { timerBox.TimerStop(); });
-            objectManager.AddObject(button);
-
-            // 누르고 있을때만 작동하는 버튼
-            tempKey = room.NextObjKey;
-            PressingButton pressButton = new PressingButton(room, tempKey, new Point(1100, 790), new Size(20, 10));
-            pressButton.SetAction(delegate (bool bPressed)
-            {
-                if(bPressed == true)
-                {
-                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(platform.key);
-                    generator.AddByte(ObjectTypes.GAME_OBJECT);
-                    generator.AddInt(-1);
-                    generator.AddInt(platform.Location.X).AddInt(platform.Location.Y);
-                    generator.AddInt(platform.size.Width).AddInt(platform.size.Height);
-                    generator.AddInt(platform.SkinNum).AddBool(false);
-                    generator.AddBool(false).AddBool(false);
-
-                    room.SendMessageToAll_InRoom(generator.Generate());
-                }
-                else
-                {
-                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
-                    generator.AddInt(platform.key);
-                    generator.AddByte(ObjectTypes.GAME_OBJECT);
-                    generator.AddInt(-1);
-                    generator.AddInt(platform.Location.X).AddInt(platform.Location.Y);
-                    generator.AddInt(platform.size.Width).AddInt(platform.size.Height);
-                    generator.AddInt(platform.SkinNum).AddBool(true);
-                    generator.AddBool(true).AddBool(true);
-
-                    room.SendMessageToAll_InRoom(generator.Generate());
-                }
-            });
-            objectManager.AddObject(pressButton);
-
-            tempKey = room.NextObjKey;
-            Lava lava = new Lava(room, tempKey, new Point(800, 300), new Size(96, 408));
-            lava.SkinNum = 1;
-            objectManager.AddObject(lava);
-
             // 땅
             tempKey = room.NextObjKey;
-            Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(1440, 865));
+            Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(995, 865));
             Floor.SkinNum = 2;
             objectManager.AddObject(Floor);
 
-            
-        }
+            // 벽1
+            tempKey = room.NextObjKey;
+            Platform platform1 = new Platform(room, tempKey, new Point(203, 735), new Size(125, 30));
+            objectManager.AddObject(platform1);
 
-        private void InitRandomSkin()
-        {
-            randomSkin = new List<int>(new int[] { 0, 0, 0 });
-            
-            List<int> skinArr = new List<int>();
-            int i = 0;
-            foreach(var item in room.roomClientDic)
-            {
-                skinArr.Add(item.Value.SkinNum);
-                i++;
-            }
+            // 벽2
+            tempKey = room.NextObjKey;
+            Platform platform2 = new Platform(room, tempKey, new Point(475, 705), new Size(125, 30));
+            objectManager.AddObject(platform2);
 
-            Random rand = new Random(); //랜덤선언
+            // 벽3
+            tempKey = room.NextObjKey;
+            Platform platform3 = new Platform(room, tempKey, new Point(731, 677), new Size(125, 30));
+            objectManager.AddObject(platform3);
 
-            for(int j = 0; j<2; j++)
-            {
-                //선언 및 초기화 부분//
-                int num = rand.Next(skinArr.Count);
+            // 오른쪽 밑벽
+            tempKey = room.NextObjKey;
+            Floor Floor4 = new Floor(room, tempKey, new Point(995, 649), new Size(500, 215));
+            Floor4.SkinNum = 2;
+            objectManager.AddObject(Floor4);
 
-                randomSkin[j] = skinArr[num];
 
-                if(skinArr.Count > 1)
-                    skinArr.RemoveAt(num);
-            }
-            randomSkin[2] = skinArr[0];
+            // 돌1
+            tempKey = room.NextObjKey;
+            Stone stone1 = new Stone(room, tempKey, new Point(1145, 428), new Size(60, 220));
+            stone1.weight = 3;
+            objectManager.AddObject(stone1);
+
+            // 포탈
+            tempKey = room.NextObjKey;
+            Portal portal1 = new Portal(room, tempKey, new Point(1320, 528), new Size(120, 120));
+            portal1.TargetLocation = new Point(10, 10);
+            objectManager.AddObject(portal1);
+
+
+
+
+
+            // 왼쪽위 벽
+            tempKey = room.NextObjKey;
+            Floor floor8 = new Floor(room, tempKey, new Point(0, 150), new Size(400, 100));
+            floor8.SkinNum = 2;
+            objectManager.AddObject(floor8);
+
+            // 열쇠
+            tempKey = room.NextObjKey;
+            KeyObject KeyObject = new KeyObject(room, tempKey, new Point(1350, 80), new Size(35, 50));
+            objectManager.AddObject(KeyObject);
+
+            // 천장
+            tempKey = room.NextObjKey;
+            Floor Floor13 = new Floor(room, tempKey, new Point(0, -35), new Size(1440, 30));
+            objectManager.AddObject(Floor13);
+
+            // 벽6
+            tempKey = room.NextObjKey;
+            Platform platform11 = new Platform(room, tempKey, new Point(610, 236), new Size(125, 30));
+            objectManager.AddObject(platform11);
+
+            // 벽7
+            tempKey = room.NextObjKey;
+            Platform platform12 = new Platform(room, tempKey, new Point(910, 206), new Size(125, 30));
+            objectManager.AddObject(platform12);
+
+            // 열쇠 발판
+            tempKey = room.NextObjKey;
+            Floor floor13 = new Floor(room, tempKey, new Point(1195, 170), new Size(235, 50));
+            floor13.SkinNum = 2;
+            objectManager.AddObject(floor13);
+
+            tempKey = room.NextObjKey;
+            PressingButton button1 = new PressingButton(room, tempKey, new Point(140, 790), new Size(20, 10));
+            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            objectManager.AddObject(button1);
+
+            tempKey = room.NextObjKey;
+            PressingButton button2 = new PressingButton(room, tempKey, new Point(450, 790), new Size(20, 10));
+            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            objectManager.AddObject(button2);
+
+            tempKey = room.NextObjKey;
+            Button button3 = new Button(room, tempKey, new Point(1270, 160), new Size(20, 10));
+            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            objectManager.AddObject(button3);
+
+
+
+            // 긴 용암
+            tempKey = room.NextObjKey;
+            Lava lava1 = new Lava(room, tempKey, new Point(0, 335), new Size(1440, 65));
+            objectManager.AddObject(lava1);
+
+            // 떨어지는 용암
+            tempKey = room.NextObjKey;
+            Lava lava2 = new Lava(room, tempKey, new Point(790, 0), new Size(96, 350));
+            lava2.SkinNum = 1;
+            objectManager.AddObject(lava2);
+
+            // 벽14
+            tempKey = room.NextObjKey;
+            Floor floor14 = new Floor(room, tempKey, new Point(0, 370), new Size(1440, 40));
+            floor14.SkinNum = 2;
+            objectManager.AddObject(floor14);
+
+            // 문
+            tempKey = room.NextObjKey;
+            Door door = new Door(room, tempKey, new Point(900, 710), new Size(70, 90));
+            objectManager.AddObject(door);
 
         }
     }

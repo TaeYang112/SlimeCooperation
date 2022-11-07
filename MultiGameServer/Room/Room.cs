@@ -295,7 +295,7 @@ namespace MultiGameServer
         public void NextGame()
         {
             stageNum++;
-            if (stageNum > 8)
+            if (stageNum > 9)
             {
                 GameClear();
             }
@@ -339,14 +339,17 @@ namespace MultiGameServer
                 case 5:
                     _Map = new Stage5(this);
                     break;
+                case 6:
+                    _Map = new Stage6(this);
+                    break;
+                case 7:
+                    _Map = new Stage7(this);
+                    break;
                 case 8:
                     _Map = new Stage8(this);
                     break;
                 case 9:
                     _Map = new Stage9(this);
-                    break;
-                case 6:
-                    _Map = new Stage6(this);
                     break;
                 default:
                     _Map = new Stage1(this);

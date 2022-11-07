@@ -1,4 +1,4 @@
-﻿﻿using MultiGameServer.Object;
+﻿using MultiGameServer.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,23 +82,63 @@ namespace MultiGameServer
             stone1.weight = 3;
             objectManager.AddObject(stone1);
 
-
-            // 벽7
+            // 가장 왼쪽 없어지는 발판
             tempKey = room.NextObjKey;
-            Floor Floor7 = new Floor(room, tempKey, new Point(613, 111), new Size(125, 30));
-            Floor7.SkinNum = 3;
+            Platform platform1 = new Platform(room, tempKey, new Point(82, 383), new Size(125, 30));
+            objectManager.AddObject(platform1);
+
+            // 두번째 없어지는 발판
+            tempKey = room.NextObjKey;
+            Platform platform2 = new Platform(room, tempKey, new Point(320, 320), new Size(125, 30));
+            objectManager.AddObject(platform2);
+
+            // 세번째 없어지는 발판
+            tempKey = room.NextObjKey;
+            Platform platform3 = new Platform(room, tempKey, new Point(560, 260), new Size(125, 30));
+            objectManager.AddObject(platform3);
+
+            // 네번째 없어지는 발판
+            tempKey = room.NextObjKey;
+            Platform platform4 = new Platform(room, tempKey, new Point(800, 200), new Size(125, 30));
+            objectManager.AddObject(platform4);
+
+            // 열쇠 발판
+            tempKey = room.NextObjKey;
+            Floor Floor7 = new Floor(room, tempKey, new Point(553, 111), new Size(125, 30));
             objectManager.AddObject(Floor7);
 
+            // 문 밑에 발판
+            tempKey = room.NextObjKey;
+            Floor Floor9 = new Floor(room, tempKey, new Point(1040, 140), new Size(125, 30));
+            objectManager.AddObject(Floor9);
 
+
+            // 제일 왼쪽 버튼
+            tempKey = room.NextObjKey;
+            PressingButton button1 = new PressingButton(room, tempKey, new Point(55, 440), new Size(20, 10));
+            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            objectManager.AddObject(button1);
+
+            // 가운데 버튼
+            tempKey = room.NextObjKey;
+            PressingButton button2 = new PressingButton(room, tempKey, new Point(350, 440), new Size(20, 10));
+            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            objectManager.AddObject(button2);
+
+            // 제일 오른쪽 버튼
+            tempKey = room.NextObjKey;
+            PressingButton button3 = new PressingButton(room, tempKey, new Point(1050, 130), new Size(20, 10));
+            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            objectManager.AddObject(button3);
 
             // 문
             tempKey = room.NextObjKey;
-            Door door = new Door(room, tempKey, new Point(10, 359), new Size(70, 90));
+            Door door = new Door(room, tempKey, new Point(1095, 50), new Size(70, 90));
             objectManager.AddObject(door);
 
             // 열쇠
             tempKey = room.NextObjKey;
-            KeyObject KeyObject = new KeyObject(room, tempKey, new Point(710, 200), new Size(35, 50));
+            KeyObject KeyObject = new KeyObject(room, tempKey, new Point(570, 50), new Size(35, 50));
             objectManager.AddObject(KeyObject);
         }
     }
