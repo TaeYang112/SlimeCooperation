@@ -137,6 +137,7 @@ namespace MultiGameServer
             tempKey = room.NextObjKey;
             Portal portal2 = new Portal(room, tempKey, new Point(20, 350), new Size(120, 120));
             portal2.TargetLocation = new Point(45, 85);
+            portal2.SkinNum = 0;
             objectManager.AddObject(portal2);
 
             #endregion

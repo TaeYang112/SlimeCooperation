@@ -14,9 +14,10 @@ namespace MultiGameServer
         private List<GameObject> oddPlatform = new List<GameObject>();
         private List<GameObject> evenPlatform = new List<GameObject>();
         private bool lastButtonPressed = false;
+        private TimerBox timerbox1;
         public Stage4(Room room) : base(room)
         {
-
+            _skin = 1;
         }
 
         protected override void SetSpawnLocation()
@@ -29,6 +30,7 @@ namespace MultiGameServer
         public override void Start()
         {
             base.Start();
+            timerbox1.TimerStart();
             SwitchEvenPlatform(false);
             SwitchOddPlatform(false);
         }
@@ -52,39 +54,39 @@ namespace MultiGameServer
             //아래 땅
             tempKey = room.NextObjKey;
             Floor Floor = new Floor(room, tempKey, new Point(0, 810), new Point(720, 865)); // 1440 865
-            Floor.SkinNum = 2;
+            Floor.SkinNum = 1;
             objectManager.AddObject(Floor);
             //위 땅
             tempKey = room.NextObjKey;
             Floor Floor6 = new Floor(room, tempKey, new Point(0, 450), new Point(1155, 505)); // 1440 865
-            Floor6.SkinNum = 2;
+            Floor6.SkinNum = 1;
             objectManager.AddObject(Floor6);
 
 
             //우측 땅1 점프 68
             tempKey = room.NextObjKey;
-            Floor Floor8 = new Floor(room, tempKey, new Point(1325, 493), new Point(1440, 900)); // 1440 865
-            Floor8.SkinNum = 4;
+            Floor Floor8 = new Floor(room, tempKey, new Point(1322, 493), new Point(1440, 900)); // 1440 865
+            Floor8.SkinNum = 1;
             objectManager.AddObject(Floor8);
             // 우측 땅1 점프 68
             tempKey = room.NextObjKey;
             Floor Floor2 = new Floor(room, tempKey, new Point(1250, 560), new Point(1440, 900)); // 1440 865
-            Floor2.SkinNum = 4;
+            Floor2.SkinNum = 1;
             objectManager.AddObject(Floor2);
             // 우측 땅2
             tempKey = room.NextObjKey;
             Floor Floor3 = new Floor(room, tempKey, new Point(1100, 625), new Point(1250, 900)); // 1440 865
-            Floor3.SkinNum = 4;
+            Floor3.SkinNum = 1;
             objectManager.AddObject(Floor3);
             // 우측 땅3
             tempKey = room.NextObjKey;
             Floor Floor4 = new Floor(room, tempKey, new Point(950, 688), new Point(1100, 900)); // 1440 865
-            Floor4.SkinNum = 5;
+            Floor4.SkinNum = 1;
             objectManager.AddObject(Floor4);
             // 우측 땅밑
             tempKey = room.NextObjKey;
             Floor Floor5 = new Floor(room, tempKey, new Point(608, 1057), new Point(1250, 1058)); // 1440 865
-            Floor5.SkinNum = 2;
+            Floor5.SkinNum = 1;
             objectManager.AddObject(Floor5);
 
             // 돌1
@@ -96,35 +98,41 @@ namespace MultiGameServer
             // 가장 왼쪽 없어지는 발판
             tempKey = room.NextObjKey;
             Platform platform1 = new Platform(room, tempKey, new Point(82, 383), new Size(125, 30));
+            platform1.SkinNum = 1;
             objectManager.AddObject(platform1);
             oddPlatform.Add(platform1);
 
             // 두번째 없어지는 발판
             tempKey = room.NextObjKey;
             Platform platform2 = new Platform(room, tempKey, new Point(320, 320), new Size(125, 30));
+            platform2.SkinNum = 1;
             objectManager.AddObject(platform2);
             evenPlatform.Add(platform2);
 
             // 세번째 없어지는 발판
             tempKey = room.NextObjKey;
             Platform platform3 = new Platform(room, tempKey, new Point(560, 260), new Size(125, 30));
+            platform3.SkinNum = 1;
             objectManager.AddObject(platform3);
             oddPlatform.Add(platform3);
 
             // 네번째 없어지는 발판
             tempKey = room.NextObjKey;
             Platform platform4 = new Platform(room, tempKey, new Point(800, 200), new Size(125, 30));
+            platform4.SkinNum = 1;
             objectManager.AddObject(platform4);
             evenPlatform.Add(platform4);
 
             // 열쇠 발판
             tempKey = room.NextObjKey;
             Floor Floor7 = new Floor(room, tempKey, new Point(553, 111), new Size(125, 30));
+            Floor7.SkinNum = 1;
             objectManager.AddObject(Floor7);
 
             // 문 밑에 발판
             tempKey = room.NextObjKey;
             Floor Floor9 = new Floor(room, tempKey, new Point(1040, 140), new Size(125, 30));
+            Floor9.SkinNum = 1;
             objectManager.AddObject(Floor9);
 
 
@@ -165,6 +173,14 @@ namespace MultiGameServer
             tempKey = room.NextObjKey;
             KeyObject KeyObject = new KeyObject(room, tempKey, new Point(570, 50), new Size(35, 50));
             objectManager.AddObject(KeyObject);
+
+            //타이머
+            tempKey = room.NextObjKey;
+            TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 0), new Size(150, 50));
+            timerBox.StartTime = 45000;
+            this.timerbox1 = timerBox;
+            timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
+            objectManager.AddObject(timerBox);
         }
 
         private void SwitchOddPlatform(bool flag)

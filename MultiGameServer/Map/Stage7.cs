@@ -15,7 +15,6 @@ namespace MultiGameServer
         private TimerBox timerbox1;
         public Stage7(Room room) : base(room)
         {
-            
         }
         protected override void SetSpawnLocation() // 플레이어 시작 좌표
         {
@@ -48,7 +47,7 @@ namespace MultiGameServer
 
             // 라바
             tempKey = room.NextObjKey;
-            Lava lava = new Lava(room, tempKey, new Point(0, 861), new Point(995, 864));
+            Lava lava = new Lava(room, tempKey, new Point(0, 861), new Point(1440, 864));
             lava.SkinNum = -1;
             objectManager.AddObject(lava);
 
@@ -243,7 +242,7 @@ namespace MultiGameServer
             //타이머
             tempKey = room.NextObjKey;
             TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 0), new Size(150, 50));
-            timerBox.StartTime = 10000;
+            timerBox.StartTime = 40000;
             this.timerbox1 = timerBox;
             timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
             objectManager.AddObject(timerBox);

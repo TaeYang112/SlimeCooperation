@@ -101,7 +101,7 @@ namespace MultiGameServer
             
             // 돌2
             tempKey = room.NextObjKey;
-            Stone stone2 = new Stone(room, tempKey, new Point(150, 22), new Size(40, 75));
+            Stone stone2 = new Stone(room, tempKey, new Point(250, 22), new Size(40, 75));
             stone2.weight = 3;
             objectManager.AddObject(stone2);
             

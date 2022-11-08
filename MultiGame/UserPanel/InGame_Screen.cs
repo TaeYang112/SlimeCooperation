@@ -31,8 +31,6 @@ namespace MultiGame.UserPanel
             InitializeComponent();
             this.form = form;
 
-            Console.WriteLine("시ㄴㅇ라ㅣㅁ언라ㅣ너라ㅣ");
-
             // 60프레임 화면 업데이트
             TimerCallback tc = new TimerCallback(Update);
             UpdateTimer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);

@@ -36,9 +36,7 @@ namespace MultiGameServer
                 Array.Copy(remainedMessage, message2, remainedMessage.Length);
                 Array.Copy(message, 0, message2, remainedMessage.Length, message.Length);
             }
-            
             MessageConverter converter = new MessageConverter(message2);
-
             while (true)
             {
                 bool result = converter.NextMessage();
@@ -49,7 +47,6 @@ namespace MultiGameServer
                     remainedMessage = converter.RemainMessage;
                     break;
                 }
-                
                 byte protocol = converter.Protocol;
                 switch (protocol)
                 {

@@ -22,9 +22,20 @@ namespace MultiGameServer
 
         protected override void SetSpawnLocation()
         {
-            SpawnLocation[0] = new Point(0, 740);
-            SpawnLocation[1] = new Point(100, 740);
-            SpawnLocation[2] = new Point(200, 740);
+            List<int> list = new List<int>() {0,1,2 };
+            var rnd = new Random();
+            var randomized = list.OrderBy(item => rnd.Next());
+
+            
+            int a = 0;
+            foreach (var value in randomized)
+            {
+                list[value] = a++;
+            }
+
+            SpawnLocation[list[0]] = new Point(332, 67);
+            SpawnLocation[list[1]] = new Point(100, 740);
+            SpawnLocation[list[2]] = new Point(200, 740);
         }
 
         protected override void DesignMap()
@@ -48,7 +59,7 @@ namespace MultiGameServer
             Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(995, 865));
             Floor.SkinNum = 2;
             objectManager.AddObject(Floor);
-
+            /*
             // 벽1
             tempKey = room.NextObjKey;
             Platform platform1 = new Platform(room, tempKey, new Point(203, 735), new Size(125, 30));
@@ -63,24 +74,25 @@ namespace MultiGameServer
             tempKey = room.NextObjKey;
             Platform platform3 = new Platform(room, tempKey, new Point(731, 677), new Size(125, 30));
             objectManager.AddObject(platform3);
-
+            */
+            /*
             // 오른쪽 밑벽
             tempKey = room.NextObjKey;
             Floor Floor4 = new Floor(room, tempKey, new Point(995, 649), new Size(500, 215));
             Floor4.SkinNum = 2;
             objectManager.AddObject(Floor4);
-
-
+            */
+            /*
             // 돌1
             tempKey = room.NextObjKey;
             Stone stone1 = new Stone(room, tempKey, new Point(1145, 428), new Size(60, 220));
             stone1.weight = 3;
             objectManager.AddObject(stone1);
-
+            */
             // 포탈
             tempKey = room.NextObjKey;
-            Portal portal1 = new Portal(room, tempKey, new Point(1320, 528), new Size(120, 120));
-            portal1.TargetLocation = new Point(10, 10);
+            Portal portal1 = new Portal(room, tempKey, new Point(1320, 93), new Size(120, 120));
+            portal1.TargetLocation = new Point(680, 650);
             objectManager.AddObject(portal1);
 
 
@@ -95,7 +107,7 @@ namespace MultiGameServer
 
             // 열쇠
             tempKey = room.NextObjKey;
-            KeyObject KeyObject = new KeyObject(room, tempKey, new Point(1350, 80), new Size(35, 50));
+            KeyObject KeyObject = new KeyObject(room, tempKey, new Point(1250, 150), new Size(35, 50));
             objectManager.AddObject(KeyObject);
 
             // 천장
@@ -110,12 +122,12 @@ namespace MultiGameServer
 
             // 벽7
             tempKey = room.NextObjKey;
-            Platform platform12 = new Platform(room, tempKey, new Point(910, 206), new Size(125, 30));
+            Platform platform12 = new Platform(room, tempKey, new Point(905, 236), new Size(125, 30));
             objectManager.AddObject(platform12);
 
             // 열쇠 발판
             tempKey = room.NextObjKey;
-            Floor floor13 = new Floor(room, tempKey, new Point(1195, 170), new Size(235, 50));
+            Floor floor13 = new Floor(room, tempKey, new Point(1195, 210), new Size(235, 50));
             floor13.SkinNum = 2;
             objectManager.AddObject(floor13);
 
@@ -135,23 +147,20 @@ namespace MultiGameServer
             });
             objectManager.AddObject(button2);
 
-            tempKey = room.NextObjKey;
-            Button button3 = new Button(room, tempKey, new Point(1270, 160), new Size(20, 10));
-            //button.SetAction(delegate () { timerBox.TimerStop(); });
-            objectManager.AddObject(button3);
 
-
-
+            
             // 긴 용암
             tempKey = room.NextObjKey;
             Lava lava1 = new Lava(room, tempKey, new Point(0, 335), new Size(1440, 65));
             objectManager.AddObject(lava1);
 
+            
             // 떨어지는 용암
             tempKey = room.NextObjKey;
-            Lava lava2 = new Lava(room, tempKey, new Point(790, 0), new Size(96, 350));
+            Lava lava2 = new Lava(room, tempKey, new Point(800, 0), new Size(46, 350));
             lava2.SkinNum = 1;
             objectManager.AddObject(lava2);
+            
 
             // 벽14
             tempKey = room.NextObjKey;
@@ -206,6 +215,7 @@ namespace MultiGameServer
                 }
             }
         }
+
 
     }
 }
