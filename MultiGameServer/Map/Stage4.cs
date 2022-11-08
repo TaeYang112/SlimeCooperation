@@ -5,11 +5,15 @@ using System.Linq;
 using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
+using MultiGameModule;
 
 namespace MultiGameServer
 {
     class Stage4 : MapBase
     {
+        private List<GameObject> oddPlatform = new List<GameObject>();
+        private List<GameObject> evenPlatform = new List<GameObject>();
+        private bool lastButtonPressed = false;
         public Stage4(Room room) : base(room)
         {
 
@@ -20,6 +24,13 @@ namespace MultiGameServer
             SpawnLocation[0] = new Point(0, 740);
             SpawnLocation[1] = new Point(100, 740);
             SpawnLocation[2] = new Point(200, 740);
+        }
+
+        public override void Start()
+        {
+            base.Start();
+            SwitchEvenPlatform(false);
+            SwitchOddPlatform(false);
         }
 
         protected override void DesignMap()
@@ -86,21 +97,25 @@ namespace MultiGameServer
             tempKey = room.NextObjKey;
             Platform platform1 = new Platform(room, tempKey, new Point(82, 383), new Size(125, 30));
             objectManager.AddObject(platform1);
+            oddPlatform.Add(platform1);
 
             // 두번째 없어지는 발판
             tempKey = room.NextObjKey;
             Platform platform2 = new Platform(room, tempKey, new Point(320, 320), new Size(125, 30));
             objectManager.AddObject(platform2);
+            evenPlatform.Add(platform2);
 
             // 세번째 없어지는 발판
             tempKey = room.NextObjKey;
             Platform platform3 = new Platform(room, tempKey, new Point(560, 260), new Size(125, 30));
             objectManager.AddObject(platform3);
+            oddPlatform.Add(platform3);
 
             // 네번째 없어지는 발판
             tempKey = room.NextObjKey;
             Platform platform4 = new Platform(room, tempKey, new Point(800, 200), new Size(125, 30));
             objectManager.AddObject(platform4);
+            evenPlatform.Add(platform4);
 
             // 열쇠 발판
             tempKey = room.NextObjKey;
@@ -116,19 +131,29 @@ namespace MultiGameServer
             // 제일 왼쪽 버튼
             tempKey = room.NextObjKey;
             PressingButton button1 = new PressingButton(room, tempKey, new Point(55, 440), new Size(20, 10));
-            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            button1.SetAction(delegate (bool bPressed) { 
+                if(lastButtonPressed == false)
+                    SwitchOddPlatform(bPressed);
+            });
             objectManager.AddObject(button1);
 
             // 가운데 버튼
             tempKey = room.NextObjKey;
             PressingButton button2 = new PressingButton(room, tempKey, new Point(350, 440), new Size(20, 10));
-            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            button2.SetAction(delegate (bool bPressed) { 
+                if(lastButtonPressed == false)
+                    SwitchEvenPlatform(bPressed);
+            });
             objectManager.AddObject(button2);
 
             // 제일 오른쪽 버튼
             tempKey = room.NextObjKey;
             PressingButton button3 = new PressingButton(room, tempKey, new Point(1050, 130), new Size(20, 10));
-            // button.SetAction(delegate () { timerBox.TimerStop(); });
+            button3.SetAction(delegate (bool bPressed) {
+                lastButtonPressed = bPressed;
+                SwitchEvenPlatform(bPressed);
+                SwitchOddPlatform(bPressed);
+            });
             objectManager.AddObject(button3);
 
             // 문
@@ -141,5 +166,79 @@ namespace MultiGameServer
             KeyObject KeyObject = new KeyObject(room, tempKey, new Point(570, 50), new Size(35, 50));
             objectManager.AddObject(KeyObject);
         }
+
+        private void SwitchOddPlatform(bool flag)
+        {
+            if (flag == false)
+            {
+                foreach (var obj in oddPlatform)
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(obj.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
+                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
+                    generator.AddInt(obj.SkinNum).AddBool(false);
+                    generator.AddBool(false).AddBool(false);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+            }
+            else
+            {
+                foreach (var obj in oddPlatform)
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(obj.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
+                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
+                    generator.AddInt(obj.SkinNum).AddBool(true);
+                    generator.AddBool(true).AddBool(true);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+            }
+        }
+
+        private void SwitchEvenPlatform(bool flag)
+        {
+            if (flag == false)
+            {
+                foreach (var obj in evenPlatform)
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(obj.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
+                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
+                    generator.AddInt(obj.SkinNum).AddBool(false);
+                    generator.AddBool(false).AddBool(false);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+            }
+            else
+            {
+                foreach (var obj in evenPlatform)
+                {
+                    MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
+                    generator.AddInt(obj.key);
+                    generator.AddByte(ObjectTypes.GAME_OBJECT);
+                    generator.AddInt(-1);
+                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
+                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
+                    generator.AddInt(obj.SkinNum).AddBool(true);
+                    generator.AddBool(true).AddBool(true);
+
+                    room.SendMessageToAll_InRoom(generator.Generate());
+                }
+            }
+        }
     }
+
+    
 }

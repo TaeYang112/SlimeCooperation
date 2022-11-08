@@ -895,12 +895,14 @@ namespace MultiGame
                     titles.Add(converter.NextString());
                     times.Add(converter.NextInt());
                 }
+                Form1 form = gameManager.form1;
 
                 GameClear_Form gameClear_Form = new GameClear_Form();
+                gameClear_Form.Owner = form;
                 gameClear_Form.UpdateResult(time, rank);
                 gameClear_Form.UpdateScoreBoard(titles, times);
 
-                Form1 form = gameManager.form1;
+                
 
                 form.Invoke(new MethodInvoker(delegate ()
                 {
@@ -924,6 +926,7 @@ namespace MultiGame
                 Form1 form = gameManager.form1;
                 
                 Form gameOverForm = new GameOver_Form();
+                gameOverForm.Owner = form;
 
                 form.Invoke(new MethodInvoker(delegate ()
                 {
