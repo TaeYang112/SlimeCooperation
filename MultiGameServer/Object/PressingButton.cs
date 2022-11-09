@@ -45,6 +45,12 @@ namespace MultiGameServer.Object
         {
             if (Pressed == true) return;
 
+            // 버튼이 기본색이 아니면서, 버튼을 누른 클라이언트의 색과 다르면 무시함
+            if (SkinNum != 0)
+            {
+                if (param.clientCharacter.SkinNum != SkinNum - 1) return;
+            }
+
             Pressed = true;
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
             generator.AddInt(key);
@@ -77,6 +83,12 @@ namespace MultiGameServer.Object
 
                 // 충돌이 꺼져있으면 무시
                 if (otherClient.Collision == false) continue;
+
+                // 버튼이 기본색이 아니면서, 버튼을 누른 클라이언트의 색과 다르면 무시함
+                if (SkinNum != 0)
+                {
+                    if (otherClient.SkinNum != SkinNum - 1) continue;
+                }
 
                 // 대상 오브젝트의 충돌 박스
                 Rectangle b = new Rectangle(otherClient.Location, otherClient.size);

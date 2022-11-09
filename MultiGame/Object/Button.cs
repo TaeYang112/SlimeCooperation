@@ -23,7 +23,7 @@ namespace MultiGame.Object
             _type = ObjectTypes.BUTTON;
             Pressed = false;
 
-            PressedImage = new Bitmap(MultiGame.Properties.Resources.ButtonPressed, size);
+            
         }
 
         public override void SetSkin(int skinNum)
@@ -36,6 +36,39 @@ namespace MultiGame.Object
                     break;
                 case 0:
                     _image = new Bitmap(MultiGame.Properties.Resources.Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.ButtonPressed, size);
+                    break;
+                case 1:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Red_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Red_Button2, size);
+                    break;
+                case 2:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Oragne_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Oragne_Button2, size);
+                    break;
+                case 3:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Yellow_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Yellow_Button2, size);
+                    break;
+                case 4:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Green_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Green_Button2, size);
+                    break;
+                case 5:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Blue_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Blue_Button2, size);
+                    break;
+                case 6:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Purple_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Purple_Button2, size);
+                    break;
+                case 7:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Pink_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Pink_Button2, size);
+                    break;
+                case 8:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Gray_Button, size);
+                    PressedImage = new Bitmap(MultiGame.Properties.Resources.Gray_Button2, size);
                     break;
             }
         

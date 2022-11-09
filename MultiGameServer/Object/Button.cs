@@ -40,6 +40,14 @@ namespace MultiGameServer.Object
         public override void OnEvent(EventParam param)
         {
             if (Pressed == true) return;
+
+            
+            // 버튼이 기본색이 아니면서, 버튼을 누른 클라이언트의 색과 다르면 무시함
+            if(SkinNum != 0)
+            {
+                if (param.clientCharacter.SkinNum != SkinNum - 1) return;
+            }
+
             Pressed = true;
 
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);

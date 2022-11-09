@@ -92,6 +92,8 @@ namespace MultiGameServer
             int skinNum = GetRandomSkin();
             clientChar.SkinNum = skinNum;
 
+            clientChar.IsReady = false;
+
             // 스킨 중복제거
             skinList.Remove(skinNum);
 

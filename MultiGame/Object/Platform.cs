@@ -35,6 +35,9 @@ namespace MultiGame.Object
                 case 1:
                     _image =new Bitmap(MultiGame.Properties.Resources.Log_Snow, size);
                     break;
+                case 5:
+                    _image = new Bitmap(MultiGame.Properties.Resources.Log_Single, size);
+                    break;
                 default:
                     _image =new Bitmap(MultiGame.Properties.Resources.Log, size);
                     break;

@@ -30,16 +30,18 @@ namespace MultiGame
 
         public GameObject AddObject(GameObject gameObject)
         {
-            // 새로운 오브젝트를 배열에 저장
-            bool result = ObjectDic.TryAdd(gameObject.key, gameObject);
-
-            // 이미 존재함
-            if (result == false)
+            lock (LockObj)
             {
-                // 이미 존재하는 오브젝트 반환
-                ObjectDic.TryGetValue(gameObject.key, out gameObject);
-            }
+                // 새로운 오브젝트를 배열에 저장
+                bool result = ObjectDic.TryAdd(gameObject.key, gameObject);
 
+                // 이미 존재함
+                if (result == false)
+                {
+                    // 이미 존재하는 오브젝트 반환
+                    ObjectDic.TryGetValue(gameObject.key, out gameObject);
+                }
+            }
             return gameObject;
         }
 

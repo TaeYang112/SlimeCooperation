@@ -41,12 +41,12 @@ namespace MultiGame.UserPanel
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.score_GridView = new System.Windows.Forms.DataGridView();
-            this.rank = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.title = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btn_record = new System.Windows.Forms.Button();
             this.btn_close = new System.Windows.Forms.Button();
+            this.rank = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.title = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.score_GridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -136,35 +136,6 @@ namespace MultiGame.UserPanel
             this.score_GridView.TabIndex = 3;
             this.score_GridView.SelectionChanged += new System.EventHandler(this.score_GridView_SelectionChanged);
             // 
-            // rank
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.rank.DefaultCellStyle = dataGridViewCellStyle2;
-            this.rank.HeaderText = "랭크";
-            this.rank.Name = "rank";
-            this.rank.ReadOnly = true;
-            this.rank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.rank.Width = 50;
-            // 
-            // title
-            // 
-            this.title.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.title.DefaultCellStyle = dataGridViewCellStyle3;
-            this.title.HeaderText = "방 이름";
-            this.title.Name = "title";
-            this.title.ReadOnly = true;
-            this.title.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // time
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.time.DefaultCellStyle = dataGridViewCellStyle4;
-            this.time.HeaderText = "시간";
-            this.time.Name = "time";
-            this.time.ReadOnly = true;
-            this.time.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
             // timer1
             // 
             this.timer1.Interval = 150;
@@ -197,6 +168,36 @@ namespace MultiGame.UserPanel
             this.btn_close.TabIndex = 5;
             this.btn_close.UseVisualStyleBackColor = false;
             this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
+            // 
+            // rank
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.rank.DefaultCellStyle = dataGridViewCellStyle2;
+            this.rank.HeaderText = "랭크";
+            this.rank.Name = "rank";
+            this.rank.ReadOnly = true;
+            this.rank.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.rank.Width = 50;
+            // 
+            // title
+            // 
+            this.title.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.title.DefaultCellStyle = dataGridViewCellStyle3;
+            this.title.HeaderText = "방 이름";
+            this.title.Name = "title";
+            this.title.ReadOnly = true;
+            this.title.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // time
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.time.DefaultCellStyle = dataGridViewCellStyle4;
+            this.time.HeaderText = "시간";
+            this.time.Name = "time";
+            this.time.ReadOnly = true;
+            this.time.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.time.Width = 120;
             // 
             // GameClear_Form
             // 
@@ -232,11 +233,11 @@ namespace MultiGame.UserPanel
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         public System.Windows.Forms.DataGridView score_GridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rank;
-        private System.Windows.Forms.DataGridViewTextBoxColumn title;
-        private System.Windows.Forms.DataGridViewTextBoxColumn time;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btn_record;
         private System.Windows.Forms.Button btn_close;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rank;
+        private System.Windows.Forms.DataGridViewTextBoxColumn title;
+        private System.Windows.Forms.DataGridViewTextBoxColumn time;
     }
 }

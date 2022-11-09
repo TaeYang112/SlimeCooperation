@@ -122,7 +122,7 @@ namespace MultiGame.UserPanel
             lock(GInst.objectManager.LockObj)
             {
                 // 오브젝트
-                foreach (var item in GInst.objectManager.ObjectDic)
+                foreach (var item in GInst.objectManager.ObjectDic.OrderBy(x => x.Key))
                 {
                     if (item.Value is KeyObject) continue;
                     item.Value.OnPaint(sender, e);

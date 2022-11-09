@@ -103,6 +103,26 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap Blue_Button {
+            get {
+                object obj = ResourceManager.GetObject("Blue_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Blue_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Blue_Button2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap Blue_Stone {
             get {
                 object obj = ResourceManager.GetObject("Blue_Stone", resourceCulture);
@@ -243,6 +263,26 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap Gray_Button {
+            get {
+                object obj = ResourceManager.GetObject("Gray_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Gray_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Gray_Button2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap Gray_Stone {
             get {
                 object obj = ResourceManager.GetObject("Gray_Stone", resourceCulture);
@@ -276,6 +316,26 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Green {
             get {
                 object obj = ResourceManager.GetObject("Green", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Green_Button {
+            get {
+                object obj = ResourceManager.GetObject("Green_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Green_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Green_Button2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -353,6 +413,16 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap Log_Single {
+            get {
+                object obj = ResourceManager.GetObject("Log_Single", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap Log_Snow {
             get {
                 object obj = ResourceManager.GetObject("Log_Snow", resourceCulture);
@@ -366,6 +436,26 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap MainMenu {
             get {
                 object obj = ResourceManager.GetObject("MainMenu", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Oragne_Button {
+            get {
+                object obj = ResourceManager.GetObject("Oragne_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Oragne_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Oragne_Button2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -406,6 +496,26 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Pink {
             get {
                 object obj = ResourceManager.GetObject("Pink", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Pink_Button {
+            get {
+                object obj = ResourceManager.GetObject("Pink_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Pink_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Pink_Button2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -463,6 +573,26 @@ namespace MultiGame.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap Purple_Button {
+            get {
+                object obj = ResourceManager.GetObject("Purple_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Purple_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Purple_Button2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap Purple_Stone {
             get {
                 object obj = ResourceManager.GetObject("Purple_Stone", resourceCulture);
@@ -486,6 +616,26 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Red {
             get {
                 object obj = ResourceManager.GetObject("Red", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Red_Button {
+            get {
+                object obj = ResourceManager.GetObject("Red_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Red_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Red_Button2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -556,6 +706,26 @@ namespace MultiGame.Properties {
         internal static System.Drawing.Bitmap Yellow {
             get {
                 object obj = ResourceManager.GetObject("Yellow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Yellow_Button {
+            get {
+                object obj = ResourceManager.GetObject("Yellow_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Yellow_Button2 {
+            get {
+                object obj = ResourceManager.GetObject("Yellow_Button2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

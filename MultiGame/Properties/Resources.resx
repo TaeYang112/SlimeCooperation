@@ -133,6 +133,12 @@
   <data name="Blue2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Blue2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Blue_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Blue_Button.Png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Blue_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Blue_Stone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Blue_Stone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -178,6 +184,12 @@
   <data name="Gray2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Gray2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Gray_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Gray_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Gray_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Gray_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Gray_Stone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Gray_Stone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -186,6 +198,12 @@
   </data>
   <data name="Green2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Green2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Green_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Green_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Green_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Green_Stone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Green_Stone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,11 +223,20 @@
   <data name="Log" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Log.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Log_Single" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Log_Single.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Log_Snow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Log_Snow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MainMenu" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MainMenu.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Oragne_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Oragne_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Oragne_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Oragne_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Orange" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Orange.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -226,6 +253,12 @@
   <data name="Pink2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pink2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Pink_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pink_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Pink_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pink_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Pink_Stone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pink_Stone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -241,6 +274,12 @@
   <data name="Purple2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Purple2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Purple_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Purple_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Purple_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Purple_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Purple_Stone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Purple_Stone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -249,6 +288,12 @@
   </data>
   <data name="Red2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Red2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Red_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Red_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Red_Stone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Red_Stone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -270,6 +315,12 @@
   </data>
   <data name="Yellow2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Yellow2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Yellow_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Yellow_Button2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Yellow_Button2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Yellow_Stone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Yellow_Stone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
