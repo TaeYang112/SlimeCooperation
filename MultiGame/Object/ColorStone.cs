@@ -23,6 +23,7 @@ namespace MultiGame.Object
 
         public override void SetSkin(int skinNum)
         {
+            Size _size = new Size(size.Width + 1, size.Height + 1);
             isVisible = true;
             switch (skinNum)
             {
@@ -58,7 +59,8 @@ namespace MultiGame.Object
         }
         public override void OnPaint(object obj, PaintEventArgs pe)
         {
-            base.OnPaint(obj, pe);
+            Graphics g = pe.Graphics;
+            g.DrawImage(_image, Location);
         }
 
 

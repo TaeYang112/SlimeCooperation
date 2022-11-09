@@ -59,13 +59,14 @@ namespace MultiGame.Object
         public override void SetSkin(int skinNum)
         {
             isVisible = true;
+            Size _size = new Size(size.Width + 1, size.Height + 1);
             switch (skinNum)
             {
                 case -1:
                     isVisible = false;
                     break;
                 case 0:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Stone, _size);
                     break;
             }
         
@@ -73,9 +74,10 @@ namespace MultiGame.Object
         public override void OnPaint(object obj, PaintEventArgs pe)
         {
             if (isVisible == false) return;
-            base.OnPaint(obj, pe);
+            
             Graphics g= pe.Graphics;
 
+            g.DrawImage(_image, Location);
             g.DrawString(weight.ToString(), font, Brushes.Black, new RectangleF(new Point(Location.X + 4,Location.Y),size), format);
         }
 

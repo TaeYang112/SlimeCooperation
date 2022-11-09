@@ -495,8 +495,19 @@ namespace MultiGame
                             int y = converter.NextInt();
                             int weight = converter.NextInt();
 
+                            int dx = x - stone.Location.X;
+
                             stone.Location = new Point(x, y);
                             stone.weight = weight;
+
+                            if(dx > 0 && userClient.RightDown)
+                            {
+                                userClient.Move(new Point(dx, 0));
+                            }
+                            else if (dx < 0 && userClient.LeftDown)
+                            {
+                                userClient.Move(new Point(dx, 0));
+                            }
                         }
                         break;
                     case ObjectTypes.BUTTON:
