@@ -927,6 +927,7 @@ namespace MultiGame
                 }));
 
                 gameManager.clientManager.ClientDic.Clear();
+                gameManager.objectManager.ClearObjects();
             }
 
             public void GameOver(MessageConverter converter)
@@ -951,6 +952,7 @@ namespace MultiGame
                 }));
 
                 gameManager.clientManager.ClientDic.Clear();
+                gameManager.objectManager.ClearObjects();
             }
 
             public void AddRoomList(MessageConverter converter)

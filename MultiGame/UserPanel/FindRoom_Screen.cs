@@ -19,6 +19,14 @@ namespace MultiGame.UserPanel
             InitializeComponent();
             this.form = form;
 
+            // 최적화
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+            // 폰트
             findToMain_btn.Font = new Font(ResourceLibrary.Families[0], 15, FontStyle.Regular);
             enterRoom_btn.Font = new Font(ResourceLibrary.Families[0], 20, FontStyle.Regular);
             roomList_GridView.DefaultCellStyle.Font= new Font(ResourceLibrary.Families[1], 16, FontStyle.Regular);

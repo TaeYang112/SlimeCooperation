@@ -26,7 +26,6 @@ namespace MultiGame
         public Form1()
         {
             InitializeComponent();
-
             
             // 최적화
             SetStyle(ControlStyles.ResizeRedraw, true);
@@ -166,11 +165,13 @@ namespace MultiGame
         public void ChangeScreen(UserControl newScreen)
         {
             Control lastControl = Controls[0];
-            this.Controls.Clear();
-
-            lastControl.Dispose();
 
             this.Controls.Add(newScreen);
+
+            Controls.Remove(lastControl);
+            lastControl.Dispose();
+
+            
         }
 
 

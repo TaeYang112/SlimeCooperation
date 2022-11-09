@@ -19,6 +19,13 @@ namespace MultiGame.UserPanel
             InitializeComponent();
             this.form = form;
 
+            // 최적화
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
             makeRoom_btn.Parent = this;
 
             makeRoom_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
