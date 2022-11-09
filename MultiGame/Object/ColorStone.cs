@@ -31,28 +31,28 @@ namespace MultiGame.Object
                     isVisible = false;
                     break;
                 case 0:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Red_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Red_Stone, _size);
                     break;
                 case 1:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Orange_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Orange_Stone, _size);
                     break;
                 case 2:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Yellow_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Yellow_Stone, _size);
                     break;
                 case 3:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Green_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Green_Stone, _size);
                     break;
                 case 4:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Blue_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Blue_Stone, _size);
                     break;
                 case 5:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Purple_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Purple_Stone, _size);
                     break;
                 case 6:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Pink_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Pink_Stone, _size);
                     break;
                 case 7:
-                    _image = new Bitmap(MultiGame.Properties.Resources.Gray_Stone, size);
+                    _image = new Bitmap(MultiGame.Properties.Resources.Gray_Stone, _size);
                     break;
             }
         

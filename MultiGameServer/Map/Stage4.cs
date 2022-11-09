@@ -51,11 +51,18 @@ namespace MultiGameServer
             rightWall.SkinNum = -1;
             objectManager.AddObject(rightWall);
 
+            // 라바
+            tempKey = room.NextObjKey;
+            Lava lava = new Lava(room, tempKey, new Point(0, 861), new Point(1440, 864));
+            lava.SkinNum = -1;
+            objectManager.AddObject(lava);
+
             //아래 땅
             tempKey = room.NextObjKey;
             Floor Floor = new Floor(room, tempKey, new Point(0, 810), new Point(720, 865)); // 1440 865
             Floor.SkinNum = 1;
             objectManager.AddObject(Floor);
+
             //위 땅
             tempKey = room.NextObjKey;
             Floor Floor6 = new Floor(room, tempKey, new Point(0, 450), new Point(1155, 505)); // 1440 865
@@ -91,9 +98,15 @@ namespace MultiGameServer
 
             // 돌1
             tempKey = room.NextObjKey;
-            Stone stone1 = new Stone(room, tempKey, new Point(425, 508), new Size(100, 300));
-            stone1.weight = 3;
+            Stone stone1 = new Stone(room, tempKey, new Point(425, 508), new Size(100, 150));
+            stone1.weight = 2;
             objectManager.AddObject(stone1);
+
+            // 돌2
+            tempKey = room.NextObjKey;
+            Stone stone2 = new Stone(room, tempKey, new Point(323, 608), new Size(100, 50));
+            stone2.weight = 1;
+            objectManager.AddObject(stone2);
 
             // 가장 왼쪽 없어지는 발판
             tempKey = room.NextObjKey;
@@ -177,7 +190,7 @@ namespace MultiGameServer
             //타이머
             tempKey = room.NextObjKey;
             TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 0), new Size(150, 50));
-            timerBox.StartTime = 45000;
+            timerBox.StartTime = 50000;
             this.timerbox1 = timerBox;
             timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
             objectManager.AddObject(timerBox);
@@ -193,9 +206,7 @@ namespace MultiGameServer
                     generator.AddInt(obj.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
-                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
-                    generator.AddInt(obj.SkinNum).AddBool(false);
+                    generator.AddBool(false);
                     generator.AddBool(false).AddBool(false);
 
                     room.SendMessageToAll_InRoom(generator.Generate());
@@ -209,9 +220,7 @@ namespace MultiGameServer
                     generator.AddInt(obj.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
-                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
-                    generator.AddInt(obj.SkinNum).AddBool(true);
+                    generator.AddBool(true);
                     generator.AddBool(true).AddBool(true);
 
                     room.SendMessageToAll_InRoom(generator.Generate());
@@ -229,9 +238,7 @@ namespace MultiGameServer
                     generator.AddInt(obj.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
-                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
-                    generator.AddInt(obj.SkinNum).AddBool(false);
+                    generator.AddBool(false);
                     generator.AddBool(false).AddBool(false);
 
                     room.SendMessageToAll_InRoom(generator.Generate());
@@ -245,9 +252,7 @@ namespace MultiGameServer
                     generator.AddInt(obj.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
-                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
-                    generator.AddInt(obj.SkinNum).AddBool(true);
+                    generator.AddBool(true);
                     generator.AddBool(true).AddBool(true);
 
                     room.SendMessageToAll_InRoom(generator.Generate());

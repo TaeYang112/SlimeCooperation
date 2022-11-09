@@ -15,17 +15,13 @@ namespace MultiGameServer
         private TimerBox timerbox1;
         public Stage7(Room room) : base(room)
         {
+
         }
         protected override void SetSpawnLocation() // 플레이어 시작 좌표
         {
-            SpawnLocation[0] = new Point(545, 740);
-            SpawnLocation[1] = new Point(720, 740);
-            SpawnLocation[2] = new Point(895, 740);
-        }
-        public override void Start()
-        {
-            base.Start();
-            timerbox1.TimerStart();
+            SpawnLocation[0] = new Point(0, 740);
+            SpawnLocation[1] = new Point(100, 740);
+            SpawnLocation[2] = new Point(200, 740);
         }
 
         protected override void DesignMap()
@@ -45,191 +41,104 @@ namespace MultiGameServer
             rightWall.SkinNum = -1;
             objectManager.AddObject(rightWall);
 
-            // 라바
+            // 맵 바깥 벽(아래)
             tempKey = room.NextObjKey;
-            Lava lava = new Lava(room, tempKey, new Point(0, 861), new Point(1440, 864));
-            lava.SkinNum = -1;
-            objectManager.AddObject(lava);
+            Lava lava1 = new Lava(room, tempKey, new Point(0, 864), new Size(1440, 866));
+            objectManager.AddObject(lava1);
+
 
             // 땅
             tempKey = room.NextObjKey;
-            Floor Floor = new Floor(room, tempKey, new Point(545, 800), new Point(895, 865));
+            Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(300, 865));
             Floor.SkinNum = 0;
             objectManager.AddObject(Floor);
 
-            // 문 땅
+            // 땅
             tempKey = room.NextObjKey;
-            Floor Floor1 = new Floor(room, tempKey, new Point(1285, 800), new Point(1440, 865));
+            Floor Floor1 = new Floor(room, tempKey, new Point(370, 800), new Point(895, 865));
             Floor1.SkinNum = 0;
             objectManager.AddObject(Floor1);
+
+            // 문 땅
+            tempKey = room.NextObjKey;
+            Floor Floor2 = new Floor(room, tempKey, new Point(1215, 800), new Point(1440, 865));
+            Floor2.SkinNum = 0;
+            objectManager.AddObject(Floor2);
 
             // 문
             tempKey = room.NextObjKey;
             Door door = new Door(room, tempKey, new Point(1350, 710), new Size(70, 90));
             objectManager.AddObject(door);
 
-            // 벽1
+
+            // 벽
             tempKey = room.NextObjKey;
-            Platform platform1 = new Platform(room, tempKey, new Point(410, 740), new Size(125, 30));
+            Platform platform1 = new Platform(room, tempKey, new Point(70, 690), new Size(125, 30));
             objectManager.AddObject(platform1);
 
-            // 벽2
             tempKey = room.NextObjKey;
-            Platform platform2 = new Platform(room, tempKey, new Point(180, 675), new Size(125, 30));
+            Platform platform2 = new Platform(room, tempKey, new Point(70, 622), new Size(125, 30));
             objectManager.AddObject(platform2);
 
-            // 벽3
             tempKey = room.NextObjKey;
-            Platform platform3 = new Platform(room, tempKey, new Point(0, 610), new Size(125, 30));
+            Platform platform3 = new Platform(room, tempKey, new Point(70, 554), new Size(125, 30));
             objectManager.AddObject(platform3);
 
-            // 벽4
             tempKey = room.NextObjKey;
-            Platform platform4 = new Platform(room, tempKey, new Point(250, 545), new Size(125, 30));
+            Platform platform4 = new Platform(room, tempKey, new Point(70, 486), new Size(125, 30));
             objectManager.AddObject(platform4);
 
-            // 벽5
             tempKey = room.NextObjKey;
-            Platform platform5 = new Platform(room, tempKey, new Point(475, 480), new Size(125, 30));
+            Platform platform5 = new Platform(room, tempKey, new Point(70, 418), new Size(125, 30));
             objectManager.AddObject(platform5);
 
-            // 벽6
             tempKey = room.NextObjKey;
-            Platform platform6 = new Platform(room, tempKey, new Point(30, 480), new Size(125, 30));
+            Platform platform6 = new Platform(room, tempKey, new Point(70, 350), new Size(125, 30));
             objectManager.AddObject(platform6);
 
-            // 벽7
             tempKey = room.NextObjKey;
-            Platform platform7 = new Platform(room, tempKey, new Point(270, 415), new Size(125, 30));
+            Platform platform7 = new Platform(room, tempKey, new Point(70, 282), new Size(125, 30));
             objectManager.AddObject(platform7);
 
-            // 벽8
             tempKey = room.NextObjKey;
-            Platform platform8 = new Platform(room, tempKey, new Point(0, 350), new Size(125, 30));
+            Platform platform8 = new Platform(room, tempKey, new Point(70, 214), new Size(125, 30));
             objectManager.AddObject(platform8);
+            //점프 높이 68
 
-            // 벽9
-            tempKey = room.NextObjKey;
-            Platform platform9 = new Platform(room, tempKey, new Point(420, 610), new Size(125, 30));
-            objectManager.AddObject(platform9);
 
-            // 벽10
+            // 돌 땅
             tempKey = room.NextObjKey;
-            Platform platform10 = new Platform(room, tempKey, new Point(50, 220), new Size(125, 30));
-            objectManager.AddObject(platform10);
+            Floor Floor3 = new Floor(room, tempKey, new Point(225, 165), new Point(760, 230));
+            Floor3.SkinNum = 0;
+            objectManager.AddObject(Floor3);
 
-            // 벽11
             tempKey = room.NextObjKey;
-            Platform platform11 = new Platform(room, tempKey, new Point(260, 285), new Size(125, 30));
-            objectManager.AddObject(platform11);
+            Floor Floor4 = new Floor(room, tempKey, new Point(688, 230), new Point(760, 486));
+            Floor3.SkinNum = 0;
+            objectManager.AddObject(Floor4);
 
-            // 벽12
             tempKey = room.NextObjKey;
-            Platform platform12 = new Platform(room, tempKey, new Point(430, 350), new Size(125, 30));
-            objectManager.AddObject(platform12);
+            Floor Floor5 = new Floor(room, tempKey, new Point(370, 486), new Point(760, 551));
+            Floor3.SkinNum = 0;
+            objectManager.AddObject(Floor5);
 
-            // 돌 바닥1
-            tempKey = room.NextObjKey;
-            Platform platform13 = new Platform(room, tempKey, new Point(225, 165), new Size(125, 30));
-            objectManager.AddObject(platform13);
-          
-
-            // 돌 바닥2
-            tempKey = room.NextObjKey;
-            Platform platform14 = new Platform(room, tempKey, new Point(636, 165), new Size(125, 30));
-            objectManager.AddObject(platform14);
-
-            // 돌 바닥3
-            tempKey = room.NextObjKey;
-            Platform Platform15 = new Platform(room, tempKey, new Point(1075, 165), new Size(125, 30));
-            objectManager.AddObject(Platform15);
-
-            // 벽16
-            tempKey = room.NextObjKey;
-            Platform Platform16 = new Platform(room, tempKey, new Point(620, 675), new Size(125, 30));
-            objectManager.AddObject(Platform16);
-
-            // 벽17
-            tempKey = room.NextObjKey;
-            Platform Platform17 = new Platform(room, tempKey, new Point(815, 610), new Size(125, 30));
-            objectManager.AddObject(Platform17);
-
-            // 벽18
-            tempKey = room.NextObjKey;
-            Platform Platform18 = new Platform(room, tempKey, new Point(675, 545), new Size(125, 30));
-            objectManager.AddObject(Platform18);
-
-            // 벽19
-            tempKey = room.NextObjKey;
-            Platform Platform19 = new Platform(room, tempKey, new Point(818, 480), new Size(125, 30));
-            objectManager.AddObject(Platform19);
-
-            // 벽20
-            tempKey = room.NextObjKey;
-            Platform Platform20 = new Platform(room, tempKey, new Point(655, 415), new Size(125, 30));
-            objectManager.AddObject(Platform20);
-
-            // 벽21
-            tempKey = room.NextObjKey;
-            Platform Platform21 = new Platform(room, tempKey, new Point(600, 290), new Size(125, 30));
-            objectManager.AddObject(Platform21);
-
-            // 벽22
-            tempKey = room.NextObjKey;
-            Platform Platform22 = new Platform(room, tempKey, new Point(455, 225), new Size(125, 30));
-            objectManager.AddObject(Platform22);
-
-            // 벽23
-            tempKey = room.NextObjKey;
-            Platform Platform23 = new Platform(room, tempKey, new Point(980, 415), new Size(125, 30));
-            objectManager.AddObject(Platform23);
-
-            // 벽24
-            tempKey = room.NextObjKey;
-            Platform Platform24 = new Platform(room, tempKey, new Point(800, 350), new Size(125, 30));
-            objectManager.AddObject(Platform24);
-
-            // 벽25
-            tempKey = room.NextObjKey;
-            Platform Platform25 = new Platform(room, tempKey, new Point(1000, 285), new Size(125, 30));
-            objectManager.AddObject(Platform25);
-
-            // 벽25
-            tempKey = room.NextObjKey;
-            Platform Platform26 = new Platform(room, tempKey, new Point(880, 220), new Size(125, 30));
-            objectManager.AddObject(Platform26);
-
-            // 벽27
-            tempKey = room.NextObjKey;
-            Platform Platform27 = new Platform(room, tempKey, new Point(1245, 285), new Size(125, 30));
-            objectManager.AddObject(Platform27);
-
-            // 벽27
-            tempKey = room.NextObjKey;
-            Platform Platform28 = new Platform(room, tempKey, new Point(1138, 347), new Size(125, 30));
-            objectManager.AddObject(Platform28);
-
-            // 벽27
-            tempKey = room.NextObjKey;
-            Platform Platform29 = new Platform(room, tempKey, new Point(1300, 220), new Size(125, 30));
-            objectManager.AddObject(Platform29);
 
 
             // 돌1
             tempKey = room.NextObjKey;
-            ColorStone stone1 = new ColorStone(room, tempKey, new Point(270, 99), new Size(40, 65));
+            ColorStone stone1 = new ColorStone(room, tempKey, new Point(540, 400), new Size(100, 63));
             stone1.SkinNum = randomSkin[0];
             objectManager.AddObject(stone1);
 
             // 돌2
             tempKey = room.NextObjKey;
-            ColorStone stone2 = new ColorStone(room, tempKey, new Point(680, 99), new Size(40, 65));
+            ColorStone stone2 = new ColorStone(room, tempKey, new Point(500, 99), new Size(100, 63));
             stone2.SkinNum = randomSkin[1];
             objectManager.AddObject(stone2);
 
             // 돌3
             tempKey = room.NextObjKey;
-            ColorStone stone3 = new ColorStone(room, tempKey, new Point(1118, 99), new Size(40, 65));
+            ColorStone stone3 = new ColorStone(room, tempKey, new Point(700, 736), new Size(40, 63));
             stone3.SkinNum = randomSkin[2];
             objectManager.AddObject(stone3);
 
@@ -242,7 +151,7 @@ namespace MultiGameServer
             //타이머
             tempKey = room.NextObjKey;
             TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 0), new Size(150, 50));
-            timerBox.StartTime = 40000;
+            timerBox.StartTime = 10000;
             this.timerbox1 = timerBox;
             timerBox.SetTimerStopAction(delegate () { room.AllDie(); });
             objectManager.AddObject(timerBox);

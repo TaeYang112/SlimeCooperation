@@ -67,8 +67,8 @@ namespace MultiGame
             _portal = MultiGame.Properties.Resources.portal_2;
             ImageAnimator.Animate(_portal, null);
 
-            _portal_r = MultiGame.Properties.Resources.portal_2;
-            ImageAnimator.Animate(_portal, null);
+            _portal_r = MultiGame.Properties.Resources.protal_right;
+            ImageAnimator.Animate(_portal_r, null);
 
             _lava = MultiGame.Properties.Resources.Lava;
             ImageAnimator.Animate(_lava, null);

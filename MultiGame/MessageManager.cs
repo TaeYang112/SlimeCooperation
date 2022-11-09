@@ -408,20 +408,10 @@ namespace MultiGame
                 {
                     case ObjectTypes.GAME_OBJECT:
                         {
-                            int x = converter.NextInt();
-                            int y = converter.NextInt();
-
-                            int width = converter.NextInt();
-                            int height = converter.NextInt();
-
-                            int skin = converter.NextInt();
                             bool isVisible = converter.NextBool();
                             bool collision = converter.NextBool();
                             bool blockAble = converter.NextBool();
 
-                            gameObject.Location = new Point(x, y);
-                            gameObject.size = new Size(width, height);
-                            gameObject.SetSkin(skin);
                             gameObject.isVisible = isVisible;
                             gameObject.Collision = collision;
                             gameObject.Blockable = blockAble;
@@ -571,7 +561,18 @@ namespace MultiGame
                             int x = converter.NextInt();
                             int y = converter.NextInt();
 
+                            int dx = x - stone.Location.X;
+
                             stone.Location = new Point(x, y);
+
+                            if (dx > 0 && userClient.RightDown)
+                            {
+                                userClient.Move(new Point(dx, 0));
+                            }
+                            else if (dx < 0 && userClient.LeftDown)
+                            {
+                                userClient.Move(new Point(dx, 0));
+                            }
                         }
                         break;
                     case ObjectTypes.PRESSING_BUTTON:

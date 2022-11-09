@@ -17,7 +17,7 @@ namespace MultiGameServer
 
         protected override void SetSpawnLocation()
         {
-            SpawnLocation[0] = new Point(5, 740);
+            SpawnLocation[0] = new Point(15, 740);
             SpawnLocation[1] = new Point(80, 740);
             SpawnLocation[2] = new Point(145, 740);
         }
@@ -137,7 +137,7 @@ namespace MultiGameServer
             tempKey = room.NextObjKey;
             Portal portal2 = new Portal(room, tempKey, new Point(20, 350), new Size(120, 120));
             portal2.TargetLocation = new Point(45, 85);
-            portal2.SkinNum = 0;
+            portal2.SkinNum = 1;
             objectManager.AddObject(portal2);
 
             #endregion

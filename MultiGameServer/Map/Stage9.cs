@@ -34,8 +34,8 @@ namespace MultiGameServer
             }
 
             SpawnLocation[list[0]] = new Point(332, 67);
-            SpawnLocation[list[1]] = new Point(100, 740);
-            SpawnLocation[list[2]] = new Point(200, 740);
+            SpawnLocation[list[1]] = new Point(570, 740);
+            SpawnLocation[list[2]] = new Point(810, 740);
         }
 
         protected override void DesignMap()
@@ -56,43 +56,20 @@ namespace MultiGameServer
 
             // 땅
             tempKey = room.NextObjKey;
-            Floor Floor = new Floor(room, tempKey, new Point(0, 800), new Point(995, 865));
+            Floor Floor = new Floor(room, tempKey, new Point(400, 800), new Point(1040, 865));
             Floor.SkinNum = 2;
             objectManager.AddObject(Floor);
-            /*
-            // 벽1
-            tempKey = room.NextObjKey;
-            Platform platform1 = new Platform(room, tempKey, new Point(203, 735), new Size(125, 30));
-            objectManager.AddObject(platform1);
 
-            // 벽2
+            // 라바
             tempKey = room.NextObjKey;
-            Platform platform2 = new Platform(room, tempKey, new Point(475, 705), new Size(125, 30));
-            objectManager.AddObject(platform2);
+            Lava lava = new Lava(room, tempKey, new Point(0, 861), new Point(1440, 864));
+            lava.SkinNum = -1;
+            objectManager.AddObject(lava);
 
-            // 벽3
-            tempKey = room.NextObjKey;
-            Platform platform3 = new Platform(room, tempKey, new Point(731, 677), new Size(125, 30));
-            objectManager.AddObject(platform3);
-            */
-            /*
-            // 오른쪽 밑벽
-            tempKey = room.NextObjKey;
-            Floor Floor4 = new Floor(room, tempKey, new Point(995, 649), new Size(500, 215));
-            Floor4.SkinNum = 2;
-            objectManager.AddObject(Floor4);
-            */
-            /*
-            // 돌1
-            tempKey = room.NextObjKey;
-            Stone stone1 = new Stone(room, tempKey, new Point(1145, 428), new Size(60, 220));
-            stone1.weight = 3;
-            objectManager.AddObject(stone1);
-            */
             // 포탈
             tempKey = room.NextObjKey;
             Portal portal1 = new Portal(room, tempKey, new Point(1320, 93), new Size(120, 120));
-            portal1.TargetLocation = new Point(680, 650);
+            portal1.TargetLocation = new Point(690, 650);
             objectManager.AddObject(portal1);
 
 
@@ -132,7 +109,7 @@ namespace MultiGameServer
             objectManager.AddObject(floor13);
 
             tempKey = room.NextObjKey;
-            PressingButton button1 = new PressingButton(room, tempKey, new Point(140, 790), new Size(20, 10));
+            PressingButton button1 = new PressingButton(room, tempKey, new Point(450, 790), new Size(20, 10));
             button1.SetAction(delegate (bool bPressed) {
                 Button1Pressed = bPressed;
                 MapAction();
@@ -140,7 +117,7 @@ namespace MultiGameServer
             objectManager.AddObject(button1);
 
             tempKey = room.NextObjKey;
-            PressingButton button2 = new PressingButton(room, tempKey, new Point(450, 790), new Size(20, 10));
+            PressingButton button2 = new PressingButton(room, tempKey, new Point(970, 790), new Size(20, 10));
             button2.SetAction(delegate (bool bPressed) {
                 Button2Pressed = bPressed;
                 MapAction();
@@ -170,7 +147,7 @@ namespace MultiGameServer
 
             // 문
             tempKey = room.NextObjKey;
-            Door door = new Door(room, tempKey, new Point(900, 710), new Size(70, 90));
+            Door door = new Door(room, tempKey, new Point(685, 710), new Size(70, 90));
             objectManager.AddObject(door);
 
 
@@ -190,9 +167,7 @@ namespace MultiGameServer
                     generator.AddInt(obj.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
-                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
-                    generator.AddInt(obj.SkinNum).AddBool(false);
+                    generator.AddBool(false);
                     generator.AddBool(false).AddBool(false);
 
                     room.SendMessageToAll_InRoom(generator.Generate());
@@ -206,9 +181,7 @@ namespace MultiGameServer
                     generator.AddInt(obj.key);
                     generator.AddByte(ObjectTypes.GAME_OBJECT);
                     generator.AddInt(-1);
-                    generator.AddInt(obj.Location.X).AddInt(obj.Location.Y);
-                    generator.AddInt(obj.size.Width).AddInt(obj.size.Height);
-                    generator.AddInt(obj.SkinNum).AddBool(true);
+                    generator.AddBool(true);
                     generator.AddBool(true).AddBool(true);
 
                     room.SendMessageToAll_InRoom(generator.Generate());

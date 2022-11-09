@@ -139,9 +139,7 @@ namespace MultiGameServer
                 generator.AddInt(floor.key);
                 generator.AddByte(ObjectTypes.GAME_OBJECT);
                 generator.AddInt(-1);
-                generator.AddInt(floor.Location.X).AddInt(floor.Location.Y);
-                generator.AddInt(floor.size.Width).AddInt(floor.size.Height);
-                generator.AddInt(floor.SkinNum).AddBool(false);
+                generator.AddBool(false);
                 generator.AddBool(false).AddBool(false);
 
                 room.SendMessageToAll_InRoom(generator.Generate());
