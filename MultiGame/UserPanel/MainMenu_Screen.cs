@@ -37,12 +37,6 @@ namespace MultiGame.UserPanel
 
         private void makeRoom_btn_Click(object sender, EventArgs e)
         {
-            GameClear_Form frm = new GameClear_Form();
-            frm.UpdateResult(0, 0);
-            frm.UpdateScoreBoard(new List<string>() { "가", "다", "라" }, new List<int>() { 80000, 666600, 1234598 });
-            frm.Show();
-
-            return;
             ActiveControl = null;
 
             // 방제목 입력하는 폼을 띄움
