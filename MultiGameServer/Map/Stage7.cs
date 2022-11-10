@@ -226,19 +226,19 @@ namespace MultiGameServer
 
             // 우측 상단 띄어있는땅
             tempKey = room.NextObjKey;
-            Floor Floor9 = new Floor(room, tempKey, new Point(998, 165), new Point(1100, 230));
+            Floor Floor9 = new Floor(room, tempKey, new Point(998, 165), new Point(1097, 230));
             Floor9.SkinNum = 2;
             objectManager.AddObject(Floor9);
 
             // 우측 상단 띄어있는 낮은 땅
             tempKey = room.NextObjKey;
-            Floor Floor12 = new Floor(room, tempKey, new Point(1100, 190), new Point(1245, 230));
+            Floor Floor12 = new Floor(room, tempKey, new Point(1097, 190), new Point(1245, 230));
             Floor12.SkinNum = 2;
             objectManager.AddObject(Floor12);
 
             // 우측 버튼있는 땅
             tempKey = room.NextObjKey;
-            Floor Floor11 = new Floor(room, tempKey, new Point(1245, 100), new Point(1440, 230));
+            Floor Floor11 = new Floor(room, tempKey, new Point(1220, 97), new Point(1440, 230));
             Floor11.SkinNum = 2;
             objectManager.AddObject(Floor11);
 
