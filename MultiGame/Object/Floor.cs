@@ -80,8 +80,7 @@ namespace MultiGame.Object
                     _image2_Height = _image2.Height;
                     break;
             }
-            System.Drawing.Imaging.ImageAttributes attributes = new System.Drawing.Imaging.ImageAttributes();
-           // attributes.
+
             tBrush1 = new TextureBrush(_image);
             tBrush2 = new TextureBrush(_image2);
             tBrush2.Transform = new System.Drawing.Drawing2D.Matrix(

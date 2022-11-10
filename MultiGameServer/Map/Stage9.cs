@@ -54,17 +54,16 @@ namespace MultiGameServer
             rightWall.SkinNum = -1;
             objectManager.AddObject(rightWall);
 
+            // 맵 바깥 벽(아래) 라바
+            tempKey = room.NextObjKey;
+            Lava lava = new Lava(room, tempKey, new Point(0, 850), new Size(1440, 50));
+            objectManager.AddObject(lava);
+
             // 땅
             tempKey = room.NextObjKey;
             Floor Floor = new Floor(room, tempKey, new Point(400, 800), new Point(1040, 865));
             Floor.SkinNum = 2;
             objectManager.AddObject(Floor);
-
-            // 라바
-            tempKey = room.NextObjKey;
-            Lava lava = new Lava(room, tempKey, new Point(0, 861), new Point(1440, 864));
-            lava.SkinNum = -1;
-            objectManager.AddObject(lava);
 
             // 포탈
             tempKey = room.NextObjKey;

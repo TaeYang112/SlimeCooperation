@@ -44,7 +44,7 @@ namespace MultiGameServer
 
             // 언덕
             tempKey = room.NextObjKey;
-            Floor Floor2 = new Floor(room, tempKey, new Point(1300, 620), new Point(1423, 800));
+            Floor Floor2 = new Floor(room, tempKey, new Point(1300, 620), new Point(1424, 800));
             Floor2.SkinNum = 0;
             objectManager.AddObject(Floor2);
 

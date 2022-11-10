@@ -16,6 +16,8 @@
         public const byte PRESSING_BUTTON = 11;
         public const byte TIMER_BOX = 12;
         public const byte TIMER_BOARD = 13;
+        public const byte THORN_BUSH = 14;
+        public const byte PROP = 15;
     }
 
     public static class DoorEvent

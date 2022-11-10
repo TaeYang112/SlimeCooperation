@@ -98,13 +98,13 @@ namespace MultiGameServer
 
             // 돌1
             tempKey = room.NextObjKey;
-            Stone stone1 = new Stone(room, tempKey, new Point(425, 508), new Size(100, 150));
+            Stone stone1 = new Stone(room, tempKey, new Point(425, 655), new Size(100, 150));
             stone1.weight = 2;
             objectManager.AddObject(stone1);
 
             // 돌2
             tempKey = room.NextObjKey;
-            Stone stone2 = new Stone(room, tempKey, new Point(323, 608), new Size(100, 50));
+            Stone stone2 = new Stone(room, tempKey, new Point(323, 755), new Size(100, 50));
             stone2.weight = 1;
             objectManager.AddObject(stone2);
 

@@ -367,6 +367,11 @@ namespace MultiGame
                             newObject = timerBoard;
                         }
                         break;
+                    case ObjectTypes.THORN_BUSH:
+                        {
+                            newObject = new ThornBush(key, location, size);
+                        }
+                        break;
                     default:
                         break;
                 }

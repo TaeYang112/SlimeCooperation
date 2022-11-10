@@ -66,7 +66,7 @@ namespace MultiGame.UserPanel
             switch(num)
             {
                 case 0:
-                    BackGroundImg = MultiGame.Properties.Resources.BackGround1;
+                    BackGroundImg = new Bitmap(MultiGame.Properties.Resources.BackGround4,new Size(1440,862));
                     break;
                 case 1:
                     BackGroundImg = MultiGame.Properties.Resources.BackGround2;
