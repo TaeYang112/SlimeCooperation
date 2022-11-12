@@ -173,10 +173,14 @@ namespace MultiGame
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult result = new ExitProgram_Form().ShowDialog();
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                DialogResult result = new ExitProgram_Form().ShowDialog();
 
-            if (result == DialogResult.No)
-             e.Cancel = true;
+                if (result == DialogResult.No)
+                    e.Cancel = true;
+            }
+
         }
     }
 

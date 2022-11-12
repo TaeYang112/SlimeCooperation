@@ -57,6 +57,7 @@ namespace MultiGame.UserPanel
 
         private void findToMain_btn_Click(object sender, EventArgs e)
         {
+
             // 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.REQ_ROOM_LIST);
             generator.AddBool(false);

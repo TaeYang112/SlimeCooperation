@@ -13,7 +13,7 @@ namespace MultiGame.UserPanel
 {
     public partial class GameRecords : UserControl
     {
-        private System.Threading.Timer timer = null;
+        //private System.Threading.Timer timer = null;
 
         public GameRecords()
         {
@@ -21,20 +21,23 @@ namespace MultiGame.UserPanel
             label4.Font = new Font(ResourceLibrary.Families[0], 35, FontStyle.Regular);
             score_GridView.DefaultCellStyle.Font = new Font(ResourceLibrary.Families[1], 16, FontStyle.Regular);
 
+            /*
             TimerCallback tc = new TimerCallback(timer_tick);
             timer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
+            */
         }
 
         private void GameRecords_Load(object sender, EventArgs e)
         {
-            Size = new Size(Size.Width, 0);
-            timer.Change(0,16);
+            //Size = new Size(Size.Width, 0);
+            //timer.Change(0,16);
         }
         ~GameRecords()
         {
-            timer.Dispose();
+            //timer.Dispose();
         }
 
+        /*
         private void timer_tick(object o)
         {
             if(Size.Height > 593 )
@@ -49,7 +52,7 @@ namespace MultiGame.UserPanel
                 Invalidate();
             }));
         }
-
+        */
         public void UpdateScoreBoard(List<string> titles, List<int> times)
         {
             for (int i = 0; i < 10; i++)

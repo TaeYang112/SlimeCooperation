@@ -1,7 +1,7 @@
 ﻿
 namespace MultiGame.UserPanel
 {
-    partial class MakeRoom_Form
+    partial class MakeRoom_Control
     {
         /// <summary>
         /// Required designer variable.
@@ -91,10 +91,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.make_btn);
             this.Controls.Add(this.roomTitle_TB);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MakeRoom_Form";
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MakeRoom_Form";
             this.Load += new System.EventHandler(this.MakeRoom_Form_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MakeRoom_Form_Paint);

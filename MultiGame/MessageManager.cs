@@ -965,8 +965,6 @@ namespace MultiGame
                 string RoomTitle = converter.NextString();
                 int PlayerCount = converter.NextInt();
 
-                Console.WriteLine(RoomTitle);
-
                 // 형변환
                 FindRoom_Screen findRoom_Screen = gameManager.form1.Controls["findRoom_Screen"] as FindRoom_Screen;
 

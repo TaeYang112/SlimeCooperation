@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiGameModule;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,11 +12,13 @@ using System.Windows.Forms;
 
 namespace MultiGame.UserPanel
 {
-    public partial class MakeRoom_Form : Form
+    public partial class MakeRoom_Control : UserControl
     {
-        public MakeRoom_Form()
+        private Form1 form;
+        public MakeRoom_Control(Form1 form)
         {
             InitializeComponent();
+            this.form = form;
 
             roomTitle_TB.Font = new Font(ResourceLibrary.Families[1], 15, FontStyle.Regular);
             label1.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
@@ -33,14 +36,16 @@ namespace MultiGame.UserPanel
 
         private void make_btn_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.OK;
-            this.Close();
+            // 서버로 제목과 함께 방만들기 요청을 보냄
+            MessageGenerator generator = new MessageGenerator(Protocols.REQ_CREATE_ROOM);
+            generator.AddString(roomTitle_TB.Text);
+
+            GameManager.GetInstance().SendMessage(generator.Generate());
         }
 
         private void cancelMakeRoom_btn_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.No;
-            this.Close();
+            form.Controls.Remove(this);
         }
 
         private void MakeRoom_Form_Load(object sender, EventArgs e)
@@ -54,6 +59,7 @@ namespace MultiGame.UserPanel
 
             Pen pen = new Pen(Brushes.Black, 10);
             g.DrawRectangle(pen, new Rectangle(new Point(1,1), new Size(630,179)));
+            pen.Dispose();
         }
     }
 }

@@ -41,19 +41,14 @@ namespace MultiGame.UserPanel
             ActiveControl = null;
 
             // 방제목 입력하는 폼을 띄움
-            MakeRoom_Form makeRoom_Form = new MakeRoom_Form();
-            DialogResult result = makeRoom_Form.ShowDialog();
-            
-            if(result == DialogResult.OK)
-            {
-                // 서버로 제목과 함께 방만들기 요청을 보냄
-                MessageGenerator generator = new MessageGenerator(Protocols.REQ_CREATE_ROOM);
-                generator.AddString(makeRoom_Form.roomTitle_TB.Text);
+            MakeRoom_Control makeRoom_Form = new MakeRoom_Control(form);
+            makeRoom_Form.Name = "makeRoom_Form";
+            makeRoom_Form.Location = new Point(form.Width / 2 - makeRoom_Form.Width / 2, form.Height / 2 - makeRoom_Form.Height / 2);
 
-                GameManager.GetInstance().SendMessage(generator.Generate());
-            }
-            
-            
+            form.Controls.Add(makeRoom_Form);
+            form.Controls.SetChildIndex(makeRoom_Form, 0);
+            makeRoom_Form.Focus();
+
         }
 
         private void findRoom_btn_Click(object sender, EventArgs e)
@@ -73,6 +68,7 @@ namespace MultiGame.UserPanel
 
         private void exitGame_btn_Click(object sender, EventArgs e)
         {
+            if (form.Controls.ContainsKey("makeRoom_Form")) return;
 
             DialogResult result = new ExitProgram_Form().ShowDialog();
 
@@ -82,6 +78,8 @@ namespace MultiGame.UserPanel
 
         private void btn_MouseLeave(object sender, EventArgs e)
         {
+            if (form.Controls.ContainsKey("makeRoom_Form")) return;
+
             Button button = sender as Button;
             if (button == null) return;
 
@@ -91,6 +89,8 @@ namespace MultiGame.UserPanel
 
         private void btn_MouseEnter(object sender, EventArgs e)
         {
+            if (form.Controls.ContainsKey("makeRoom_Form")) return;
+
             Button button = sender as Button;
             if (button == null) return;
           
@@ -105,6 +105,8 @@ namespace MultiGame.UserPanel
 
         private void records_btn_Click(object sender, EventArgs e)
         {
+            if (form.Controls.ContainsKey("makeRoom_Form")) return;
+
             // 메시지 생성 후 서버로 전송
             MessageGenerator generator = new MessageGenerator(Protocols.REQ_RECORD_LIST);
 

@@ -171,6 +171,5 @@ namespace MultiGame.UserPanel
         private System.Windows.Forms.DataGridViewTextBoxColumn time;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btn_close;
-        private System.Windows.Forms.Panel panel1;
     }
 }

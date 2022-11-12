@@ -19,6 +19,12 @@ namespace MultiGame.UserPanel
             InitializeComponent();
             this.form = form;
 
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
             label1.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
             label2.Font = new Font(ResourceLibrary.Families[1], 15, FontStyle.Regular);
         }
