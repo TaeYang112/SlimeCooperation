@@ -85,6 +85,8 @@ namespace MultiGameServer
         // 방에 클라이언트를 추가함
         public void ClientEnter(ClientCharacter clientChar)
         {
+            Console.WriteLine("[INFO] "+clientChar.key + "번 클라이언트가 " + key + "번 방에 입장하였습니다.");
+
             // 클라이언트가 속한 방을 설정
             clientChar.room = this;
 
@@ -383,7 +385,6 @@ namespace MultiGameServer
 
                 // 전송
                 PInst.SendMessage(generator.Generate(), item.Key);
-                /*
                 // 클라이언트들의 시작 위치를 알려줌
                 foreach (var item2 in roomClientDic)
                 {
@@ -404,7 +405,6 @@ namespace MultiGameServer
                     }
                         
                 }
-                */
                 generator.Clear();
                 generator.Protocol = Protocols.S_NEW_OBJECT;
 

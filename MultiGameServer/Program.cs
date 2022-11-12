@@ -59,6 +59,7 @@ namespace MultiGameServer
                     {
                     case "/r":
                             {
+                                // 게임 강제 시작 및 맵 변경
                                if(command.Length >= 2 && command.Length <= 3)
                                {
                                     int roomKey = int.Parse(command[1]);
@@ -89,6 +90,7 @@ namespace MultiGameServer
                         break;
                         case "/c":
                             {
+                                // 게임 강제 클리어 처리
                                 if (command.Length == 2)
                                 {
                                     int roomKey = int.Parse(command[1]);
@@ -102,6 +104,35 @@ namespace MultiGameServer
                                     room.GameClear();
 
                                     Console.WriteLine("[INFO] " + roomKey + "번 방을 클리어 시켰습니다.");
+                                }
+                                else throw new Exception("[ERROR] 올바르지 않은 매개변수 개수입니다.");
+                            }
+                            break;
+                        case "/d":
+                            {
+                                // 디버그 모드 설정
+                                if(command.Length == 3)
+                                {
+                                    int roomKey = int.Parse(command[1]);
+                                    Room room;
+                                    bool result = program.roomManager.RoomDic.TryGetValue(roomKey, out room);
+                                    if (result == false)
+                                    {
+                                        throw new Exception("[ERROR] 존재하지 않은 방입니다.");
+                                    }
+
+                                    bool flag = bool.Parse(command[2]);
+
+                                    MessageGenerator generator = new MessageGenerator(Protocols.S_DEBUG);
+                                    generator.AddBool(flag);
+
+                                    room.SendMessageToAll_InRoom(generator.Generate());
+
+                                    if(flag)
+                                        Console.WriteLine("[INFO] " + roomKey + "번 방의 디버그모드를 시작하였습니다.");
+                                    else
+                                        Console.WriteLine("[INFO] " + roomKey + "번 방의 디버그모드를 종료하였습니다.");
+
                                 }
                                 else throw new Exception("[ERROR] 올바르지 않은 매개변수 개수입니다.");
                             }

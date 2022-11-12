@@ -24,6 +24,8 @@ namespace MultiGameServer.Object
         // 움직임 타이머
         private System.Threading.Timer MoveTimer;
 
+        private int prevWeight = 0;
+
         public Stone(Room room, int key, Point Location, Size size)
             : base(room, key, Location, size)
         {
@@ -119,12 +121,19 @@ namespace MultiGameServer.Object
             else
                 velocity.Y = 1;
 
-            Point realVelo = Location;
+            Point oriPoint = Location;
 
             // 이동
             Move(velocity);
 
-            realVelo = new Point(Location.X - realVelo.X, Location.Y - realVelo.Y);
+            int tempWeight = Math.Max(0, weight - Math.Abs(rList.Count - lList.Count));
+
+            // 위치나 무게가 바뀌지 않았다면 메시지를 보내지 않음
+            if (oriPoint.X == Location.X && oriPoint.Y == Location.Y && prevWeight == tempWeight)
+            {
+                prevWeight = tempWeight;
+                return;
+            }
 
             // 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
@@ -132,36 +141,17 @@ namespace MultiGameServer.Object
             generator.AddByte(Type);
             generator.AddInt(-1);
             generator.AddInt(Location.X).AddInt(Location.Y);
-            generator.AddInt(Math.Max(0, weight - Math.Abs(rList.Count - lList.Count)));     // 보여질 무게
+            generator.AddInt(tempWeight);     // 보여질 무게
 
             // 방안에 클라이언트들에게 돌이 움직였다고 알림
             room.SendMessageToAll_InRoom(generator.Generate());
 
-            /*
-            // 힘을 가한 클라이언트들도 자연스움을 위해 움직임
-            if (List != null)
-            {
-                // 클라이언트도 움직임
-                foreach (var client in List)
-                {
-                    client.MoveNum++;
-                    client.Location = new Point(client.Location.X + realVelo.X, client.Location.Y);
-
-                    MessageGenerator generator3 = new MessageGenerator(Protocols.S_MOVE);
-                    generator3.AddInt(realVelo.X);
-                    generator3.AddInt(0);
-                    generator3.AddInt(client.MoveNum);
-                    Program.GetInstance().SendMessage(generator3.Generate(), client.key);
-
-                }
-            }
-            */
-            
+            prevWeight = tempWeight;
         }
 
 
         // 충돌검사 후 이동
-        public void Move(Point velocity)
+        public Point Move(Point velocity)
         {
             Point resultLoc = Location;
             Point tempLoc;
@@ -233,6 +223,7 @@ namespace MultiGameServer.Object
 
             // 실제 좌표를 이동시킴
             Location = resultLoc;
+            return resultLoc;
         }
 
         // 중력을 시작하는 함수

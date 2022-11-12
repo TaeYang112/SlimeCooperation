@@ -98,5 +98,13 @@ namespace MultiGame.UserPanel
         {
             
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // 메시지 생성 후 서버로 전송
+            MessageGenerator generator = new MessageGenerator(Protocols.REQ_RECORD_LIST);
+
+            GameManager.GetInstance().SendMessage(generator.Generate());
+        }
     }
 }

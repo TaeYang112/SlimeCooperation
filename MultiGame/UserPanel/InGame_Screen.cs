@@ -154,11 +154,14 @@ namespace MultiGame.UserPanel
 
         private void InGame_Screen_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-                Console.WriteLine("좌표 / X : " + e.X + "    Y : " + e.Y);
-            else if (e.Button == MouseButtons.Right)
+            if (GameManager.GetInstance().IsDebugMode)
             {
-                GameManager.GetInstance().userClient.TeleportByLocation(new Point(e.X, e.Y));
+                if (e.Button == MouseButtons.Left)
+                    Console.WriteLine("좌표 / X : " + e.X + "    Y : " + e.Y);
+                else if (e.Button == MouseButtons.Right)
+                {
+                    GameManager.GetInstance().userClient.TeleportByLocation(new Point(e.X, e.Y));
+                }
             }
         }
     }

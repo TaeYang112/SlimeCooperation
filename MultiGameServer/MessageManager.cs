@@ -62,6 +62,11 @@ namespace MultiGameServer
                             ClientEnterRoom(clientChar, converter);
                         }
                         break;
+                    case Protocols.REQ_RECORD_LIST:
+                        {
+                            ClientRequestRecords(clientChar, converter);
+                        }
+                        break;
                     // 레디
                     case Protocols.C_READY:
                         {
@@ -182,6 +187,27 @@ namespace MultiGameServer
 
             // 인원수가 바뀐것을 클라이언트들에게 알려줌
             program.SendUpdateRoomInfo(room);
+        }
+
+        public void ClientRequestRecords(ClientCharacter clientChar, MessageConverter converter)
+        {
+            // 게임을 클리어했다는 메시지 생성
+            MessageGenerator generator = new MessageGenerator(Protocols.RES_RECORD_LIST);
+
+            // 역대 점수를 보여주기 위한 메시지 전송 과정
+            List<KeyValuePair<string, long>> list = program.roomManager.TimeList;
+
+            generator.AddInt(list.Count);
+            foreach (var item in list)
+            {
+                // 팀 이름
+                generator.AddString(item.Key);
+
+                // 시간
+                generator.AddInt(Convert.ToInt32(item.Value));
+            }
+
+            program.SendMessage(generator.Generate(),clientChar.key);
         }
 
         public void ClientReady(ClientCharacter clientChar, MessageConverter converter)

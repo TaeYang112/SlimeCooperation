@@ -18,6 +18,7 @@ namespace MultiGameServer.Object
         private float dy;                           // 바로전에 얼만큼 뛰었는지
         private bool GravityStarted;                // 떨어지기 시작할 때 초기화를 하기 위한 플래그 변수
         private bool isGravity;                     // 중력의 ON / OFF
+
         // 움직임 타이머
         private System.Threading.Timer MoveTimer;
 
@@ -98,12 +99,16 @@ namespace MultiGameServer.Object
             else
                 velocity.Y = 1;
 
-            Point realVelo = Location;
+            Point oriPoint = Location;
 
             // 이동
             Move(velocity);
 
-            realVelo = new Point(Location.X - realVelo.X, Location.Y - realVelo.Y);
+            // 위치나 무게가 바뀌지 않았다면 메시지를 보내지 않음
+            if (oriPoint.X == Location.X && oriPoint.Y == Location.Y)
+            {
+                return;
+            }
 
             // 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.S_OBJECT_EVENT);
@@ -114,7 +119,6 @@ namespace MultiGameServer.Object
 
             // 방안에 클라이언트들에게 돌이 움직였다고 알림
             room.SendMessageToAll_InRoom(generator.Generate());
-
         }
 
 

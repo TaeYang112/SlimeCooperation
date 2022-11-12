@@ -32,6 +32,7 @@ namespace MultiGame.UserPanel
             this.findRoom_btn = new System.Windows.Forms.Button();
             this.makeRoom_btn = new System.Windows.Forms.Button();
             this.exitGame_btn = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // findRoom_btn
@@ -101,12 +102,23 @@ namespace MultiGame.UserPanel
             this.exitGame_btn.MouseEnter += new System.EventHandler(this.btn_MouseEnter);
             this.exitGame_btn.MouseLeave += new System.EventHandler(this.btn_MouseLeave);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1045, 504);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(239, 111);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MainMenu_Screen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::MultiGame.Properties.Resources.MainMenu;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.exitGame_btn);
             this.Controls.Add(this.makeRoom_btn);
             this.Controls.Add(this.findRoom_btn);
@@ -124,5 +136,6 @@ namespace MultiGame.UserPanel
         private System.Windows.Forms.Button findRoom_btn;
         private System.Windows.Forms.Button makeRoom_btn;
         private System.Windows.Forms.Button exitGame_btn;
+        private System.Windows.Forms.Button button1;
     }
 }

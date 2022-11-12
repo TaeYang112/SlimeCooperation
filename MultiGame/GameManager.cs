@@ -47,6 +47,9 @@ namespace MultiGame
         // 메시지가 없으면 대기하기 위한 락 오브젝트
         object lockObject = new object();
 
+        // 디버그모드인지
+        public bool IsDebugMode {get;set;}
+
         public static GameManager GetInstance()
         {
             if (gameManager == null)

@@ -10,6 +10,7 @@
         public const byte REQ_ROOM_LIST = 1;
         public const byte REQ_CREATE_ROOM = 2;
         public const byte REQ_ENTER_ROOM = 3;
+        public const byte REQ_RECORD_LIST = 4;
 
         // 서버로 자신의 변경사항을 알려줌
         public const byte C_READY = 30;
@@ -27,6 +28,7 @@
         public const byte RES_DEL_ROOM_LIST = 102;
         public const byte RES_UPDATE_ROOM_LIST = 103;
         public const byte RES_ENTER_ROOM = 104;			// 방 key(int), 방 제목(str), 클라 스킨 번호(int)
+        public const byte RES_RECORD_LIST = 105;
 
         // 클라이언트에게 정보를 알려주거나 명령
         public const byte S_OBJECT_EVENT = 132;         // 오브젝트 키(int), 타입 (byte), 건드린 클라이언트키(int)
@@ -46,6 +48,7 @@
         public const byte S_ALLDIE = 139;
         public const byte S_GAMEOVER = 140;
         public const byte S_GAMECLEAR = 141;
+        public const byte S_DEBUG = 142;
 
         // 다른 클라이언트의 변경사항을 알려줌
         public const byte S_EXIT_ROOM_OTHER = 160;

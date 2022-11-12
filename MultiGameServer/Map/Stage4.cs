@@ -189,7 +189,7 @@ namespace MultiGameServer
 
             //타이머
             tempKey = room.NextObjKey;
-            TimerBox timerBox = new TimerBox(room, tempKey, new Point(650, 0), new Size(150, 50));
+            TimerBox timerBox = new TimerBox(room, tempKey, new Point(645, 0), new Size(150, 80));
             timerBox.StartTime = 50000;
             this.timerbox1 = timerBox;
             timerBox.SetTimerStopAction(delegate () { room.AllDie(); });

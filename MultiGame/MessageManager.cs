@@ -160,6 +160,16 @@ namespace MultiGame
                                 UpdateRoomList(converter);
                             }
                             break;
+                        case Protocols.RES_RECORD_LIST:
+                            {
+                                ShowRecordList(converter);
+                            }
+                            break;
+                        case Protocols.S_DEBUG:
+                            {
+                                SetDebug(converter);
+                            }
+                            break;
                         case Protocols.S_ERROR:
                             {
                                 Error(converter);
@@ -1029,6 +1039,48 @@ namespace MultiGame
                 }
             }
 
+            public void ShowRecordList(MessageConverter converter)
+            {
+                int count = converter.NextInt();
+
+                List<string> titles = new List<string>();
+                List<int> times = new List<int>();
+
+                // 전체 게임 기록
+                for (int i = 0; i < count; i++)
+                {
+                    titles.Add(converter.NextString());
+                    times.Add(converter.NextInt());
+                }
+                Form1 form = gameManager.form1;
+
+                GameRecords gameRecords = new GameRecords();
+                gameRecords.Name = "gameRecords";
+                gameRecords.UpdateScoreBoard(titles, times);
+
+                // 형변환
+                MainMenu_Screen mainMenu_Screen = gameManager.form1.Controls[0] as MainMenu_Screen;
+
+                // 방찾기 화면이 아닌경우 리턴
+                if (mainMenu_Screen == null) return;
+
+                mainMenu_Screen.Invoke(new MethodInvoker(delegate ()
+                {
+                    if (mainMenu_Screen.Controls.ContainsKey("gameRecords") == false)
+                    {
+                        Point location = new Point(mainMenu_Screen.Size.Width / 2 - gameRecords.Size.Width / 2, mainMenu_Screen.Size.Height / 2 - gameRecords.Size.Height/2);
+                        gameRecords.Location = location;
+                        mainMenu_Screen.Controls.Add(gameRecords);
+                        mainMenu_Screen.Controls.SetChildIndex(gameRecords, 0);
+                    }
+                }));
+            }
+            public void SetDebug(MessageConverter converter)
+            {
+                bool flag = converter.NextBool();
+
+                gameManager.IsDebugMode = flag;
+            }
             public void Error(MessageConverter converter)
             {
                 int errorCode = converter.NextInt();
