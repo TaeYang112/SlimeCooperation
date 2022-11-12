@@ -1,7 +1,7 @@
 ﻿
 namespace MultiGame.UserPanel
 {
-    partial class GameClear_Form
+    partial class GameClear_Control
     {
         /// <summary>
         /// Required designer variable.
@@ -212,12 +212,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "GameClear_Form";
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "GameClear_Form";
             this.Load += new System.EventHandler(this.GameClear_Form_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameClear_Form_Paint);

@@ -10,11 +10,15 @@ using System.Windows.Forms;
 
 namespace MultiGame.UserPanel
 {
-    public partial class GameOver_Form : Form
+    public partial class GameOver_Control : UserControl
     {
-        public GameOver_Form()
+        private Form1 form;
+
+        public GameOver_Control(Form1 form)
         {
             InitializeComponent();
+            this.form = form;
+
             label1.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
             label2.Font = new Font(ResourceLibrary.Families[1], 15, FontStyle.Regular);
         }
@@ -30,7 +34,14 @@ namespace MultiGame.UserPanel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
+            mainMenu_Screen.Name = "mainMenu_Screen";
+
+            // 화면 전환
+            form.ChangeScreen(mainMenu_Screen);
+
+            GameManager.GetInstance().clientManager.ClientDic.Clear();
+            GameManager.GetInstance().objectManager.ClearObjects();
         }
     }
 }

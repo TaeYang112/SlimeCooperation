@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,16 +13,41 @@ namespace MultiGame.UserPanel
 {
     public partial class GameRecords : UserControl
     {
+        private System.Threading.Timer timer = null;
+
         public GameRecords()
         {
             InitializeComponent();
-            label4.Font = new Font(ResourceLibrary.Families[0], 25, FontStyle.Regular);
+            label4.Font = new Font(ResourceLibrary.Families[0], 35, FontStyle.Regular);
             score_GridView.DefaultCellStyle.Font = new Font(ResourceLibrary.Families[1], 16, FontStyle.Regular);
+
+            TimerCallback tc = new TimerCallback(timer_tick);
+            timer = new System.Threading.Timer(tc, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         private void GameRecords_Load(object sender, EventArgs e)
         {
-            
+            Size = new Size(Size.Width, 0);
+            timer.Change(0,16);
+        }
+        ~GameRecords()
+        {
+            timer.Dispose();
+        }
+
+        private void timer_tick(object o)
+        {
+            if(Size.Height > 593 )
+            {
+                timer.Change(Timeout.Infinite, Timeout.Infinite);
+                return;
+            }
+
+            Invoke(new MethodInvoker(delegate ()
+            {
+                Size = new Size(Size.Width, Size.Height + 25);
+                Invalidate();
+            }));
         }
 
         public void UpdateScoreBoard(List<string> titles, List<int> times)

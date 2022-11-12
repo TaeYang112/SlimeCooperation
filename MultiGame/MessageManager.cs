@@ -926,26 +926,16 @@ namespace MultiGame
                 }
                 Form1 form = gameManager.form1;
 
-                GameClear_Form gameClear_Form = new GameClear_Form();
-                gameClear_Form.Owner = form;
-                gameClear_Form.UpdateResult(time, rank);
-                gameClear_Form.UpdateScoreBoard(titles, times);
-
-                
+                GameClear_Control gameClear_Control = new GameClear_Control(form);
+                gameClear_Control.UpdateResult(time, rank);
+                gameClear_Control.UpdateScoreBoard(titles, times);
+                gameClear_Control.Location = new Point(form.Size.Width / 2 - gameClear_Control.Size.Width / 2, form.Size.Height / 2 - gameClear_Control.Size.Height / 2);
 
                 form.Invoke(new MethodInvoker(delegate ()
                 {
-                    gameClear_Form.ShowDialog();
-
-                    MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
-                    mainMenu_Screen.Name = "mainMenu_Screen";
-
-                    // 화면 전환
-                    form.ChangeScreen(mainMenu_Screen);
+                    form.Controls.Add(gameClear_Control);
+                    form.Controls.SetChildIndex(gameClear_Control, 0);
                 }));
-
-                gameManager.clientManager.ClientDic.Clear();
-                gameManager.objectManager.ClearObjects();
             }
 
             public void GameOver(MessageConverter converter)
@@ -956,18 +946,13 @@ namespace MultiGame
 
                 Form1 form = gameManager.form1;
                 
-                Form gameOverForm = new GameOver_Form();
-                gameOverForm.Owner = form;
+                Control gameOverCtrl = new GameOver_Control(form);
+                gameOverCtrl.Location = new Point(form.Size.Width / 2 - gameOverCtrl.Size.Width / 2, form.Size.Height / 2 - gameOverCtrl.Size.Height / 2);
 
                 form.Invoke(new MethodInvoker(delegate ()
                 {
-                    gameOverForm.ShowDialog();
-
-                    MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
-                    mainMenu_Screen.Name = "mainMenu_Screen";
-
-                    // 화면 전환
-                    form.ChangeScreen(mainMenu_Screen);
+                    form.Controls.Add(gameOverCtrl);
+                    form.Controls.SetChildIndex(gameOverCtrl, 0);
                 }));
 
                 gameManager.clientManager.ClientDic.Clear();
@@ -1061,6 +1046,7 @@ namespace MultiGame
                 GameRecords gameRecords = new GameRecords();
                 gameRecords.Name = "gameRecords";
                 gameRecords.UpdateScoreBoard(titles, times);
+                gameRecords.Location = new Point(form.Size.Width / 2 - gameRecords.Size.Width / 2, form.Size.Height / 2 - gameRecords.Size.Height / 2);
 
                 // 형변환
                 MainMenu_Screen mainMenu_Screen = gameManager.form1.Controls["mainMenu_Screen"] as MainMenu_Screen;
@@ -1068,14 +1054,12 @@ namespace MultiGame
                 // 방찾기 화면이 아닌경우 리턴
                 if (mainMenu_Screen == null) return;
 
-                mainMenu_Screen.Invoke(new MethodInvoker(delegate ()
+                form.Invoke(new MethodInvoker(delegate ()
                 {
-                    if (mainMenu_Screen.Controls.ContainsKey("gameRecords") == false)
+                    if (form.Controls.ContainsKey("gameRecords") == false)
                     {
-                        Point location = new Point(mainMenu_Screen.Size.Width / 2 - gameRecords.Size.Width / 2, mainMenu_Screen.Size.Height / 2 - gameRecords.Size.Height/2);
-                        gameRecords.Location = location;
-                        mainMenu_Screen.Controls.Add(gameRecords);
-                        mainMenu_Screen.Controls.SetChildIndex(gameRecords, 0);
+                        form.Controls.Add(gameRecords);
+                        form.Controls.SetChildIndex(gameRecords, 0);
                     }
                 }));
             }

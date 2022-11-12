@@ -30,6 +30,7 @@ namespace MultiGame.UserPanel
 
             makeRoom_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
             findRoom_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
+            records_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
             exitGame_btn.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
 
             this.ActiveControl = null;
@@ -102,7 +103,7 @@ namespace MultiGame.UserPanel
             
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void records_btn_Click(object sender, EventArgs e)
         {
             // 메시지 생성 후 서버로 전송
             MessageGenerator generator = new MessageGenerator(Protocols.REQ_RECORD_LIST);

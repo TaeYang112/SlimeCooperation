@@ -77,7 +77,7 @@ namespace MultiGame.UserPanel
             this.score_GridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.score_GridView.EnableHeadersVisualStyles = false;
             this.score_GridView.GridColor = System.Drawing.Color.White;
-            this.score_GridView.Location = new System.Drawing.Point(56, 108);
+            this.score_GridView.Location = new System.Drawing.Point(56, 158);
             this.score_GridView.MultiSelect = false;
             this.score_GridView.Name = "score_GridView";
             this.score_GridView.ReadOnly = true;
@@ -125,9 +125,9 @@ namespace MultiGame.UserPanel
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("맑은 고딕", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(94, 41);
+            this.label4.Location = new System.Drawing.Point(94, 46);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(485, 64);
+            this.label4.Size = new System.Drawing.Size(485, 79);
             this.label4.TabIndex = 4;
             this.label4.Text = "SCORE";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -155,7 +155,7 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.score_GridView);
             this.Controls.Add(this.label4);
             this.Name = "GameRecords";
-            this.Size = new System.Drawing.Size(664, 514);
+            this.Size = new System.Drawing.Size(664, 593);
             this.Load += new System.EventHandler(this.GameRecords_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameRecords_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.score_GridView)).EndInit();

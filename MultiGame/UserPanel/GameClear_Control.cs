@@ -11,17 +11,20 @@ using System.Windows.Forms;
 
 namespace MultiGame.UserPanel
 {
-    public partial class GameClear_Form : Form
+    public partial class GameClear_Control : UserControl
     {
-        Label[] rankLabel = new Label[10];
-
         private string oriString = "GAME CLEAR!";
         private int idx = 0;
         private bool isFold = true;
         private System.Threading.Timer timer2 = null;
-        public GameClear_Form()
+
+        private Form1 form;
+
+        public GameClear_Control(Form1 form)
         {
             InitializeComponent();
+            this.form = form;
+
             label1.Font = new Font(ResourceLibrary.Families[0], 30, FontStyle.Regular);
             label2.Font = new Font(ResourceLibrary.Families[1], 15, FontStyle.Regular);
             label3.Font = new Font(ResourceLibrary.Families[1], 15, FontStyle.Regular);
@@ -33,7 +36,7 @@ namespace MultiGame.UserPanel
             timer2 = new System.Threading.Timer(tc,null,Timeout.Infinite, Timeout.Infinite);
         }
 
-        ~GameClear_Form()
+        ~GameClear_Control()
         {
             timer2.Dispose();
         }
@@ -113,7 +116,7 @@ namespace MultiGame.UserPanel
 
         private void btn_record_Click(object sender, EventArgs e)
         {
-            timer2.Change(0, 25);
+            timer2.Change(0, 16);
             btn_record.Visible = false;
         }
 
@@ -139,7 +142,14 @@ namespace MultiGame.UserPanel
 
         private void btn_close_Click(object sender, EventArgs e)
         {
-            Close();
+            MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
+            mainMenu_Screen.Name = "mainMenu_Screen";
+
+            // 화면 전환
+            form.ChangeScreen(mainMenu_Screen);
+
+            GameManager.GetInstance().clientManager.ClientDic.Clear();
+            GameManager.GetInstance().objectManager.ClearObjects();
         }
     }
 }

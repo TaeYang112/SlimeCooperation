@@ -1,7 +1,7 @@
 ﻿
 namespace MultiGame.UserPanel
 {
-    partial class GameOver_Form
+    partial class GameOver_Control
     {
         /// <summary>
         /// Required designer variable.
@@ -76,11 +76,8 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.btn_close);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "GameOver_Form";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "GameOver_Form";
-            this.TopMost = true;
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameOver_Form_Paint);
             this.ResumeLayout(false);
 
