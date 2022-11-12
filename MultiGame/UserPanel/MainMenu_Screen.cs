@@ -58,7 +58,10 @@ namespace MultiGame.UserPanel
         private void findRoom_btn_Click(object sender, EventArgs e)
         {
             // 앞으로 서버로 부터 방목록 정보를 받도록 설정
-            form.ChangeScreen(new FindRoom_Screen(form));
+            FindRoom_Screen findRoom_Screen = new FindRoom_Screen(form);
+            findRoom_Screen.Name = "findRoom_Screen";
+
+            form.ChangeScreen(findRoom_Screen);
 
             // 메시지 생성 후 서버로 전송
             MessageGenerator generator = new MessageGenerator(Protocols.REQ_ROOM_LIST);

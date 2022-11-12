@@ -666,7 +666,7 @@ namespace MultiGame
                 if (gameManager.IsGameStart == false)
                 {
                     // 형변환
-                    LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls[0] as LobbyRoom_Screen;
+                    LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls["lobbyRoom_Screen"] as LobbyRoom_Screen;
 
                     // 방찾기 화면이 아닌경우 리턴
                     if (lobbyRoom_Screen == null) return;
@@ -699,6 +699,7 @@ namespace MultiGame
                 form.Invoke(new MethodInvoker(delegate ()
                 {
                     LobbyRoom_Screen lobbyRoom = new LobbyRoom_Screen(form);
+                    lobbyRoom.Name = "lobbyRoom_Screen";
 
                     // 스킨 변경
                     gameManager.userClient.Character.SetSkin(skinNum);
@@ -734,7 +735,7 @@ namespace MultiGame
 
 
                 // 형변환
-                LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls[0] as LobbyRoom_Screen;
+                LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls["lobbyRoom_Screen"] as LobbyRoom_Screen;
 
                 // 방찾기 화면이 아닌경우 리턴
                 if (lobbyRoom_Screen == null) return;
@@ -764,7 +765,7 @@ namespace MultiGame
                 clientCharacter.IsReady = bReady;
 
                 // 형변환
-                LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls[0] as LobbyRoom_Screen;
+                LobbyRoom_Screen lobbyRoom_Screen = gameManager.form1.Controls["lobbyRoom_Screen"] as LobbyRoom_Screen;
 
                 // 방찾기 화면이 아닌경우 리턴
                 if (lobbyRoom_Screen == null) return;
@@ -809,6 +810,7 @@ namespace MultiGame
 
                         // 인게임 화면으로 변경
                         InGame_Screen inGame_Screen = new InGame_Screen(gameManager.form1);
+                        inGame_Screen.Name = "inGame_Screen";
 
                         gameManager.form1.ActiveControl = null;
                         inGame_Screen.StartUpdateScreen(true);
@@ -819,7 +821,7 @@ namespace MultiGame
                     else
                     {
                         // 형변환
-                        InGame_Screen inGame_Screen = gameManager.form1.Controls[0] as InGame_Screen;
+                        InGame_Screen inGame_Screen = gameManager.form1.Controls["inGame_Screen"] as InGame_Screen;
 
                         // 방찾기 화면이 아닌경우 리턴
                         if (inGame_Screen == null) return;
@@ -936,6 +938,7 @@ namespace MultiGame
                     gameClear_Form.ShowDialog();
 
                     MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
+                    mainMenu_Screen.Name = "mainMenu_Screen";
 
                     // 화면 전환
                     form.ChangeScreen(mainMenu_Screen);
@@ -961,6 +964,7 @@ namespace MultiGame
                     gameOverForm.ShowDialog();
 
                     MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
+                    mainMenu_Screen.Name = "mainMenu_Screen";
 
                     // 화면 전환
                     form.ChangeScreen(mainMenu_Screen);
@@ -979,7 +983,7 @@ namespace MultiGame
                 Console.WriteLine(RoomTitle);
 
                 // 형변환
-                FindRoom_Screen findRoom_Screen = gameManager.form1.Controls[0] as FindRoom_Screen;
+                FindRoom_Screen findRoom_Screen = gameManager.form1.Controls["findRoom_Screen"] as FindRoom_Screen;
 
                 // 방찾기 화면이 아닌경우 리턴
                 if (findRoom_Screen == null) return;
@@ -995,7 +999,7 @@ namespace MultiGame
                 int RoomCode = converter.NextInt();
 
                 // 형변환
-                FindRoom_Screen findRoom_Screen = gameManager.form1.Controls[0] as FindRoom_Screen;
+                FindRoom_Screen findRoom_Screen = gameManager.form1.Controls["findRoom_Screen"] as FindRoom_Screen;
 
                 // 방찾기 화면이 아닌경우 리턴
                 if (findRoom_Screen == null) return;
@@ -1020,7 +1024,7 @@ namespace MultiGame
                 int PlayerCount = converter.NextInt();
 
                 // 형변환
-                FindRoom_Screen findRoom_Screen = gameManager.form1.Controls[0] as FindRoom_Screen;
+                FindRoom_Screen findRoom_Screen = gameManager.form1.Controls["findRoom_Screen"] as FindRoom_Screen;
 
                 // 방찾기 화면이 아닌경우 리턴
                 if (findRoom_Screen == null) return;
@@ -1059,7 +1063,7 @@ namespace MultiGame
                 gameRecords.UpdateScoreBoard(titles, times);
 
                 // 형변환
-                MainMenu_Screen mainMenu_Screen = gameManager.form1.Controls[0] as MainMenu_Screen;
+                MainMenu_Screen mainMenu_Screen = gameManager.form1.Controls["mainMenu_Screen"] as MainMenu_Screen;
 
                 // 방찾기 화면이 아닌경우 리턴
                 if (mainMenu_Screen == null) return;

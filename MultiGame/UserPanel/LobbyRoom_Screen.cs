@@ -79,7 +79,10 @@ namespace MultiGame.UserPanel
             GameManager.GetInstance().userClient.Character.IsReady = false;
 
             // 메인화면으로 돌아감
-            form.ChangeScreen(new MainMenu_Screen(form));
+            MainMenu_Screen mainMenu_Screen = new MainMenu_Screen(form);
+            mainMenu_Screen.Name = "mainMenu_Screen";
+
+            form.ChangeScreen(mainMenu_Screen);
         }
 
         public void SetRoomTitle(string RoomCode, string title)

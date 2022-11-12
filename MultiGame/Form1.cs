@@ -164,14 +164,8 @@ namespace MultiGame
         // 보여질 화면 변경
         public void ChangeScreen(UserControl newScreen)
         {
-            Control lastControl = Controls[0];
-
+            this.Controls.Clear();
             this.Controls.Add(newScreen);
-
-            Controls.Remove(lastControl);
-            lastControl.Dispose();
-
-            
         }
 
 
