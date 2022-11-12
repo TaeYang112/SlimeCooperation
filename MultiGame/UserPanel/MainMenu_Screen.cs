@@ -73,10 +73,10 @@ namespace MultiGame.UserPanel
 
         private void exitGame_btn_Click(object sender, EventArgs e)
         {
-            
-            DialogResult result = MessageBox.Show("게임을 종료하시겠습니까?", "종료", MessageBoxButtons.OKCancel);
 
-            if(result == DialogResult.OK)
+            DialogResult result = new ExitProgram_Form().ShowDialog();
+
+            if(result == DialogResult.Yes)
                 Application.Exit();
         }
 

@@ -170,6 +170,14 @@ namespace MultiGame
 
 
         #endregion
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = new ExitProgram_Form().ShowDialog();
+
+            if (result == DialogResult.No)
+             e.Cancel = true;
+        }
     }
 
     
