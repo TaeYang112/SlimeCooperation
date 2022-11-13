@@ -1,7 +1,8 @@
 # MultiGame
 유한대학교 비즈니스 모델과 설계 프로젝트 Slime Cooperation 팀
 
-![ezgif com-gif-maker (7)](https://user-images.githubusercontent.com/80028960/201517999-1e5f6d55-ac3d-4f6e-ae30-2b6d1886cd39.gif)
+![ezgif com-gif-maker (9)](https://user-images.githubusercontent.com/80028960/201518119-e406304e-2e08-4d38-a194-7bba453ce0a4.gif)
+
 
 ## Contributors
 | 담당자 |git|
