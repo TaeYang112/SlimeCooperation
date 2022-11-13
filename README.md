@@ -7,10 +7,10 @@
 ## Contributors
 | 담당자 |git|
 | :--- | :---: |
-| 이석종 | [ycs-202007051](https://github.com/ycs-201807006) |
+| 이석종 | [ycs-201807006](https://github.com/ycs-201807006) |
 | 이선웅 | [ycs-201807008](https://github.com/ycs-201807008) |
 | 이태양 | [ycs-201807062](https://github.com/ycs-201807062) |
-| 황성진 | [ycs-201807072](https://github.com/ycs-201807072) |
+| 황성진 | [sbssbsissi](https://github.com/sbssbsissi) |
 | 정은지 | [ycs-202007064](https://github.com/ycs-202007071) |
 
 
