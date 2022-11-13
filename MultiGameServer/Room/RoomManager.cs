@@ -43,7 +43,7 @@ namespace MultiGameServer
         }
 
         // 시간을 점수판에 등록하고 순위를 반환 ( 순위 밖이면 등록X, -1 반환 )
-        public int Registertime(string roomTitle, long time)
+        public int RegisterRecord(string roomTitle, long time)
         {
             if(timeList.Count == 0)
             {
@@ -59,7 +59,7 @@ namespace MultiGameServer
             {
                 long s = timeList[i].Value;
 
-                if (s < time)
+                if (s <= time)
                 {
                     i++;
                     continue;
@@ -85,6 +85,14 @@ namespace MultiGameServer
             if (timeList.Count > 10) timeList.RemoveAt(10);
 
             return rank;
+        }
+
+        // 기록 제거
+        public void RemoveRecord(int rank)
+        {
+            int idx = rank - 1;
+            if( idx <= timeList.Count - 1 && idx >= 0)
+                timeList.RemoveAt(idx);
         }
     }
 }

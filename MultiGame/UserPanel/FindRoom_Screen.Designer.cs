@@ -102,6 +102,7 @@ namespace MultiGame.UserPanel
             this.roomList_GridView.Size = new System.Drawing.Size(726, 303);
             this.roomList_GridView.TabIndex = 2;
             this.roomList_GridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.roomList_GridView_CellDoubleClick);
+            this.roomList_GridView.Paint += new System.Windows.Forms.PaintEventHandler(this.roomList_GridView_Paint);
             // 
             // roomNum
             // 
@@ -157,6 +158,7 @@ namespace MultiGame.UserPanel
             this.Name = "FindRoom_Screen";
             this.Size = new System.Drawing.Size(1440, 862);
             this.Load += new System.EventHandler(this.FindRoom_Screen_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.FindRoom_Screen_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.roomList_GridView)).EndInit();
             this.ResumeLayout(false);
 

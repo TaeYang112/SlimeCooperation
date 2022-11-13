@@ -270,7 +270,7 @@ namespace MultiGameServer
         public void GameClear()
         {
             st.Stop();
-            int rank = roomManager.Registertime(RoomTitle, st.ElapsedMilliseconds);
+            int rank = roomManager.RegisterRecord(RoomTitle, st.ElapsedMilliseconds);
 
             // 게임을 클리어했다는 메시지 생성
             MessageGenerator generator = new MessageGenerator(Protocols.S_GAMECLEAR);

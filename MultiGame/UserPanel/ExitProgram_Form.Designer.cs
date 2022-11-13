@@ -29,6 +29,7 @@ namespace MultiGame.UserPanel
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExitProgram_Form));
             this.label1 = new System.Windows.Forms.Label();
             this.ExitYes_btn = new System.Windows.Forms.Button();
             this.ExitNo_btn = new System.Windows.Forms.Button();
@@ -78,11 +79,13 @@ namespace MultiGame.UserPanel
             this.Controls.Add(this.ExitYes_btn);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ExitProgram_Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "종료";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExitProgram_Form_FormClosing);
             this.ResumeLayout(false);
 
         }

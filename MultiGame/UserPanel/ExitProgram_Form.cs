@@ -30,5 +30,11 @@ namespace MultiGame.UserPanel
             DialogResult = DialogResult.Yes;
 
         }
+
+        private void ExitProgram_Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+                DialogResult = DialogResult.No;
+        }
     }
 }

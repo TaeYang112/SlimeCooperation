@@ -86,6 +86,18 @@ namespace MultiGame.UserPanel
             GameManager.GetInstance().SendMessage(generator.Generate());
         }
 
-        
+        private void FindRoom_Screen_Paint(object sender, PaintEventArgs e)
+        {
+            
+        }
+
+        private void roomList_GridView_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, roomList_GridView.ClientRectangle,
+                                     Color.Black, 4, ButtonBorderStyle.Solid,
+                                     Color.Black, 4, ButtonBorderStyle.Solid,
+                                     Color.Black, 4, ButtonBorderStyle.Solid,
+                                     Color.Black, 4, ButtonBorderStyle.Solid);
+        }
     }
 }

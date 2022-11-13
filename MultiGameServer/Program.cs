@@ -137,6 +137,44 @@ namespace MultiGameServer
                                 else throw new Exception("[ERROR] 올바르지 않은 매개변수 개수입니다.");
                             }
                             break;
+                        case "/record":
+                            {
+                                
+                                if (command.Length >= 2)
+                                {
+                                    string mode = command[1];
+                                    // 클리어 기록 등록
+                                    if (mode == "add")
+                                    {
+                                        string title = command[2];
+                                        int time = int.Parse(command[3]);
+
+                                        int rank = program.roomManager.RegisterRecord(title, time);
+
+                                        if(rank > 0)
+                                            Console.WriteLine("[INFO] " + rank + "등으로 기록이 등록되었습니다.");
+                                        else
+                                            Console.WriteLine("[INFO] 순위권 외의 기록입니다.");
+                                    }
+                                    // 기록 제거
+                                    else if(mode == "delete")
+                                    {
+                                        int rank = int.Parse(command[2]);
+
+                                        program.roomManager.RemoveRecord(rank);
+
+                                        Console.WriteLine("[INFO] " + rank + "등의 기록이 제거되었습니다.");
+                                    }
+                                    else if(mode == "clear")
+                                    {
+                                        program.roomManager.TimeList.Clear();
+                                        Console.WriteLine("[INFO] 모든 기록이 제거되었습니다.");
+                                    }
+
+                                }
+                                else throw new Exception("[ERROR] 올바르지 않은 매개변수 개수입니다.");
+                            }
+                            break;
                     default:
                         Console.WriteLine("[ERROR] 알수없는 명령어입니다.");
                         break;
