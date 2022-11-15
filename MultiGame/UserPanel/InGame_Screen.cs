@@ -51,7 +51,6 @@ namespace MultiGame.UserPanel
 
         public void CustomDispose(object o, EventArgs e)
         {
-            Console.WriteLine("나죽음");
             FPSTimer.Dispose();
             UpdateTimer.Dispose();
         }
